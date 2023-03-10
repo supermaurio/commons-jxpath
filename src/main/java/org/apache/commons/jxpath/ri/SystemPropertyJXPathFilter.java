@@ -29,6 +29,8 @@ import java.util.Set;
  */
 public class SystemPropertyJXPathFilter extends AbstractJXPathFilter {
 
+    private final static String DEFAULT_ALLOW_LIST = "org.w3c.*,org.jdom.*,java.lang.String,java.util.*,org.apache.commons.*";
+
     public SystemPropertyJXPathFilter() {
         super(loadAllowedClassesFromSystemProperty());
     }
@@ -38,7 +40,7 @@ public class SystemPropertyJXPathFilter extends AbstractJXPathFilter {
         List<String> allowedClassesList =
                 allowedClasses != null && !allowedClasses.isEmpty()
                         ? Arrays.asList(allowedClasses.split(","))
-                        : Collections.emptyList();
+                        : Arrays.asList(DEFAULT_ALLOW_LIST.split(","));
         return Collections.unmodifiableSet(new HashSet<>(allowedClassesList));
     }
 }
