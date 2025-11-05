@@ -39,9 +39,9 @@ then tweak the source formatting if necessary and regenerate, then commit
 The <action> type attribute can be add,update,fix,remove.
 -->
 
-<document xmlns="http://maven.apache.org/changes/1.0.0"
+<document xmlns="http://maven.apache.org/changes/2.0.0"
           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
+          xsi:schemaLocation="http://maven.apache.org/changes/2.0.0 https://maven.apache.org/xsd/changes-2.0.0.xsd">
   <properties>
     <title>Release Notes</title>
   </properties>
@@ -104,6 +104,8 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iterate(String).</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iteratePointers(String).</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.decimalFormats.</action>
+      <action dev="ggregory" type="fix" due-to="strangelookingnerd">Migrate tests to JUnit5 #214.</action>
+      <action dev="ggregory" type="fix" due-to="strangelookingnerd, Gary Gregory">Replace try-catch constructs in tests with assertThrows #215.</action>
       <!-- ADD -->
       <action issue="JXPATH-123" dev="mbenson" type="add">
         XPath function "ends-with" is not implemented (although "starts-with" is).
@@ -119,10 +121,10 @@ The <action> type attribute can be add,update,fix,remove.
         Bump JUnit 3.8.1 to 4.13.2.
       </action>
       <action dev="ggregory" type="update" due-to="Dependabot, Gary Gregory">
-        Bump commons-logging from 1.1.1 to 1.3.4 #34, #129, #147, #160, #174.
+        Bump commons-logging from 1.1.1 to 1.3.5 #34, #129, #147, #160, #174.
       </action>
-      <action dev="ggregory" type="update" due-to="Dependabot">
-        Bump commons-beanutils from 1.8.2 to 1.9.4 #24.
+      <action dev="ggregory" type="update" due-to="Dependabot, Gary Gregory">
+        Bump commons-beanutils from 1.8.2 to 1.10.1 #24.
       </action>
       <action dev="ggregory" type="update" due-to="Dependabot">
         Bump taglist-maven-plugin from 2.2 to 3.0.0 #32.

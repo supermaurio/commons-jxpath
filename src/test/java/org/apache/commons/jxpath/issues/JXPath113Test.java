@@ -17,6 +17,7 @@
 package org.apache.commons.jxpath.issues;
 
 import java.io.StringReader;
+import java.util.List;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -24,8 +25,12 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
+
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class JXPath113Test extends AbstractJXPathTest
 {
@@ -41,11 +46,15 @@ public class JXPath113Test extends AbstractJXPathTest
         super.tearDown();
     }
 
+    @Test
     public void testIssue113() throws Exception
     {
         final Document doc = JAXP.getDocument("<xml/>");
         final JXPathContext context = JXPathContext.newContext(doc);
-        context.selectNodes("//following-sibling::node()");
+
+        List result = context.selectNodes("//following-sibling::node()");
+        assertNotNull(result);
+        assertTrue(result.isEmpty());
     }
 
     static class JAXP
@@ -63,21 +72,12 @@ public class JXPath113Test extends AbstractJXPathTest
             return builder.parse(is);
         }
 
-        private static DocumentBuilder getDocumentBuilder()
-        {
-            try
-            {
-                final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                factory.setValidating(false);
-                factory.setNamespaceAware(true);
-                factory.setExpandEntityReferences(false);
-                return factory.newDocumentBuilder();
-            }
-            catch (final ParserConfigurationException e)
-            {
-                throw new Error("JAXP config error:" + e.getMessage(), e);
-            }
-
+        private static DocumentBuilder getDocumentBuilder() throws ParserConfigurationException {
+            final DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            factory.setValidating(false);
+            factory.setNamespaceAware(true);
+            factory.setExpandEntityReferences(false);
+            return factory.newDocumentBuilder();
         }
     }
 

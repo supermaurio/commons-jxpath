@@ -25,16 +25,20 @@ import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathException;
 import org.apache.commons.jxpath.Pointer;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Badly-implemented Factory test.  From JIRA JXPATH-68.
  */
-public class BadlyImplementedFactoryTest extends TestCase {
+public class BadlyImplementedFactoryTest {
 
     private JXPathContext context;
 
-    @Override
+    @BeforeEach
     public void setUp() {
         context = JXPathContext.newContext(new HashMap());
         context.setFactory(new AbstractFactory() {
@@ -46,13 +50,11 @@ public class BadlyImplementedFactoryTest extends TestCase {
         });
     }
 
+    @Test
     public void testBadFactoryImplementation() {
-        try {
-            context.createPath("foo/bar");
-            fail("should fail with JXPathException caused by JXPathAbstractFactoryException");
-        } catch (final JXPathException e) {
-            assertTrue(e.getCause() instanceof JXPathAbstractFactoryException);
-        }
+        JXPathException e = assertThrows(JXPathException.class, () -> context.createPath("foo/bar"),
+            "should fail with JXPathException caused by JXPathAbstractFactoryException");
+        assertInstanceOf(JXPathAbstractFactoryException.class, e.getCause());
     }
 
 }

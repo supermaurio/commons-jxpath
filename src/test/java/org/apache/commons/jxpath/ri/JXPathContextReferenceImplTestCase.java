@@ -17,12 +17,12 @@
 
 package org.apache.commons.jxpath.ri;
 
-import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
 import org.apache.commons.jxpath.JXPathContext;
 
+import org.junit.jupiter.api.Test;
 
-public class JXPathContextReferenceImplTestCase extends AbstractJXPathTest {
+public class JXPathContextReferenceImplTestCase {
 
     @Override
     public void setUp() throws Exception {
@@ -39,13 +39,14 @@ public class JXPathContextReferenceImplTestCase extends AbstractJXPathTest {
     /**
      * https://issues.apache.org/jira/browse/JXPATH-166
      */
+    @Test
     public void testInit() {
         final ContainerPointerFactory factory = new ContainerPointerFactory();
         try {
             JXPathContextReferenceImpl.addNodePointerFactory(factory);
         } finally {
             while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
-
+                // NOP
             }
         }
     }

@@ -28,6 +28,8 @@ import org.apache.commons.jxpath.Pointer;
 import org.apache.commons.jxpath.TestMixedModelBean;
 import org.apache.commons.jxpath.Variables;
 import org.apache.commons.jxpath.ri.model.NodePointer;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test basic functionality of JXPath - core functions.
@@ -36,6 +38,7 @@ public class CoreFunctionTest extends AbstractJXPathTest {
     private JXPathContext context;
 
     @Override
+    @BeforeEach
     public void setUp() {
         System.setProperty("jxpath.class.allow", "*");
         if (context == null) {
@@ -53,6 +56,7 @@ public class CoreFunctionTest extends AbstractJXPathTest {
         System.clearProperty("jxpath.class.allow");
     }
 
+    @Test
     public void testCoreFunctions() {
         assertXPathValue(context, "string(2)", "2");
         assertXPathValue(context, "string($nan)", "NaN");
@@ -66,14 +70,8 @@ public class CoreFunctionTest extends AbstractJXPathTest {
         assertXPathValue(context, "ends-with('xabc', 'ab')", Boolean.FALSE);
         assertXPathValue(context, "contains('xabc', 'ab')", Boolean.TRUE);
         assertXPathValue(context, "contains('xabc', 'ba')", Boolean.FALSE);
-        assertXPathValue(
-            context,
-            "substring-before('1999/04/01', '/')",
-            "1999");
-        assertXPathValue(
-            context,
-            "substring-after('1999/04/01', '/')",
-            "04/01");
+        assertXPathValue(context,"substring-before('1999/04/01', '/')","1999");
+        assertXPathValue(context,"substring-after('1999/04/01', '/')","04/01");
         assertXPathValue(context, "substring('12345', 2, 3)", "234");
         assertXPathValue(context, "substring('12345', 2)", "2345");
         assertXPathValue(context, "substring('12345', 1.5, 2.6)", "234");
@@ -123,6 +121,7 @@ public class CoreFunctionTest extends AbstractJXPathTest {
         assertXPathValue(context, "round(2 div 0)", Double.valueOf(Double.POSITIVE_INFINITY));
     }
 
+    @Test
     public void testIDFunction() {
         context.setIdentityManager((context, id) -> {
             NodePointer ptr = (NodePointer) context.getPointer("/document");
@@ -142,12 +141,14 @@ public class CoreFunctionTest extends AbstractJXPathTest {
             "id(105)/address/street");
     }
 
+    @Test
     public void testKeyFunction() {
         context.setKeyManager((context, key, value) -> NodePointer.newNodePointer(null, "42", null));
 
         assertXPathValue(context, "key('a', 'b')", "42");
     }
 
+    @Test
     public void testExtendedKeyFunction() {
         context.setKeyManager(new ExtendedKeyManager() {
             @Override
@@ -191,6 +192,7 @@ public class CoreFunctionTest extends AbstractJXPathTest {
         assertXPathValueIterator(context, "key('a', $ints)", list("53", "64", "53", "64"));
     }
 
+    @Test
     public void testFormatNumberFunction() {
 
         final DecimalFormatSymbols symbols = new DecimalFormatSymbols();

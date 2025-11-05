@@ -26,12 +26,18 @@ import java.net.URL;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathException;
 
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.fail;
 
 /**
  * Tests org.apache.commons.jxpath.util.ClassLoaderUtil.
  */
-public class ClassLoaderUtilTest extends TestCase {
+public class ClassLoaderUtilTest {
 
   // These must be string literals, and not populated by calling getName() on
   // the respective classes, since the tests below will load this class in a
@@ -44,8 +50,8 @@ public class ClassLoaderUtilTest extends TestCase {
   /**
    * Setup for the tests.
    */
-  @Override
-public void setUp() {
+  @BeforeEach
+  public void setUp() {
     System.setProperty("jxpath.class.allow", "java.lang.ObjectXBeanInfo,org.apache.commons.jxpath.*");
     this.orginalContextClassLoader = Thread.currentThread().getContextClassLoader();
   }
@@ -53,8 +59,8 @@ public void setUp() {
   /**
    * Cleanup for the tests.
    */
-  @Override
-public void tearDown() {
+  @AfterEach
+  public void tearDown() {
     Thread.currentThread().setContextClassLoader(this.orginalContextClassLoader);
     System.clearProperty("jxpath.class.allow");
   }
@@ -63,6 +69,7 @@ public void tearDown() {
    * Tests that JXPath cannot dynamically load a class, which is not visible to
    * its class loader, when the context class loader is null.
    */
+  @Test
   public void testClassLoadFailWithoutContextClassLoader() {
     Thread.currentThread().setContextClassLoader(null);
     final ClassLoader cl = new TestClassLoader(getClass().getClassLoader());
@@ -74,6 +81,7 @@ public void tearDown() {
    * its class loader, when the context class loader is set and can load the
    * class.
    */
+  @Test
   public void testClassLoadSuccessWithContextClassLoader() {
     Thread.currentThread().setContextClassLoader(getClass().getClassLoader());
     final ClassLoader cl = new TestClassLoader(getClass().getClassLoader());
@@ -85,6 +93,7 @@ public void tearDown() {
    * requested class when the context class loader is set but unable to load
    * the class.
    */
+  @Test
   public void testCurrentClassLoaderFallback() {
     final ClassLoader cl = new TestClassLoader(getClass().getClassLoader());
     Thread.currentThread().setContextClassLoader(cl);
@@ -95,6 +104,7 @@ public void tearDown() {
    * Tests that JXPath can dynamically load a class, which is visible to
    * its class loader, when there is no context class loader set.
    */
+  @Test
   public void testClassLoadSuccessWithoutContextClassLoader() {
     Thread.currentThread().setContextClassLoader(null);
     callExampleMessageMethodAndAssertSuccess();
@@ -106,12 +116,8 @@ public void tearDown() {
    */
   public static void callExampleMessageMethodAndAssertClassNotFoundJXPathException() {
     final JXPathContext context = JXPathContext.newContext(new Object());
-    try {
-      context.selectSingleNode(EXAMPLE_CLASS_NAME+".getMessage()");
-      fail("We should not be able to load "+EXAMPLE_CLASS_NAME+".");
-    } catch ( final Exception e ) {
-      assertTrue( e instanceof JXPathException );
-    }
+    assertThrows(JXPathException.class, () -> context.selectSingleNode(EXAMPLE_CLASS_NAME+".getMessage()"),
+      "We should not be able to load "+EXAMPLE_CLASS_NAME+".");
   }
 
   /**
