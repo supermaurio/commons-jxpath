@@ -517,7 +517,7 @@ public class ValueUtils {
 
     /**
      * Returns a shared instance of the dynamic property handler class
-     * returned by <code>getDynamicPropertyHandlerClass()</code>.
+     * returned by {@code getDynamicPropertyHandlerClass()}.
      * @param clazz to handle
      * @return DynamicPropertyHandler
      */
@@ -525,7 +525,7 @@ public class ValueUtils {
         return (DynamicPropertyHandler) dynamicPropertyHandlerMap.computeIfAbsent(clazz, k -> {
             try {
                 return (DynamicPropertyHandler) clazz.getConstructor().newInstance();
-            } 
+            }
             catch (final Exception ex) {
                 throw new JXPathException("Cannot allocate dynamic property handler of class " + clazz.getName(), ex);
             }

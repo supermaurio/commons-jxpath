@@ -407,8 +407,8 @@ public class JDOMNodePointer extends NodePointer {
             }
             if (wildcard
                 || testName.getName()
-                        .equals(JDOMNodePointer.getLocalName(node))) {
-                final String nodeNS = JDOMNodePointer.getNamespaceURI(node);
+                        .equals(getLocalName(node))) {
+                final String nodeNS = getNamespaceURI(node);
                 return equalStrings(namespaceURI, nodeNS) || nodeNS == null
                         && equalStrings(testPrefix, getPrefix(node));
             }
@@ -486,7 +486,7 @@ public class JDOMNodePointer extends NodePointer {
     /**
      * Returns true if the xml:lang attribute for the current node
      * or its parent has the specified prefix <i>lang</i>.
-     * If no node has this prefix, calls <code>super.isLanguage(lang)</code>.
+     * If no node has this prefix, calls {@code super.isLanguage(lang)}.
      * @param lang to compare
      * @return true if this element uses the specified language.
      */
@@ -653,7 +653,7 @@ public class JDOMNodePointer extends NodePointer {
                     buffer.append('/');
                 }
                 final String nsURI = getNamespaceURI();
-                final String ln = JDOMNodePointer.getLocalName(node);
+                final String ln = getLocalName(node);
 
                 if (nsURI == null) {
                     buffer.append(ln);
@@ -668,14 +668,13 @@ public class JDOMNodePointer extends NodePointer {
                         buffer.append(ln);
                         buffer.append('[');
                         buffer.append(getRelativePositionByQName());
-                        buffer.append(']');
                     }
                     else {
                         buffer.append("node()");
                         buffer.append('[');
                         buffer.append(getRelativePositionOfElement());
-                        buffer.append(']');
                     }
+                    buffer.append(']');
                 }
 
             }

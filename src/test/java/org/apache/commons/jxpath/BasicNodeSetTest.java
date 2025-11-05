@@ -47,7 +47,7 @@ public class BasicNodeSetTest extends JXPathTestCase {
     }
 
     /**
-     * Add the pointers for the specified path to <code>nodeSet</code>.
+     * Add the pointers for the specified path to {@code nodeSet}.
      *
      * @param xpath
      */
@@ -59,7 +59,7 @@ public class BasicNodeSetTest extends JXPathTestCase {
     }
 
     /**
-     * Remove the pointers for the specified path from <code>nodeSet</code>.
+     * Remove the pointers for the specified path from {@code nodeSet}.
      *
      * @param xpath
      */

@@ -166,9 +166,9 @@ public void tearDown() {
   /**
    * A simple class loader which delegates all class loading to its parent
    * with two exceptions. First, attempts to load the class
-   * <code>org.apache.commons.jxpath.util.ClassLoaderUtilTest</code> will
+   * {@code org.apache.commons.jxpath.util.ClassLoaderUtilTest} will
    * always result in a ClassNotFoundException. Second, loading the class
-   * <code>org.apache.commons.jxpath.util.ClassLoadingExampleClass</code> will
+   * {@code org.apache.commons.jxpath.util.ClassLoadingExampleClass} will
    * result in the class being loaded by this class loader, regardless of
    * whether the parent can/has loaded it.
    *
@@ -187,7 +187,7 @@ public void tearDown() {
       }
       else if ( TEST_CASE_CLASS_NAME.equals(name) ) {
         if ( testCaseClass == null ) {
-          final URL clazzUrl = this.getParent().getResource("org/apache/commons/jxpath/util/ClassLoaderUtilTest.class");
+          final URL clazzUrl = getParent().getResource("org/apache/commons/jxpath/util/ClassLoaderUtilTest.class");
 
           final ByteArrayOutputStream out = new ByteArrayOutputStream();
           InputStream in = null;
@@ -209,7 +209,7 @@ public void tearDown() {
         }
         return this.testCaseClass;
       }
-      return this.getParent().loadClass(name);
+      return getParent().loadClass(name);
     }
   }
 }

@@ -128,8 +128,8 @@ public class DOMNodePointer extends NodePointer {
             }
             if (wildcard
                 || testName.getName()
-                        .equals(DOMNodePointer.getLocalName(node))) {
-                final String nodeNS = DOMNodePointer.getNamespaceURI(node);
+                        .equals(getLocalName(node))) {
+                final String nodeNS = getNamespaceURI(node);
                 return equalStrings(namespaceURI, nodeNS) || nodeNS == null
                         && equalStrings(testPrefix, getPrefix(node));
             }
@@ -181,8 +181,8 @@ public class DOMNodePointer extends NodePointer {
         String ns = null;
         final int type = node.getNodeType();
         if (type == Node.ELEMENT_NODE) {
-            ns = DOMNodePointer.getPrefix(node);
-            ln = DOMNodePointer.getLocalName(node);
+            ns = getPrefix(node);
+            ln = getLocalName(node);
         }
         else if (type == Node.PROCESSING_INSTRUCTION_NODE) {
             ln = ((ProcessingInstruction) node).getTarget();
@@ -264,7 +264,7 @@ public class DOMNodePointer extends NodePointer {
                 aNode = aNode.getParentNode();
             }
             if (namespace == null || namespace.isEmpty()) {
-                namespace = NodePointer.UNKNOWN_NAMESPACE;
+                namespace = UNKNOWN_NAMESPACE;
             }
         }
 
@@ -335,7 +335,7 @@ public class DOMNodePointer extends NodePointer {
     /**
      * Returns true if the xml:lang attribute for the current node
      * or its parent has the specified prefix <i>lang</i>.
-     * If no node has this prefix, calls <code>super.isLanguage(lang)</code>.
+     * If no node has this prefix, calls {@code super.isLanguage(lang)}.
      * @param lang ns to test
      * @return boolean
      */
@@ -483,10 +483,8 @@ public class DOMNodePointer extends NodePointer {
             }
             element.setAttributeNS(ns, name.toString(), "");
         }
-        else {
-            if (!element.hasAttribute(name.getName())) {
-                element.setAttribute(name.getName(), "");
-            }
+        else if (!element.hasAttribute(name.getName())) {
+            element.setAttribute(name.getName(), "");
         }
         final NodeIterator it = attributeIterator(name);
         it.setPosition(1);
@@ -522,7 +520,7 @@ public class DOMNodePointer extends NodePointer {
                             || buffer.charAt(buffer.length() - 1) != '/') {
                         buffer.append('/');
                     }
-                    final String ln = DOMNodePointer.getLocalName(node);
+                    final String ln = getLocalName(node);
                     final String nsURI = getNamespaceURI();
                     if (nsURI == null) {
                         buffer.append(ln);
@@ -537,14 +535,13 @@ public class DOMNodePointer extends NodePointer {
                             buffer.append(ln);
                             buffer.append('[');
                             buffer.append(getRelativePositionByQName());
-                            buffer.append(']');
                         }
                         else {
                             buffer.append("node()");
                             buffer.append('[');
                             buffer.append(getRelativePositionOfElement());
-                            buffer.append(']');
                         }
+                        buffer.append(']');
                     }
                 }
             break;

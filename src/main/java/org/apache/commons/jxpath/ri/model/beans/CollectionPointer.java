@@ -119,8 +119,7 @@ public class CollectionPointer extends NodePointer {
             }
             else {
                 final Object value = getImmediateNode();
-                valuePointer =
-                    NodePointer.newChildNodePointer(this, getName(), value);
+                valuePointer = newChildNodePointer(this, getName(), value);
             }
         }
         return valuePointer;
@@ -244,13 +243,11 @@ public class CollectionPointer extends NodePointer {
                 buffer.append("[").append(index + 1).append(']');
             }
         }
+        else if (index != WHOLE_COLLECTION) {
+            buffer.append("/.[").append(index + 1).append(']');
+        }
         else {
-            if (index != WHOLE_COLLECTION) {
-                buffer.append("/.[").append(index + 1).append(']');
-            }
-            else {
-                buffer.append("/");
-            }
+            buffer.append("/");
         }
         return buffer.toString();
     }
