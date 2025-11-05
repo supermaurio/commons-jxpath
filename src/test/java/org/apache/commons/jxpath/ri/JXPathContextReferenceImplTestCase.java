@@ -17,12 +17,12 @@
 
 package org.apache.commons.jxpath.ri;
 
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
 import org.apache.commons.jxpath.JXPathContext;
 
 
-public class JXPathContextReferenceImplTestCase extends JXPathTestCase {
+public class JXPathContextReferenceImplTestCase extends AbstractJXPathTest {
 
     @Override
     public void setUp() throws Exception {

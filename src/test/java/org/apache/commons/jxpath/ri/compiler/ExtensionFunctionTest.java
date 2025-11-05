@@ -18,7 +18,6 @@ package org.apache.commons.jxpath.ri.compiler;
 
 import java.util.*;
 
-import org.apache.commons.jxpath.JXPathTestCase;
 import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.AbstractJXPathTest;
