@@ -17,13 +17,13 @@
 package org.apache.commons.jxpath.ri.model;
 
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 
 /**
  * Test for text trimming from JXPATH-83.
  */
-public class XMLSpaceTest extends JXPathTestCase {
+public class XMLSpaceTest extends AbstractJXPathTest {
     protected JXPathContext context;
 
     @Override
@@ -39,7 +39,7 @@ public class XMLSpaceTest extends JXPathTestCase {
     }
 
     protected DocumentContainer createDocumentContainer(final String model) {
-        return new DocumentContainer(JXPathTestCase.class
+        return new DocumentContainer(AbstractJXPathTest.class
                 .getResource("XmlSpace.xml"), model);
     }
 

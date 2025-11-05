@@ -98,9 +98,12 @@ The <action> type attribute can be add,update,fix,remove.
         XMLDocumentContainer.XMLDocumentContainer(Source) now calls Objects.requireNonNull() instead of throwing a RuntimeException.
       </action>
       <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
-        [StepSecurity] ci: Harden GitHub Actions #66.
+        [StepSecurity] CI: Harden GitHub Actions #66.
       </action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Fix PMD UnnecessaryFullyQualifiedName.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iterate(String).</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iteratePointers(String).</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.decimalFormats.</action>
       <!-- ADD -->
       <action issue="JXPATH-123" dev="mbenson" type="add">
         XPath function "ends-with" is not implemented (although "starts-with" is).

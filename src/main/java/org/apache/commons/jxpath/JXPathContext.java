@@ -211,7 +211,7 @@ import org.apache.commons.jxpath.util.KeyManagerUtils;
  * AbstractFactory AbstractFactory} and install it on the JXPathContext. Then
  * call {@link JXPathContext#createPath createPathAndSetValue()} instead of
  * "setValue". JXPathContext will invoke your AbstractFactory when it discovers
- * that an intermediate node of the path is <b>null</b>.  It will not override
+ * that an intermediate node of the path is <strong>null</strong>.  It will not override
  * existing nodes.
  *
  * <pre>
@@ -233,7 +233,7 @@ import org.apache.commons.jxpath.util.KeyManagerUtils;
  *
  * <h3>Example 8: Using Variables</h3>
  * JXPath supports the notion of variables. The XPath syntax for accessing
- * variables is <i>"$varName"</i>.
+ * variables is <em>"$varName"</em>.
  *
  * <pre>
  * public class Author {
@@ -257,8 +257,8 @@ import org.apache.commons.jxpath.util.KeyManagerUtils;
  * context.setValue("$index", new Integer(3));
  * </pre>
  *
- * Note: you can only <i>change</i> the value of an existing variable this
- * way, you cannot <i>define</i> a new variable.
+ * Note: you can only <em>change</em> the value of an existing variable this
+ * way, you cannot <em>define</em> a new variable.
  *
  * <p>
  * When a variable contains a JavaBean or a collection, you can
@@ -421,7 +421,7 @@ public abstract class JXPathContext {
     /** KeyManager */
     protected KeyManager keyManager;
     /** Decimal format map */
-    protected HashMap decimalFormats;
+    protected HashMap<String, DecimalFormatSymbols> decimalFormats;
 
     protected JXPathFilter filter;
 
@@ -630,7 +630,7 @@ public abstract class JXPathContext {
     public synchronized void setDecimalFormatSymbols(final String name,
             final DecimalFormatSymbols symbols) {
         if (decimalFormats == null) {
-            decimalFormats = new HashMap();
+            decimalFormats = new HashMap<>();
         }
         decimalFormats.put(name, symbols);
     }
@@ -645,14 +645,14 @@ public abstract class JXPathContext {
         if (decimalFormats == null) {
             return parentContext == null ? null : parentContext.getDecimalFormatSymbols(name);
         }
-        return (DecimalFormatSymbols) decimalFormats.get(name);
+        return decimalFormats.get(name);
     }
 
     /**
      * If the context is in the lenient mode, then getValue() returns null
      * for inexistent paths.  Otherwise, a path that does not map to
      * an existing property will throw an exception.  Note that if the
-     * property exists, but its value is null, the exception is <i>not</i>
+     * property exists, but its value is null, the exception is <em>not</em>
      * thrown.
      * <p>
      * By default, lenient = false
@@ -722,9 +722,9 @@ public abstract class JXPathContext {
      */
     public List selectNodes(final String xpath) {
         final ArrayList list = new ArrayList();
-        final Iterator iterator = iteratePointers(xpath);
+        final Iterator<Pointer> iterator = iteratePointers(xpath);
         while (iterator.hasNext()) {
-            final Pointer pointer = (Pointer) iterator.next();
+            final Pointer pointer = iterator.next();
             list.add(pointer.getNode());
         }
         return list;
@@ -805,10 +805,12 @@ public abstract class JXPathContext {
      * Traverses the xpath and returns an Iterator of all results found
      * for the path. If the xpath matches no properties
      * in the graph, the Iterator will be empty, but not null.
+     *
+     * @param <E> the type of elements returned by the iterator.
      * @param xpath to iterate
      * @return Iterator
      */
-    public abstract Iterator iterate(String xpath);
+    public abstract <E> Iterator<E> iterate(String xpath);
 
     /**
      * Traverses the xpath and returns a Pointer. A Pointer provides easy access
@@ -838,7 +840,7 @@ public abstract class JXPathContext {
      * @param xpath to iterate
      * @return Iterator
      */
-    public abstract Iterator iteratePointers(String xpath);
+    public abstract Iterator<Pointer> iteratePointers(String xpath);
 
     /**
      * Install an identity manager that will be used by the context

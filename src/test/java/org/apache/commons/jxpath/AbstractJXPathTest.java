@@ -32,12 +32,12 @@ import junit.framework.TestCase;
 /**
  * Abstract superclass for various JXPath tests.
  */
-public abstract class JXPathTestCase extends TestCase {
+public abstract class AbstractJXPathTest extends TestCase {
 
     /**
      * Constructs a new instance of this test case.
      */
-    public JXPathTestCase() {
+    public AbstractJXPathTest() {
         Locale.setDefault(Locale.US);
     }
 
@@ -135,22 +135,23 @@ public abstract class JXPathTestCase extends TestCase {
         assertXPathPointer(ctx, xpath, expectedPointer);
     }
 
-    protected void assertXPathValueIterator(final JXPathContext ctx,
-                final String xpath, final Collection expected)
+    protected <E> void assertXPathValueIterator(final JXPathContext ctx,
+                final String xpath, final Collection<E> expected)
     {
-        Collection actual;
+        Collection<E> actual;
         if (expected instanceof List) {
-            actual = new ArrayList();
+            actual = new ArrayList<>();
+        } else {
+            actual = new HashSet<>();
         }
-        else {
-            actual = new HashSet();
-        }
-        final Iterator it = ctx.iterate(xpath);
+        final Iterator<E> it = ctx.iterate(xpath);
         while (it.hasNext()) {
             actual.add(it.next());
         }
-        assertEquals("Evaluating value iterator <" + xpath + ">",
-                expected, actual);
+        assertEquals(String.format("[hashCode()] Evaluating value iterator <%s>, expected.class %s(%,d): %s, actual.class %s(%,d): %s", xpath,
+                expected.getClass(), expected.size(), expected, actual.getClass(), actual.size(), actual), expected.hashCode(), actual.hashCode());
+        assertEquals(String.format("[equals()] Evaluating value iterator <%s>, expected.class %s(%,d): %s, actual.class %s(%,d): %s", xpath,
+                expected.getClass(), expected.size(), expected, actual.getClass(), actual.size(), actual), expected, actual);
     }
 
     protected void assertXPathPointerIterator(
@@ -165,9 +166,9 @@ public abstract class JXPathTestCase extends TestCase {
         else {
             actual = new HashSet();
         }
-        final Iterator it = ctx.iteratePointers(xpath);
+        final Iterator<Pointer> it = ctx.iteratePointers(xpath);
         while (it.hasNext()) {
-            final Pointer pointer = (Pointer) it.next();
+            final Pointer pointer = it.next();
             actual.add(pointer.toString());
         }
         assertEquals(

@@ -25,7 +25,7 @@ import java.util.Locale;
 import org.apache.commons.jxpath.AbstractFactory;
 import org.apache.commons.jxpath.ClassFunctions;
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.NestedTestBean;
 import org.apache.commons.jxpath.Pointer;
 import org.apache.commons.jxpath.ri.QName;
@@ -38,7 +38,7 @@ import org.apache.commons.jxpath.ri.model.dynabeans.DynaBeanModelTest;
 /**
  * Abstract superclass for Bean access with JXPath.
  */
-public abstract class BeanModelTestCase extends JXPathTestCase {
+public abstract class AbstractBeanModelTest extends AbstractJXPathTest {
     private JXPathContext context;
 
     @Override
@@ -194,10 +194,10 @@ public abstract class BeanModelTestCase extends JXPathTestCase {
 
     public void testIteratePropertyArrayWithHasNext() {
         final JXPathContext context = JXPathContext.newContext(createContextBean());
-        final Iterator it = context.iteratePointers("/integers");
-        final List actual = new ArrayList();
+        final Iterator<Pointer> it = context.iteratePointers("/integers");
+        final List<String> actual = new ArrayList<>();
         while (it.hasNext()) {
-            actual.add(((Pointer) it.next()).asPath());
+            actual.add(it.next().asPath());
         }
         assertEquals(
             "Iterating 'hasNext'/'next'<" + "/integers" + ">",
@@ -211,8 +211,8 @@ public abstract class BeanModelTestCase extends JXPathTestCase {
 
     public void testIteratePropertyArrayWithoutHasNext() {
         final JXPathContext context = JXPathContext.newContext(createContextBean());
-        final Iterator it = context.iteratePointers("/integers");
-        final List actual = new ArrayList();
+        final Iterator<Pointer> it = context.iteratePointers("/integers");
+        final List<String> actual = new ArrayList<>();
         for (int i = 0; i < 4; i++) {
             actual.add(it.next().toString());
         }
@@ -229,7 +229,7 @@ public abstract class BeanModelTestCase extends JXPathTestCase {
     public void testIterateAndSet() {
         final JXPathContext context = JXPathContext.newContext(createContextBean());
 
-        Iterator it = context.iteratePointers("beans/int");
+        Iterator<Pointer> it = context.iteratePointers("beans/int");
         int i = 5;
         while (it.hasNext()) {
             final NodePointer pointer = (NodePointer) it.next();
@@ -237,9 +237,9 @@ public abstract class BeanModelTestCase extends JXPathTestCase {
         }
 
         it = context.iteratePointers("beans/int");
-        final List actual = new ArrayList();
+        final List<Object> actual = new ArrayList<>();
         while (it.hasNext()) {
-            actual.add(((Pointer) it.next()).getValue());
+            actual.add(it.next().getValue());
         }
         assertEquals(
             "Iterating <" + "beans/int" + ">",
@@ -265,10 +265,10 @@ public abstract class BeanModelTestCase extends JXPathTestCase {
         assertXPathValue(context, "/beans[2]/name", "Name 2");
 
         int iterCount = 0;
-        final Iterator iter = context.iteratePointers("/beans/name");
+        final Iterator<Pointer> iter = context.iteratePointers("/beans/name");
         while (iter.hasNext()) {
             iterCount++;
-            final Pointer pointer = (Pointer) iter.next();
+            final Pointer pointer = iter.next();
             String s = (String) pointer.getValue();
             s += "suffix";
             pointer.setValue(s);

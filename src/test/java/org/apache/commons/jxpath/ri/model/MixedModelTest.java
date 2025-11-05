@@ -26,7 +26,7 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.Pointer;
 import org.apache.commons.jxpath.TestBean;
 import org.apache.commons.jxpath.TestMixedModelBean;
@@ -36,7 +36,7 @@ import org.apache.commons.jxpath.Variables;
 /**
  * Tests JXPath with mixed model: beans, maps, DOM etc.
  */
-public class MixedModelTest extends JXPathTestCase {
+public class MixedModelTest extends AbstractJXPathTest {
     private JXPathContext context;
 
     @Override
@@ -371,10 +371,10 @@ public class MixedModelTest extends JXPathTestCase {
 
         final JXPathContext context = JXPathContext.newContext(map);
 
-        final Iterator it = context.iteratePointers("foo");
-        final List actual = new ArrayList();
+        final Iterator<Pointer> it = context.iteratePointers("foo");
+        final List<Object> actual = new ArrayList<>();
         while (it.hasNext()) {
-            final Pointer ptr = (Pointer) it.next();
+            final Pointer ptr = it.next();
             actual.add(context.getValue(ptr.asPath()));
         }
         assertEquals(
@@ -389,10 +389,10 @@ public class MixedModelTest extends JXPathTestCase {
 
         final JXPathContext context = JXPathContext.newContext(map);
         context.getVariables().declareVariable("x", Integer.valueOf(2));
-        final Iterator it = context.iteratePointers("foo[$x]");
-        final List actual = new ArrayList();
+        final Iterator<Pointer> it = context.iteratePointers("foo[$x]");
+        final List<Object> actual = new ArrayList<>();
         while (it.hasNext()) {
-            final Pointer ptr = (Pointer) it.next();
+            final Pointer ptr = it.next();
             actual.add(context.getValue(ptr.asPath()));
         }
         assertEquals("Iterating pointers <" + "foo" + ">", list("b"), actual);

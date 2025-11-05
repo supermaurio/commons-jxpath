@@ -21,6 +21,7 @@ import java.util.*;
 import org.apache.commons.jxpath.JXPathTestCase;
 import org.apache.commons.jxpath.Functions;
 import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.TestBean;
 import org.apache.commons.jxpath.Variables;
 import org.apache.commons.jxpath.FunctionLibrary;
@@ -40,7 +41,7 @@ import org.apache.commons.jxpath.util.TypeUtils;
 /**
  * Test extension functions.
  */
-public class ExtensionFunctionTest extends JXPathTestCase {
+public class ExtensionFunctionTest extends AbstractJXPathTest {
     private Functions functions;
     private JXPathContext context;
     private TestBean testBean;
@@ -280,7 +281,6 @@ public class ExtensionFunctionTest extends JXPathTestCase {
             context,
             "test:count(//strings)",
             Integer.valueOf(21));
-
 
         // The function receives a collection of pointers
         // and checks their type for testing purposes

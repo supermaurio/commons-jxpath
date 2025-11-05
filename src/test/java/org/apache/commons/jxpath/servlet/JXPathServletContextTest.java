@@ -135,11 +135,11 @@ public class JXPathServletContextTest extends TestCase {
     }
 
     private void checkPointerIterator(final JXPathContext context) {
-        final Iterator it = context.iteratePointers("/*");
+        final Iterator<Pointer> it = context.iteratePointers("/*");
         assertTrue("Empty context", it.hasNext());
         while (it.hasNext())
         {
-            final Pointer pointer = (Pointer) it.next();
+            final Pointer pointer = it.next();
             assertNotNull("null pointer", pointer);
             assertNotNull("null path", pointer.asPath());
         }
@@ -167,7 +167,6 @@ public class JXPathServletContextTest extends TestCase {
 
         assertSame("Request session", session, request.getSession());
 
-
         final JXPathContext context = JXPathServletContexts.getPageContext(pageContext);
         context.setLenient(true);
 
@@ -184,7 +183,7 @@ public class JXPathServletContextTest extends TestCase {
         assertEquals("Explicit Application Scope", "app", context.getValue("$application/app"));
 
         // iterate through the elements of page context only (two elements expected, 'page' and the context)
-        final Iterator it = context.iteratePointers("$page/*");
+        final Iterator<Pointer> it = context.iteratePointers("$page/*");
         assertTrue("element not found", it.hasNext());
         it.next();
         it.next();
