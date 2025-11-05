@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.servlet;
 
 import java.util.Enumeration;
@@ -24,19 +25,24 @@ import javax.servlet.http.HttpSession;
 import org.apache.commons.jxpath.JXPathException;
 
 /**
- * Implementation of the {@link org.apache.commons.jxpath.DynamicPropertyHandler}
- * interface that provides access to attributes of a @{link HttpSession}.
+ * Implementation of the {@link org.apache.commons.jxpath.DynamicPropertyHandler} interface that provides access to attributes of a @{link HttpSession}.
  */
 public class HttpSessionHandler extends ServletContextHandler {
 
+    /**
+     * Constructs a new instance.
+     */
+    public HttpSessionHandler() {
+        // empty
+    }
+
     @Override
-    protected void collectPropertyNames(final HashSet set, final Object bean) {
-        final HttpSessionAndServletContext handle =
-            (HttpSessionAndServletContext) bean;
+    protected void collectPropertyNames(final HashSet<String> set, final Object bean) {
+        final HttpSessionAndServletContext handle = (HttpSessionAndServletContext) bean;
         super.collectPropertyNames(set, handle.getServletContext());
         final HttpSession session = handle.getSession();
         if (session != null) {
-            final Enumeration e = session.getAttributeNames();
+            final Enumeration<String> e = session.getAttributeNames();
             while (e.hasMoreElements()) {
                 set.add(e.nextElement());
             }
@@ -45,8 +51,7 @@ public class HttpSessionHandler extends ServletContextHandler {
 
     @Override
     public Object getProperty(final Object bean, final String property) {
-        final HttpSessionAndServletContext handle =
-            (HttpSessionAndServletContext) bean;
+        final HttpSessionAndServletContext handle = (HttpSessionAndServletContext) bean;
         final HttpSession session = handle.getSession();
         if (session != null) {
             final Object object = session.getAttribute(property);
@@ -59,15 +64,11 @@ public class HttpSessionHandler extends ServletContextHandler {
 
     @Override
     public void setProperty(final Object bean, final String property, final Object value) {
-        final HttpSessionAndServletContext handle =
-            (HttpSessionAndServletContext) bean;
+        final HttpSessionAndServletContext handle = (HttpSessionAndServletContext) bean;
         final HttpSession session = handle.getSession();
-        if (session != null) {
-            session.setAttribute(property, value);
+        if (session == null) {
+            throw new JXPathException("Cannot set session attribute: " + "there is no session");
         }
-        else {
-            throw new JXPathException("Cannot set session attribute: "
-                    + "there is no session");
-        }
+        session.setAttribute(property, value);
     }
 }

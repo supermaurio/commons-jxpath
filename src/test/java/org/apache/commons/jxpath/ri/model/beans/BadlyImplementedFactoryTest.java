@@ -14,7 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -24,15 +28,11 @@ import org.apache.commons.jxpath.JXPathAbstractFactoryException;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathException;
 import org.apache.commons.jxpath.Pointer;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-
 /**
- * Badly-implemented Factory test.  From JIRA JXPATH-68.
+ * Badly-implemented Factory test. From JIRA JXPATH-68.
  */
 public class BadlyImplementedFactoryTest {
 
@@ -42,6 +42,7 @@ public class BadlyImplementedFactoryTest {
     public void setUp() {
         context = JXPathContext.newContext(new HashMap());
         context.setFactory(new AbstractFactory() {
+
             @Override
             public boolean createObject(final JXPathContext context, final Pointer pointer, final Object parent, final String name, final int index) {
                 ((Map) parent).put(name, null);
@@ -52,9 +53,8 @@ public class BadlyImplementedFactoryTest {
 
     @Test
     public void testBadFactoryImplementation() {
-        JXPathException e = assertThrows(JXPathException.class, () -> context.createPath("foo/bar"),
-            "should fail with JXPathException caused by JXPathAbstractFactoryException");
+        final JXPathException e = assertThrows(JXPathException.class, () -> context.createPath("foo/bar"),
+                "should fail with JXPathException caused by JXPathAbstractFactoryException");
         assertInstanceOf(JXPathAbstractFactoryException.class, e.getCause());
     }
-
 }

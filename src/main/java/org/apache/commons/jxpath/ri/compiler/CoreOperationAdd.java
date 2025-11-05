@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -25,7 +26,8 @@ import org.apache.commons.jxpath.ri.InfoSetUtil;
 public class CoreOperationAdd extends CoreOperation {
 
     /**
-     * Create a new CoreOperationAdd.
+     * Constructs a new CoreOperationAdd.
+     *
      * @param args Expression arguments to add together.
      */
     public CoreOperationAdd(final Expression[] args) {
@@ -47,12 +49,12 @@ public class CoreOperationAdd extends CoreOperation {
     }
 
     @Override
-    protected boolean isSymmetric() {
-        return true;
+    public String getSymbol() {
+        return "+";
     }
 
     @Override
-    public String getSymbol() {
-        return "+";
+    protected boolean isSymmetric() {
+        return true;
     }
 }

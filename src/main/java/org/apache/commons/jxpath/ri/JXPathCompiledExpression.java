@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri;
 
 import java.util.Iterator;
@@ -32,8 +33,9 @@ public class JXPathCompiledExpression implements CompiledExpression {
     private final Expression expression;
 
     /**
-     * Create a new JXPathCompiledExpression.
-     * @param xpath source
+     * Constructs a new JXPathCompiledExpression.
+     *
+     * @param xpath      source
      * @param expression compiled
      */
     public JXPathCompiledExpression(final String xpath, final Expression expression) {
@@ -41,16 +43,19 @@ public class JXPathCompiledExpression implements CompiledExpression {
         this.expression = expression;
     }
 
-    /**
-     * Gets the source expression.
-     * @return String
-     */
-    protected String getXPath() {
-        return xpath;
+    @Override
+    public Pointer createPath(final JXPathContext context) {
+        return ((JXPathContextReferenceImpl) context).createPath(xpath, expression);
+    }
+
+    @Override
+    public Pointer createPathAndSetValue(final JXPathContext context, final Object value) {
+        return ((JXPathContextReferenceImpl) context).createPathAndSetValue(xpath, expression, value);
     }
 
     /**
      * Gets the compiled expression.
+     *
      * @return Expression
      */
     protected Expression getExpression() {
@@ -58,56 +63,42 @@ public class JXPathCompiledExpression implements CompiledExpression {
     }
 
     @Override
-    public String toString() {
-        return xpath;
+    public Pointer getPointer(final JXPathContext context, final String xpath) {
+        return ((JXPathContextReferenceImpl) context).getPointer(xpath, expression);
     }
 
     @Override
     public Object getValue(final JXPathContext context) {
-        return ((JXPathContextReferenceImpl) context).
-                    getValue(xpath, expression);
+        return ((JXPathContextReferenceImpl) context).getValue(xpath, expression);
     }
 
     @Override
     public Object getValue(final JXPathContext context, final Class requiredType) {
-        return ((JXPathContextReferenceImpl) context).
-                    getValue(xpath, expression, requiredType);
+        return ((JXPathContextReferenceImpl) context).getValue(xpath, expression, requiredType);
     }
 
-    @Override
-    public void setValue(final JXPathContext context, final Object value) {
-        ((JXPathContextReferenceImpl) context).
-                    setValue(xpath, expression, value);
-    }
-
-    @Override
-    public Pointer createPath(final JXPathContext context) {
-        return ((JXPathContextReferenceImpl) context).
-                    createPath(xpath, expression);
-    }
-
-    @Override
-    public Pointer createPathAndSetValue(final JXPathContext context, final Object value) {
-        return ((JXPathContextReferenceImpl) context).
-                    createPathAndSetValue(xpath, expression, value);
+    /**
+     * Gets the source expression.
+     *
+     * @return String
+     */
+    protected String getXPath() {
+        return xpath;
     }
 
     @Override
     public Iterator iterate(final JXPathContext context) {
-        return ((JXPathContextReferenceImpl) context).
-                    iterate(xpath, expression);
-    }
-
-    @Override
-    public Pointer getPointer(final JXPathContext context, final String xpath) {
-        return ((JXPathContextReferenceImpl) context).
-                    getPointer(xpath, expression);
+        return ((JXPathContextReferenceImpl) context).iterate(xpath, expression);
     }
 
     @Override
     public Iterator iteratePointers(final JXPathContext context) {
-        return ((JXPathContextReferenceImpl) context).
-                    iteratePointers(xpath, expression);
+        return ((JXPathContextReferenceImpl) context).iteratePointers(xpath, expression);
+    }
+
+    @Override
+    public void removeAll(final JXPathContext context) {
+        ((JXPathContextReferenceImpl) context).removeAll(xpath, expression);
     }
 
     @Override
@@ -116,7 +107,12 @@ public class JXPathCompiledExpression implements CompiledExpression {
     }
 
     @Override
-    public void removeAll(final JXPathContext context) {
-        ((JXPathContextReferenceImpl) context).removeAll(xpath, expression);
+    public void setValue(final JXPathContext context, final Object value) {
+        ((JXPathContextReferenceImpl) context).setValue(xpath, expression, value);
+    }
+
+    @Override
+    public String toString() {
+        return xpath;
     }
 }

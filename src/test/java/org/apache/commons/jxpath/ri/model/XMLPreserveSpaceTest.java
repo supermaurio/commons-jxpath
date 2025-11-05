@@ -14,41 +14,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
-import org.apache.commons.jxpath.JXPathContext;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test for text trimming from JXPATH-83.
  */
 public class XMLPreserveSpaceTest extends AbstractJXPathTest {
+
     protected JXPathContext context;
 
-    protected DocumentContainer createDocumentContainer(final String model) {
-        return new DocumentContainer(AbstractJXPathTest.class
-                .getResource("XmlPreserveSpace.xml"), model);
-    }
-
     protected JXPathContext createContext(final String model) {
-        final JXPathContext context = JXPathContext
-                .newContext(createDocumentContainer(model));
+        final JXPathContext context = JXPathContext.newContext(createDocumentContainer(model));
         return context;
     }
 
-    protected void doTest(final String id, final String model, final String expectedValue) {
-        final JXPathContext context = JXPathContext
-                .newContext(createDocumentContainer(model));
-        assertEquals(expectedValue, context.getValue("test/text[@id='" + id + "']"));
+    protected DocumentContainer createDocumentContainer(final String model) {
+        return new DocumentContainer(AbstractJXPathTest.class.getResource("XmlPreserveSpace.xml"), model);
     }
 
-    @Test
-    public void testUnspecifiedDOM() {
-        doTest("unspecified", DocumentContainer.MODEL_DOM, " foo ");
+    protected void doTest(final String id, final String model, final String expectedValue) {
+        final JXPathContext context = JXPathContext.newContext(createDocumentContainer(model));
+        assertEquals(expectedValue, context.getValue("test/text[@id='" + id + "']"));
     }
 
     @Test
@@ -57,8 +51,8 @@ public class XMLPreserveSpaceTest extends AbstractJXPathTest {
     }
 
     @Test
-    public void testPreserveDOM() {
-        doTest("preserve", DocumentContainer.MODEL_DOM, " foo ");
+    public void testDefaultJDOM() {
+        doTest("default", DocumentContainer.MODEL_JDOM, "foo");
     }
 
     @Test
@@ -67,18 +61,23 @@ public class XMLPreserveSpaceTest extends AbstractJXPathTest {
     }
 
     @Test
+    public void testNestedJDOM() {
+        doTest("nested", DocumentContainer.MODEL_JDOM, " foo ;bar; baz ");
+    }
+
+    @Test
     public void testNestedWithCommentsDOM() {
         doTest("nested-with-comments", DocumentContainer.MODEL_DOM, " foo ;bar; baz ");
     }
 
     @Test
-    public void testUnspecifiedJDOM() {
-        doTest("unspecified", DocumentContainer.MODEL_JDOM, " foo ");
+    public void testNestedWithCommentsJDOM() {
+        doTest("nested-with-comments", DocumentContainer.MODEL_JDOM, " foo ;bar; baz ");
     }
 
     @Test
-    public void testDefaultJDOM() {
-        doTest("default", DocumentContainer.MODEL_JDOM, "foo");
+    public void testPreserveDOM() {
+        doTest("preserve", DocumentContainer.MODEL_DOM, " foo ");
     }
 
     @Test
@@ -87,12 +86,12 @@ public class XMLPreserveSpaceTest extends AbstractJXPathTest {
     }
 
     @Test
-    public void testNestedJDOM() {
-        doTest("nested", DocumentContainer.MODEL_JDOM, " foo ;bar; baz ");
+    public void testUnspecifiedDOM() {
+        doTest("unspecified", DocumentContainer.MODEL_DOM, " foo ");
     }
 
     @Test
-    public void testNestedWithCommentsJDOM() {
-        doTest("nested-with-comments", DocumentContainer.MODEL_JDOM, " foo ;bar; baz ");
+    public void testUnspecifiedJDOM() {
+        doTest("unspecified", DocumentContainer.MODEL_JDOM, " foo ");
     }
 }

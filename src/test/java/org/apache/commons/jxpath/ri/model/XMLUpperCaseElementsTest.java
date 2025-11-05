@@ -14,38 +14,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
-import org.apache.commons.jxpath.JXPathContext;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Test for uppercase element matching, etc. showing JXPATH-136 is not reproducible.
  */
 public class XMLUpperCaseElementsTest extends AbstractJXPathTest {
+
     protected JXPathContext context;
 
     @Override
+	@BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
+	@AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-    }
-
-    protected DocumentContainer createDocumentContainer(final String model) {
-        return new DocumentContainer(AbstractJXPathTest.class.getResource("VendorUpper.xml"), model);
     }
 
     protected JXPathContext createContext(final String model) {
         final JXPathContext context = JXPathContext.newContext(createDocumentContainer(model));
         return context;
+    }
+
+    protected DocumentContainer createDocumentContainer(final String model) {
+        return new DocumentContainer(AbstractJXPathTest.class.getResource("VendorUpper.xml"), model);
     }
 
     protected void doTest(final String id, final String model, final String expectedValue) {
@@ -55,25 +62,21 @@ public class XMLUpperCaseElementsTest extends AbstractJXPathTest {
 
     @Test
     public void testBasicGetDOM() {
-        assertXPathValue(createContext(DocumentContainer.MODEL_DOM), "/Vendor[1]/Contact[1]",
-                "John");
+        assertXPathValue(createContext(DocumentContainer.MODEL_DOM), "/Vendor[1]/Contact[1]", "John");
     }
 
     @Test
     public void testBasicGetJDOM() {
-        assertXPathValue(createContext(DocumentContainer.MODEL_JDOM), "/Vendor[1]/Contact[1]",
-                "John");
+        assertXPathValue(createContext(DocumentContainer.MODEL_JDOM), "/Vendor[1]/Contact[1]", "John");
     }
 
     @Test
     public void testBasicIterateDOM() {
-        assertXPathValueIterator(createContext(DocumentContainer.MODEL_DOM), "/Vendor/Contact",
-                list("John", "Jack", "Jim", "Jack Black"));
+        assertXPathValueIterator(createContext(DocumentContainer.MODEL_DOM), "/Vendor/Contact", list("John", "Jack", "Jim", "Jack Black"));
     }
 
     @Test
     public void testBasicIterateJDOM() {
-        assertXPathValueIterator(createContext(DocumentContainer.MODEL_JDOM), "/Vendor/Contact",
-                list("John", "Jack", "Jim", "Jack Black"));
+        assertXPathValueIterator(createContext(DocumentContainer.MODEL_JDOM), "/Vendor/Contact", list("John", "Jack", "Jim", "Jack Black"));
     }
 }

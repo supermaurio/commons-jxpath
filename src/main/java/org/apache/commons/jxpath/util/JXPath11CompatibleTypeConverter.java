@@ -14,17 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.util;
 
 import org.apache.commons.jxpath.NodeSet;
 
 /**
- * TypeConverter implementation to circumvent automagic {@link NodeSet}
- * decoding. Suggested by JIRA issue JXPATH-10.
+ * TypeConverter implementation to circumvent automagic {@link NodeSet} decoding. Suggested by JIRA issue JXPATH-10.
  *
  * @since JXPath 1.3
  */
 public class JXPath11CompatibleTypeConverter extends BasicTypeConverter {
+
+    /**
+     * Constructs a new instance.
+     */
+    public JXPath11CompatibleTypeConverter() {
+        // empty
+    }
 
     @Override
     public boolean canConvert(final Object object, final Class toType) {

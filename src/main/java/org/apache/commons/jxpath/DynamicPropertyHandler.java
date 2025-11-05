@@ -14,18 +14,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 /**
- * A generic mechanism for accessing collections of name/value pairs.
- * Examples of such collections are HashMap, Properties,
- * ServletContext.  In order to add support for a new such collection
- * type to JXPath, perform the following two steps:
+ * A generic mechanism for accessing collections of name/value pairs. Examples of such collections are HashMap, Properties, ServletContext. In order to add
+ * support for a new such collection type to JXPath, perform the following two steps:
  * <ol>
- * <li>Build an implementation of the DynamicPropertyHandler interface
- * for the desired collection type.</li>
- * <li>Invoke the static method {@link JXPathIntrospector#registerDynamicClass
- * JXPathIntrospector.registerDynamicClass(class, handlerClass)}</li>
+ * <li>Build an implementation of the DynamicPropertyHandler interface for the desired collection type.</li>
+ * <li>Invoke the static method {@link JXPathIntrospector#registerDynamicClass JXPathIntrospector.registerDynamicClass(class, handlerClass)}</li>
  * </ol>
  * JXPath allows access to dynamic properties using these three formats:
  * <ul>
@@ -37,25 +34,28 @@ package org.apache.commons.jxpath;
 public interface DynamicPropertyHandler {
 
     /**
-     * Returns a list of dynamic property names for the supplied object.
-     * @param object to inspect
-     * @return String[]
-     */
-    String[] getPropertyNames(Object object);
-
-    /**
      * Returns the value of the specified dynamic property.
-     * @param object to search
+     *
+     * @param object       to search
      * @param propertyName to retrieve
      * @return Object
      */
     Object getProperty(Object object, String propertyName);
 
     /**
+     * Returns a list of dynamic property names for the supplied object.
+     *
+     * @param object to inspect
+     * @return String[]
+     */
+    String[] getPropertyNames(Object object);
+
+    /**
      * Modifies the value of the specified dynamic property.
-     * @param object to modify
+     *
+     * @param object       to modify
      * @param propertyName to modify
-     * @param value to set
+     * @param value        to set
      */
     void setProperty(Object object, String propertyName, Object value);
 }

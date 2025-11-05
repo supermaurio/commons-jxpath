@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -27,14 +28,17 @@ import org.apache.commons.jxpath.ri.model.NodePointer;
  * EvalContext that walks the "namespace::" axis.
  */
 public class NamespaceContext extends EvalContext {
+
     private final NodeTest nodeTest;
-    private boolean setStarted = false;
+    private boolean setStarted;
     private NodeIterator iterator;
     private NodePointer currentNodePointer;
 
     /**
+     * Constructs a new instance.
+     *
      * @param parentContext represents the previous step on the path
-     * @param nodeTest is the name of the namespace we are looking for
+     * @param nodeTest      is the name of the namespace we are looking for
      */
     public NamespaceContext(final EvalContext parentContext, final NodeTest nodeTest) {
         super(parentContext);
@@ -44,6 +48,35 @@ public class NamespaceContext extends EvalContext {
     @Override
     public NodePointer getCurrentNodePointer() {
         return currentNodePointer;
+    }
+
+    @Override
+    public boolean nextNode() {
+        super.setPosition(getCurrentPosition() + 1);
+        if (!setStarted) {
+            setStarted = true;
+            if (!(nodeTest instanceof NodeNameTest)) {
+                return false;
+            }
+            final NodeNameTest nodeNameTest = (NodeNameTest) nodeTest;
+            final QName testName = nodeNameTest.getNodeName();
+            if (testName.getPrefix() != null) {
+                return false;
+            }
+            if (!nodeNameTest.isWildcard()) {
+                currentNodePointer = parentContext.getCurrentNodePointer().namespacePointer(testName.getName());
+                return currentNodePointer != null;
+            }
+            iterator = parentContext.getCurrentNodePointer().namespaceIterator();
+        }
+        if (iterator == null) {
+            return false;
+        }
+        if (!iterator.setPosition(iterator.getPosition() + 1)) {
+            return false;
+        }
+        currentNodePointer = iterator.getNodePointer();
+        return true;
     }
 
     @Override
@@ -58,48 +91,11 @@ public class NamespaceContext extends EvalContext {
         if (position < getCurrentPosition()) {
             reset();
         }
-
         while (getCurrentPosition() < position) {
             if (!nextNode()) {
                 return false;
             }
         }
-        return true;
-    }
-
-    @Override
-    public boolean nextNode() {
-        super.setPosition(getCurrentPosition() + 1);
-        if (!setStarted) {
-            setStarted = true;
-            if (!(nodeTest instanceof NodeNameTest)) {
-                return false;
-            }
-
-            final NodeNameTest nodeNameTest = (NodeNameTest) nodeTest;
-            final QName testName = nodeNameTest.getNodeName();
-            if (testName.getPrefix() != null) {
-                return false;
-            }
-            if (nodeNameTest.isWildcard()) {
-                iterator =
-                    parentContext.getCurrentNodePointer().namespaceIterator();
-            }
-            else {
-                currentNodePointer =
-                    parentContext.getCurrentNodePointer().namespacePointer(
-                            testName.getName());
-                return currentNodePointer != null;
-            }
-        }
-
-        if (iterator == null) {
-            return false;
-        }
-        if (!iterator.setPosition(iterator.getPosition() + 1)) {
-            return false;
-        }
-        currentNodePointer = iterator.getNodePointer();
         return true;
     }
 }

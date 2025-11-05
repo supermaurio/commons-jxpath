@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import java.net.URL;
@@ -27,14 +28,9 @@ import javax.xml.transform.dom.DOMResult;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 
 /**
- * An XML document container reads and parses XML only when it is
- * accessed.  JXPath traverses Containers transparently -
- * you use the same paths to access objects in containers as you
- * do to access those objects directly.  You can create
- * XMLDocumentContainers for various XML documents that may or
- * may not be accessed by XPaths.  If they are, they will be automatically
- * read, parsed and traversed. If they are not - they won't be
- * read at all.
+ * An XML document container reads and parses XML only when it is accessed. JXPath traverses Containers transparently - you use the same paths to access objects
+ * in containers as you do to access those objects directly. You can create XMLDocumentContainers for various XML documents that may or may not be accessed by
+ * XPaths. If they are, they will be automatically read, parsed and traversed. If they are not - they won't be read at all.
  *
  * @deprecated 1.1 Please use {@link DocumentContainer}
  */
@@ -42,23 +38,26 @@ import org.apache.commons.jxpath.xml.DocumentContainer;
 public class XMLDocumentContainer implements Container {
 
     private static final long serialVersionUID = 1L;
+
+    /** The delegate document container. */
     private DocumentContainer delegate;
+
+    /** The DOM document. */
     private Object document;
+
+    /**
+     * The document source.
+     */
     private URL xmlURL;
+
+    /**
+     * The transformation source.
+     */
     private Source source;
 
     /**
-     * Create a new XMLDocumentContainer.
-     * @param xmlURL a URL for an XML file. Use getClass().getResource(resourceName)
-     *               to load XML from a resource file.
-     */
-    public XMLDocumentContainer(final URL xmlURL) {
-        this.xmlURL = xmlURL;
-        delegate = new DocumentContainer(xmlURL);
-    }
-
-    /**
-     * Create a new XMLDocumentContainer.
+     * Constructs a new XMLDocumentContainer.
+     *
      * @param source XML source
      */
     public XMLDocumentContainer(final Source source) {
@@ -66,7 +65,18 @@ public class XMLDocumentContainer implements Container {
     }
 
     /**
+     * Constructs a new XMLDocumentContainer.
+     *
+     * @param xmlURL a URL for an XML file. Use getClass().getResource(resourceName) to load XML from a resource file.
+     */
+    public XMLDocumentContainer(final URL xmlURL) {
+        this.xmlURL = xmlURL;
+        delegate = new DocumentContainer(xmlURL);
+    }
+
+    /**
      * Reads XML, caches it internally and returns the Document.
+     *
      * @return Object value
      */
     @Override
@@ -75,24 +85,15 @@ public class XMLDocumentContainer implements Container {
             try {
                 if (source != null) {
                     final DOMResult result = new DOMResult();
-                    final Transformer trans =
-                        TransformerFactory.newInstance().newTransformer();
+                    final Transformer trans = TransformerFactory.newInstance().newTransformer();
                     trans.transform(source, result);
                     document = result.getNode();
-                }
-                else {
+                } else {
                     document = delegate.getValue();
                 }
-            }
-            catch (final Exception ex) {
+            } catch (final Exception ex) {
                 throw new JXPathException(
-                    "Cannot read XML from: "
-                        + (xmlURL != null
-                            ? xmlURL.toString()
-                            : source != null
-                                ? source.getSystemId()
-                                : "<<undefined source>>"),
-                    ex);
+                        "Cannot read XML from: " + (xmlURL != null ? xmlURL.toString() : source != null ? source.getSystemId() : "<<undefined source>>"), ex);
             }
         }
         return document;
@@ -100,6 +101,7 @@ public class XMLDocumentContainer implements Container {
 
     /**
      * Throws an UnsupportedOperationException
+     *
      * @param value to set
      */
     @Override

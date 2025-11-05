@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.servlet;
 
 import javax.servlet.ServletContext;
@@ -28,29 +29,31 @@ public class HttpSessionAndServletContext {
     private final ServletContext context;
 
     /**
-     * Create a new HttpSessionAndServletContext.
+     * Constructs a new HttpSessionAndServletContext.
+     *
      * @param session HttpSession
      * @param context ServletContext
      */
-    public HttpSessionAndServletContext(final HttpSession session,
-            final ServletContext context) {
+    public HttpSessionAndServletContext(final HttpSession session, final ServletContext context) {
         this.session = session;
         this.context = context;
     }
 
     /**
-     * Gets the session.
-     * @return HttpSession
-     */
-    public HttpSession getSession() {
-        return session;
-    }
-
-    /**
      * Gets the ServletContext.
+     *
      * @return ServletContext
      */
     public ServletContext getServletContext() {
         return context;
+    }
+
+    /**
+     * Gets the session.
+     *
+     * @return HttpSession
+     */
+    public HttpSession getSession() {
+        return session;
     }
 }

@@ -14,7 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.util;
+
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -23,10 +27,19 @@ import java.util.Set;
 
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
-
 public class ValueUtilsTest {
+
+    @Test
+    public void testGetValueFromArray() {
+        final Object data = new Object();
+        assertSame(data, ValueUtils.getValue(new Object[] { data }, 0));
+    }
+
+    @Test
+    public void testGetValueFromArrayNegativeIndex() {
+        final Object data = new Object();
+        assertNull(ValueUtils.getValue(new Object[] { data }, -1));
+    }
 
     @Test
     public void testGetValueFromArrayTooSmall() {
@@ -34,29 +47,21 @@ public class ValueUtilsTest {
     }
 
     @Test
-    public void testGetValueFromListTooSmall() {
-        assertNull(ValueUtils.getValue(Collections.EMPTY_LIST, 2));
-    }
-
-    /*
-     * This test would break without the patch and an NoSuchElementException being
-     * thrown instead.
-     */
-    @Test
-    public void testGetValueFromSetTooSmall() {
-        assertNull(ValueUtils.getValue(Collections.EMPTY_SET, 2));
-    }
-
-    @Test
-    public void testGetValueFromArray() {
-        final Object data = new Object();
-        assertSame(data, ValueUtils.getValue(new Object[] {data}, 0));
-    }
-
-    @Test
     public void testGetValueFromList() {
         final Object data = new Object();
         assertSame(data, ValueUtils.getValue(Arrays.asList(data), 0));
+    }
+
+    @Test
+    public void testGetValueFromListNegativeIndex() {
+        final Object data = new Object();
+        final Object res = ValueUtils.getValue(Arrays.asList(data), -1);
+        assertNull(res, "Expected null, is " + res);
+    }
+
+    @Test
+    public void testGetValueFromListTooSmall() {
+        assertNull(ValueUtils.getValue(Collections.EMPTY_LIST, 2));
     }
 
     @Test
@@ -68,23 +73,18 @@ public class ValueUtilsTest {
     }
 
     @Test
-    public void testGetValueFromArrayNegativeIndex() {
-        final Object data = new Object();
-        assertNull(ValueUtils.getValue(new Object[] {data}, -1));
-    }
-
-    @Test
-    public void testGetValueFromListNegativeIndex() {
-        final Object data = new Object();
-        final Object res = ValueUtils.getValue(Arrays.asList(data), -1);
-        assertNull(res, "Expected null, is " + res);
-    }
-
-    @Test
     public void testGetValueFromSetNegativeIndex() {
         final Object data = new Object();
         final Set dataSet = new HashSet();
         dataSet.add(data);
         assertNull(ValueUtils.getValue(dataSet, -1));
+    }
+
+    /*
+     * This test would break without the patch and an NoSuchElementException being thrown instead.
+     */
+    @Test
+    public void testGetValueFromSetTooSmall() {
+        assertNull(ValueUtils.getValue(Collections.EMPTY_SET, 2));
     }
 }

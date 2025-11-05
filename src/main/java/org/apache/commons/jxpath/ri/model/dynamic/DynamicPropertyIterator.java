@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dynamic;
 
 import org.apache.commons.jxpath.ri.model.NodePointer;
@@ -27,17 +28,14 @@ import org.apache.commons.jxpath.ri.model.beans.PropertyOwnerPointer;
 public class DynamicPropertyIterator extends PropertyIterator {
 
     /**
-     * Create a new DynamicPropertyIterator
-     * @param pointer PropertyOwnerPointer
-     * @param name String
-     * @param reverse iteration order
+     * Constructs a new DynamicPropertyIterator
+     *
+     * @param pointer   PropertyOwnerPointer
+     * @param name      String
+     * @param reverse   iteration order
      * @param startWith beginning child
      */
-    public DynamicPropertyIterator(
-            final PropertyOwnerPointer pointer,
-            final String name,
-            final boolean reverse,
-            final NodePointer startWith) {
+    public DynamicPropertyIterator(final PropertyOwnerPointer pointer, final String name, final boolean reverse, final NodePointer startWith) {
         super(pointer, name, reverse, startWith);
     }
 }

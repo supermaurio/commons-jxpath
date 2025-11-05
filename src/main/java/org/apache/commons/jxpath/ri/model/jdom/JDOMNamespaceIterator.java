@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.jdom;
 
 import java.util.ArrayList;
@@ -31,13 +32,15 @@ import org.jdom.Namespace;
  * An iterator of namespaces of a DOM Node.
  */
 public class JDOMNamespaceIterator implements NodeIterator {
+
     private final NodePointer parent;
-    private List namespaces;
-    private Set prefixes;
-    private int position = 0;
+    private List<Namespace> namespaces;
+    private Set<String> prefixes;
+    private int position;
 
     /**
-     * Create a new JDOMNamespaceIterator.
+     * Constructs a new JDOMNamespaceIterator.
+     *
      * @param parent the parent NodePointer.
      */
     public JDOMNamespaceIterator(final NodePointer parent) {
@@ -47,14 +50,15 @@ public class JDOMNamespaceIterator implements NodeIterator {
             node = ((Document) node).getRootElement();
         }
         if (node instanceof Element) {
-            namespaces = new ArrayList();
-            prefixes = new HashSet();
+            namespaces = new ArrayList<>();
+            prefixes = new HashSet<>();
             collectNamespaces((Element) node);
         }
     }
 
     /**
      * Collect the namespaces from a JDOM Element.
+     *
      * @param element the source Element
      */
     private void collectNamespaces(final Element element) {
@@ -64,8 +68,8 @@ public class JDOMNamespaceIterator implements NodeIterator {
             prefixes.add(ns.getPrefix());
         }
         final List others = element.getAdditionalNamespaces();
-        for (int i = 0; i < others.size(); i++) {
-            ns = (Namespace) others.get(i);
+        for (final Object other : others) {
+            ns = (Namespace) other;
             if (ns != null && !prefixes.contains(ns.getPrefix())) {
                 namespaces.add(ns);
                 prefixes.add(ns.getPrefix());
@@ -89,7 +93,7 @@ public class JDOMNamespaceIterator implements NodeIterator {
         if (index < 0) {
             index = 0;
         }
-        final Namespace ns = (Namespace) namespaces.get(index);
+        final Namespace ns = namespaces.get(index);
         return new JDOMNamespacePointer(parent, ns.getPrefix(), ns.getURI());
     }
 

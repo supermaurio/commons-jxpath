@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dynamic;
 
 import java.util.Arrays;
@@ -29,39 +30,122 @@ import org.apache.commons.jxpath.ri.model.beans.PropertyPointer;
 import org.apache.commons.jxpath.util.ValueUtils;
 
 /**
- * Pointer pointing to a property of an object with dynamic properties.
+ * Pointer to a property of an object with dynamic properties.
  */
 public class DynamicPropertyPointer extends PropertyPointer {
 
     private static final long serialVersionUID = -5720585681149150822L;
 
+    /**
+     * Dynamic property handler.
+     */
     private final DynamicPropertyHandler handler;
+
+    /** The name of the currently selected property or "*" if none has been selected. */
     private String name;
+
+    /** The names of all properties, sorted alphabetically. */
     private String[] names;
+
+    /**
+     * The property name from {@link #setPropertyName(String)}.
+     */
     private String requiredPropertyName;
 
     /**
-     * Create a new DynamicPropertyPointer.
-     * @param parent pointer
+     * Constructs a new DynamicPropertyPointer.
+     *
+     * @param parent  pointer
      * @param handler DynamicPropertyHandler
      */
-    public DynamicPropertyPointer(final NodePointer parent,
-            final DynamicPropertyHandler handler) {
+    public DynamicPropertyPointer(final NodePointer parent, final DynamicPropertyHandler handler) {
         super(parent);
         this.handler = handler;
     }
 
+    @Override
+    public String asPath() {
+        final StringBuilder buffer = new StringBuilder();
+        buffer.append(getImmediateParentPointer().asPath());
+        if (buffer.length() == 0) {
+            buffer.append("/.");
+        } else if (buffer.charAt(buffer.length() - 1) == '/') {
+            buffer.append('.');
+        }
+        buffer.append("[@name='");
+        buffer.append(escape(getPropertyName()));
+        buffer.append("']");
+        if (index != WHOLE_COLLECTION && isCollection()) {
+            buffer.append('[').append(index + 1).append(']');
+        }
+        return buffer.toString();
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context) {
+        // Ignore the name passed to us, use our own data
+        Object collection = getBaseValue();
+        if (collection == null) {
+            final AbstractFactory factory = getAbstractFactory(context);
+            final boolean success = factory.createObject(context, this, getBean(), getPropertyName(), 0);
+            if (!success) {
+                throw new JXPathAbstractFactoryException("Factory could not create an object for path: " + asPath());
+            }
+            collection = getBaseValue();
+        }
+        if (index != WHOLE_COLLECTION) {
+            if (index < 0) {
+                throw new JXPathInvalidAccessException("Index is less than 1: " + asPath());
+            }
+            if (index >= getLength()) {
+                collection = ValueUtils.expandCollection(collection, index + 1);
+                handler.setProperty(getBean(), getPropertyName(), collection);
+            }
+        }
+        return this;
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context, final Object value) {
+        if (index == WHOLE_COLLECTION) {
+            handler.setProperty(getBean(), getPropertyName(), value);
+        } else {
+            createPath(context);
+            ValueUtils.setValue(getBaseValue(), index, value);
+        }
+        return this;
+    }
+
     /**
-     * This type of node is auxiliary.
-     * @return true
+     * Returns the value of the property, not an element of the collection represented by the property, if any.
+     *
+     * @return Object
      */
     @Override
-    public boolean isContainer() {
-        return true;
+    public Object getBaseValue() {
+        return handler.getProperty(getBean(), getPropertyName());
+    }
+
+    /**
+     * If index == WHOLE_COLLECTION, the value of the property, otherwise the value of the index'th element of the collection represented by the property. If
+     * the property is not a collection, index should be zero and the value will be the property itself.
+     *
+     * @return Object
+     */
+    @Override
+    public Object getImmediateNode() {
+        Object value;
+        if (index == WHOLE_COLLECTION) {
+            value = ValueUtils.getValue(handler.getProperty(getBean(), getPropertyName()));
+        } else {
+            value = ValueUtils.getValue(handler.getProperty(getBean(), getPropertyName()), index);
+        }
+        return value;
     }
 
     /**
      * Number of the DP object's properties.
+     *
      * @return int
      */
     @Override
@@ -70,7 +154,41 @@ public class DynamicPropertyPointer extends PropertyPointer {
     }
 
     /**
-     * Names of all properties, sorted alphabetically.
+     * Index of the currently selected property in the list of all properties sorted alphabetically.
+     *
+     * @return int
+     */
+    @Override
+    public int getPropertyIndex() {
+        if (propertyIndex == UNSPECIFIED_PROPERTY) {
+            final String[] names = getPropertyNames();
+            for (int i = 0; i < names.length; i++) {
+                if (names[i].equals(name)) {
+                    setPropertyIndex(i);
+                    break;
+                }
+            }
+        }
+        return super.getPropertyIndex();
+    }
+
+    /**
+     * Gets the name of the currently selected property or "*" if none has been selected.
+     *
+     * @return String
+     */
+    @Override
+    public String getPropertyName() {
+        if (name == null) {
+            final String[] names = getPropertyNames();
+            name = propertyIndex >= 0 && propertyIndex < names.length ? names[propertyIndex] : "*";
+        }
+        return name;
+    }
+
+    /**
+     * Gets the names of all properties, sorted alphabetically.
+     *
      * @return String[]
      */
     @Override
@@ -95,25 +213,66 @@ public class DynamicPropertyPointer extends PropertyPointer {
     }
 
     /**
-     * Returns the name of the currently selected property or "*"
-     * if none has been selected.
-     * @return String
+     * A dynamic property is always considered actual - all keys are apparently existing with possibly the value of null.
+     *
+     * @return boolean
      */
     @Override
-    public String getPropertyName() {
-        if (name == null) {
-            final String[] names = getPropertyNames();
-            name = propertyIndex >= 0 && propertyIndex < names.length ? names[propertyIndex] : "*";
-        }
-        return name;
+    protected boolean isActualProperty() {
+        return true;
     }
 
     /**
-     * Select a property by name.  If the supplied name is
-     * not one of the object's existing properties, it implicitly
-     * adds this name to the object's property name list. It does not
-     * set the property value though. In order to set the property
-     * value, call setValue().
+     * This type of node is auxiliary.
+     *
+     * @return true
+     */
+    @Override
+    public boolean isContainer() {
+        return true;
+    }
+
+    @Override
+    public void remove() {
+        if (index == WHOLE_COLLECTION) {
+            removeKey();
+        } else if (isCollection()) {
+            final Object collection = ValueUtils.remove(getBaseValue(), index);
+            handler.setProperty(getBean(), getPropertyName(), collection);
+        } else if (index == 0) {
+            removeKey();
+        }
+    }
+
+    /**
+     * Remove the current property.
+     */
+    private void removeKey() {
+        final Object bean = getBean();
+        if (bean instanceof Map) {
+            ((Map) bean).remove(getPropertyName());
+        } else {
+            handler.setProperty(bean, getPropertyName(), null);
+        }
+    }
+
+    /**
+     * Index a property by its index in the list of all properties sorted alphabetically.
+     *
+     * @param index to set
+     */
+    @Override
+    public void setPropertyIndex(final int index) {
+        if (propertyIndex != index) {
+            super.setPropertyIndex(index);
+            name = null;
+        }
+    }
+
+    /**
+     * Select a property by name. If the supplied name is not one of the object's existing properties, it implicitly adds this name to the object's property
+     * name list. It does not set the property value though. In order to set the property value, call setValue().
+     *
      * @param propertyName to set
      */
     @Override
@@ -127,190 +286,17 @@ public class DynamicPropertyPointer extends PropertyPointer {
     }
 
     /**
-     * Index of the currently selected property in the list of all
-     * properties sorted alphabetically.
-     * @return int
-     */
-    @Override
-    public int getPropertyIndex() {
-        if (propertyIndex == UNSPECIFIED_PROPERTY) {
-            final String[] names = getPropertyNames();
-            for (int i = 0; i < names.length; i++) {
-                if (names[i].equals(name)) {
-                    setPropertyIndex(i);
-                    break;
-                }
-            }
-        }
-        return super.getPropertyIndex();
-    }
-
-    /**
-     * Index a property by its index in the list of all
-     * properties sorted alphabetically.
-     * @param index to set
-     */
-    @Override
-    public void setPropertyIndex(final int index) {
-        if (propertyIndex != index) {
-            super.setPropertyIndex(index);
-            name = null;
-        }
-    }
-
-    /**
-     * Returns the value of the property, not an element of the collection
-     * represented by the property, if any.
-     * @return Object
-     */
-    @Override
-    public Object getBaseValue() {
-        return handler.getProperty(getBean(), getPropertyName());
-    }
-
-    /**
-     * If index == WHOLE_COLLECTION, the value of the property, otherwise
-     * the value of the index'th element of the collection represented by the
-     * property. If the property is not a collection, index should be zero
-     * and the value will be the property itself.
-     * @return Object
-     */
-    @Override
-    public Object getImmediateNode() {
-        Object value;
-        if (index == WHOLE_COLLECTION) {
-            value = ValueUtils.getValue(handler.getProperty(
-                    getBean(),
-                    getPropertyName()));
-        }
-        else {
-            value = ValueUtils.getValue(handler.getProperty(
-                    getBean(),
-                    getPropertyName()), index);
-        }
-        return value;
-    }
-
-    /**
-     * A dynamic property is always considered actual - all keys are apparently
-     * existing with possibly the value of null.
-     * @return boolean
-     */
-    @Override
-    protected boolean isActualProperty() {
-        return true;
-    }
-
-    /**
-     * If index == WHOLE_COLLECTION, change the value of the property, otherwise
-     * change the value of the index'th element of the collection
-     * represented by the property.
+     * If index == WHOLE_COLLECTION, change the value of the property, otherwise change the value of the index'th element of the collection represented by the
+     * property.
+     *
      * @param value to set
      */
     @Override
     public void setValue(final Object value) {
         if (index == WHOLE_COLLECTION) {
             handler.setProperty(getBean(), getPropertyName(), value);
-        }
-        else {
-            ValueUtils.setValue(
-                handler.getProperty(getBean(), getPropertyName()),
-                index,
-                value);
+        } else {
+            ValueUtils.setValue(handler.getProperty(getBean(), getPropertyName()), index, value);
         }
     }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context) {
-        // Ignore the name passed to us, use our own data
-        Object collection = getBaseValue();
-        if (collection == null) {
-            final AbstractFactory factory = getAbstractFactory(context);
-            final boolean success =
-                factory.createObject(
-                    context,
-                    this,
-                    getBean(),
-                    getPropertyName(),
-                    0);
-            if (!success) {
-                throw new JXPathAbstractFactoryException(
-                    "Factory could not create an object for path: " + asPath());
-            }
-            collection = getBaseValue();
-        }
-
-        if (index != WHOLE_COLLECTION) {
-            if (index < 0) {
-                throw new JXPathInvalidAccessException("Index is less than 1: "
-                        + asPath());
-            }
-
-            if (index >= getLength()) {
-                collection = ValueUtils.expandCollection(collection, index + 1);
-                handler.setProperty(getBean(), getPropertyName(), collection);
-            }
-        }
-
-        return this;
-    }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context, final Object value) {
-        if (index == WHOLE_COLLECTION) {
-            handler.setProperty(getBean(), getPropertyName(), value);
-        }
-        else {
-            createPath(context);
-            ValueUtils.setValue(getBaseValue(), index, value);
-        }
-        return this;
-    }
-
-    @Override
-    public void remove() {
-        if (index == WHOLE_COLLECTION) {
-            removeKey();
-        }
-        else if (isCollection()) {
-            final Object collection = ValueUtils.remove(getBaseValue(), index);
-            handler.setProperty(getBean(), getPropertyName(), collection);
-        }
-        else if (index == 0) {
-            removeKey();
-        }
-    }
-
-    /**
-     * Remove the current property.
-     */
-    private void removeKey() {
-        final Object bean = getBean();
-        if (bean instanceof Map) {
-            ((Map) bean).remove(getPropertyName());
-        }
-        else {
-            handler.setProperty(bean, getPropertyName(), null);
-        }
-    }
-
-    @Override
-    public String asPath() {
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append(getImmediateParentPointer().asPath());
-        if (buffer.length() == 0) {
-            buffer.append("/.");
-        }
-        else if (buffer.charAt(buffer.length() - 1) == '/') {
-            buffer.append('.');
-        }
-        buffer.append("[@name='");
-        buffer.append(escape(getPropertyName()));
-        buffer.append("']");
-        if (index != WHOLE_COLLECTION && isCollection()) {
-            buffer.append('[').append(index + 1).append(']');
-        }
-        return buffer.toString();
-    }
-
 }

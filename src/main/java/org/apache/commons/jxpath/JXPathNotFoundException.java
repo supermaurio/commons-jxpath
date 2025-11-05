@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 /**
@@ -24,11 +25,11 @@ public class JXPathNotFoundException extends JXPathException {
     private static final long serialVersionUID = -8875537628056117241L;
 
     /**
-     * Create a new JXPathNotFoundException.
+     * Constructs a new JXPathNotFoundException.
+     *
      * @param message exception detail
      */
     public JXPathNotFoundException(final String message) {
         super(message);
     }
-
 }

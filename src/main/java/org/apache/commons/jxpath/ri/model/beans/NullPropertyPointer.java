@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import org.apache.commons.jxpath.AbstractFactory;
@@ -24,16 +25,25 @@ import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
+ * Pointer to a null property.
  */
 public class NullPropertyPointer extends PropertyPointer {
-
-    private String propertyName = "*";
-    private boolean byNameAttribute = false;
 
     private static final long serialVersionUID = 5296593071854982754L;
 
     /**
-     * Create a new NullPropertyPointer.
+     * The property name.
+     */
+    private String propertyName = "*";
+
+    /**
+     * Whether this property is named.
+     */
+    private boolean byNameAttribute;
+
+    /**
+     * Constructs a new NullPropertyPointer.
+     *
      * @param parent pointer
      */
     public NullPropertyPointer(final NodePointer parent) {
@@ -41,78 +51,40 @@ public class NullPropertyPointer extends PropertyPointer {
     }
 
     @Override
-    public QName getName() {
-        return new QName(propertyName);
-    }
-
-    @Override
-    public void setPropertyIndex(final int index) {
-    }
-
-    @Override
-    public int getLength() {
-        return 0;
-    }
-
-    @Override
-    public Object getBaseValue() {
-        return null;
-    }
-
-    @Override
-    public Object getImmediateNode() {
-        return null;
-    }
-
-    @Override
-    public boolean isLeaf() {
-        return true;
-    }
-
-    @Override
-    public NodePointer getValuePointer() {
-        return new NullPointer(this,  new QName(getPropertyName()));
-    }
-
-    @Override
-    protected boolean isActualProperty() {
-        return false;
-    }
-
-    @Override
-    public boolean isActual() {
-        return false;
-    }
-
-    @Override
-    public boolean isContainer() {
-        return true;
-    }
-
-    @Override
-    public void setValue(final Object value) {
-        if (parent == null || parent.isContainer()) {
-            throw new JXPathInvalidAccessException(
-                "Cannot set property "
-                    + asPath()
-                    + ", the target object is null");
+    public String asPath() {
+        if (!byNameAttribute) {
+            return super.asPath();
         }
-        if (parent instanceof PropertyOwnerPointer
-                && ((PropertyOwnerPointer) parent)
-                        .isDynamicPropertyDeclarationSupported()) {
-            // If the parent property owner can create
-            // a property automatically - let it do so
-            final PropertyPointer propertyPointer =
-                ((PropertyOwnerPointer) parent).getPropertyPointer();
-            propertyPointer.setPropertyName(propertyName);
-            propertyPointer.setValue(value);
+        final StringBuilder buffer = new StringBuilder();
+        buffer.append(getImmediateParentPointer().asPath());
+        buffer.append("[@name='");
+        buffer.append(escape(getPropertyName()));
+        buffer.append("']");
+        if (index != WHOLE_COLLECTION) {
+            buffer.append('[').append(index + 1).append(']');
         }
-        else {
-            throw new JXPathInvalidAccessException(
-                "Cannot set property "
-                    + asPath()
-                    + ", path does not match a changeable location");
-        }
+        return buffer.toString();
+    }
+
+    /**
+     * Create a "bad factory" JXPathAbstractFactoryException for the specified AbstractFactory.
+     *
+     * @param factory AbstractFactory
+     * @return JXPathAbstractFactoryException
+     */
+    private JXPathAbstractFactoryException createBadFactoryException(final AbstractFactory factory) {
+        return new JXPathAbstractFactoryException("Factory " + factory + " reported success creating object for path: " + asPath()
+                + " but object was null.  Terminating to avoid stack recursion.");
+    }
+
+    @Override
+    public NodePointer createChild(final JXPathContext context, final QName qName, final int index) {
+        return createPath(context).createChild(context, qName, index);
+    }
+
+    @Override
+    public NodePointer createChild(final JXPathContext context, final QName qName, final int index, final Object value) {
+        return createPath(context).createChild(context, qName, index, value);
     }
 
     @Override
@@ -126,17 +98,17 @@ public class NullPropertyPointer extends PropertyPointer {
         }
         // Consider these two use cases:
         // 1. The parent pointer of NullPropertyPointer is
-        //    a PropertyOwnerPointer other than NullPointer. When we call
-        //    createPath on it, it most likely returns itself. We then
-        //    take a PropertyPointer from it and get the PropertyPointer
-        //    to expand the collection for the corresponding property.
+        // a PropertyOwnerPointer other than NullPointer. When we call
+        // createPath on it, it most likely returns itself. We then
+        // take a PropertyPointer from it and get the PropertyPointer
+        // to expand the collection for the corresponding property.
         //
         // 2. The parent pointer of NullPropertyPointer is a NullPointer.
-        //    When we call createPath, it may return a PropertyOwnerPointer
-        //    or it may return anything else, like a DOMNodePointer.
-        //    In the former case we need to do exactly what we did in use
-        //    case 1.  In the latter case, we simply request that the
-        //    non-property pointer expand the collection by itself.
+        // When we call createPath, it may return a PropertyOwnerPointer
+        // or it may return anything else, like a DOMNodePointer.
+        // In the former case we need to do exactly what we did in use
+        // case 1. In the latter case, we simply request that the
+        // non-property pointer expand the collection by itself.
         if (newParent instanceof PropertyOwnerPointer) {
             final PropertyOwnerPointer pop = (PropertyOwnerPointer) newParent;
             newParent = pop.getPropertyPointer();
@@ -163,38 +135,23 @@ public class NullPropertyPointer extends PropertyPointer {
     }
 
     @Override
-    public NodePointer createChild(final JXPathContext context, final QName name, final int index) {
-        return createPath(context).createChild(context, name, index);
+    public Object getBaseValue() {
+        return null;
     }
 
     @Override
-    public NodePointer createChild(final JXPathContext context, final QName name,
-            final int index, final Object value) {
-        return createPath(context).createChild(context, name, index, value);
+    public Object getImmediateNode() {
+        return null;
     }
 
     @Override
-    public String getPropertyName() {
-        return propertyName;
+    public int getLength() {
+        return 0;
     }
 
     @Override
-    public void setPropertyName(final String propertyName) {
-        this.propertyName = propertyName;
-    }
-
-    /**
-     * Sets the name attribute.
-     * @param attributeValue value to set
-     */
-    public void setNameAttributeValue(final String attributeValue) {
-        this.propertyName = attributeValue;
-        byNameAttribute = true;
-    }
-
-    @Override
-    public boolean isCollection() {
-        return getIndex() != WHOLE_COLLECTION;
+    public QName getName() {
+        return new QName(propertyName);
     }
 
     @Override
@@ -203,34 +160,76 @@ public class NullPropertyPointer extends PropertyPointer {
     }
 
     @Override
+    public String getPropertyName() {
+        return propertyName;
+    }
+
+    @Override
     public String[] getPropertyNames() {
         return new String[0];
     }
 
     @Override
-    public String asPath() {
-        if (!byNameAttribute) {
-            return super.asPath();
-        }
-        final StringBuilder buffer = new StringBuilder();
-        buffer.append(getImmediateParentPointer().asPath());
-        buffer.append("[@name='");
-        buffer.append(escape(getPropertyName()));
-        buffer.append("']");
-        if (index != WHOLE_COLLECTION) {
-            buffer.append('[').append(index + 1).append(']');
-        }
-        return buffer.toString();
+    public NodePointer getValuePointer() {
+        return new NullPointer(this, new QName(getPropertyName()));
+    }
+
+    @Override
+    public boolean isActual() {
+        return false;
+    }
+
+    @Override
+    protected boolean isActualProperty() {
+        return false;
+    }
+
+    @Override
+    public boolean isCollection() {
+        return getIndex() != WHOLE_COLLECTION;
+    }
+
+    @Override
+    public boolean isContainer() {
+        return true;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
     }
 
     /**
-     * Create a "bad factory" JXPathAbstractFactoryException for the specified AbstractFactory.
-     * @param factory AbstractFactory
-     * @return JXPathAbstractFactoryException
+     * Sets the name attribute.
+     *
+     * @param attributeValue value to set
      */
-    private JXPathAbstractFactoryException createBadFactoryException(final AbstractFactory factory) {
-        return new JXPathAbstractFactoryException("Factory " + factory
-                + " reported success creating object for path: " + asPath()
-                + " but object was null.  Terminating to avoid stack recursion.");
+    public void setNameAttributeValue(final String attributeValue) {
+        this.propertyName = attributeValue;
+        byNameAttribute = true;
+    }
+
+    @Override
+    public void setPropertyIndex(final int index) {
+    }
+
+    @Override
+    public void setPropertyName(final String propertyName) {
+        this.propertyName = propertyName;
+    }
+
+    @Override
+    public void setValue(final Object value) {
+        if (parent == null || parent.isContainer()) {
+            throw new JXPathInvalidAccessException("Cannot set property " + asPath() + ", the target object is null");
+        }
+        if (!(parent instanceof PropertyOwnerPointer) || !((PropertyOwnerPointer) parent).isDynamicPropertyDeclarationSupported()) {
+            throw new JXPathInvalidAccessException("Cannot set property " + asPath() + ", path does not match a changeable location");
+        }
+        // If the parent property owner can create
+        // a property automatically - let it do so
+        final PropertyPointer propertyPointer = ((PropertyOwnerPointer) parent).getPropertyPointer();
+        propertyPointer.setPropertyName(propertyName);
+        propertyPointer.setValue(value);
     }
 }

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri;
 
 import org.apache.commons.jxpath.Pointer;
@@ -30,7 +31,107 @@ public class InfoSetUtil {
     private static final Double NOT_A_NUMBER = Double.valueOf(Double.NaN);
 
     /**
+     * Converts the supplied object to boolean.
+     *
+     * @param object to convert
+     * @return boolean
+     */
+    public static boolean booleanValue(final Object object) {
+        if (object instanceof Number) {
+            final double value = ((Number) object).doubleValue();
+            final int negZero = -0;
+            return value != 0 && value != negZero && !Double.isNaN(value);
+        }
+        if (object instanceof Boolean) {
+            return ((Boolean) object).booleanValue();
+        }
+        if (object instanceof EvalContext) {
+            final EvalContext ctx = (EvalContext) object;
+            final Pointer ptr = ctx.getSingleNodePointer();
+            return ptr != null && booleanValue(ptr);
+        }
+        if (object instanceof String) {
+            return ((String) object).length() != 0;
+        }
+        if (object instanceof NodePointer) {
+            NodePointer pointer = (NodePointer) object;
+            if (pointer instanceof VariablePointer) {
+                return booleanValue(pointer.getNode());
+            }
+            pointer = pointer.getValuePointer();
+            return pointer.isActual();
+        }
+        return object != null;
+    }
+
+    /**
+     * Converts the supplied object to double.
+     *
+     * @param object to convert
+     * @return double
+     */
+    public static double doubleValue(final Object object) {
+        if (object instanceof Number) {
+            return ((Number) object).doubleValue();
+        }
+        if (object instanceof Boolean) {
+            return ((Boolean) object).booleanValue() ? 0.0 : 1.0;
+        }
+        if (object instanceof String) {
+            if (object.equals("")) {
+                return 0.0;
+            }
+            try {
+                return Double.parseDouble((String) object);
+            } catch (final NumberFormatException ex) {
+                return Double.NaN;
+            }
+        }
+        if (object instanceof NodePointer) {
+            return doubleValue(((NodePointer) object).getValue());
+        }
+        if (object instanceof EvalContext) {
+            final EvalContext ctx = (EvalContext) object;
+            final Pointer ptr = ctx.getSingleNodePointer();
+            return ptr == null ? Double.NaN : doubleValue(ptr);
+        }
+        return doubleValue(stringValue(object));
+    }
+
+    /**
+     * Converts the supplied object to Number.
+     *
+     * @param object to convert
+     * @return Number result
+     */
+    public static Number number(final Object object) {
+        if (object instanceof Number) {
+            return (Number) object;
+        }
+        if (object instanceof Boolean) {
+            return ((Boolean) object).booleanValue() ? ONE : ZERO;
+        }
+        if (object instanceof String) {
+            try {
+                return Double.valueOf((String) object);
+            } catch (final NumberFormatException ex) {
+                return NOT_A_NUMBER;
+            }
+        }
+        if (object instanceof EvalContext) {
+            final EvalContext ctx = (EvalContext) object;
+            final Pointer ptr = ctx.getSingleNodePointer();
+            return ptr == null ? NOT_A_NUMBER : number(ptr);
+        }
+        if (object instanceof NodePointer) {
+            return number(((NodePointer) object).getValue());
+        }
+        return number(stringValue(object));
+    }
+
+    /**
      * Converts the supplied object to String.
+     *
      * @param object to convert
      * @return String value
      */
@@ -61,100 +162,12 @@ public class InfoSetUtil {
     }
 
     /**
-     * Converts the supplied object to Number.
-     * @param object to convert
-     * @return Number result
+     * Constructs a new instance.
+     *
+     * @deprecated Will be private in the next major version.
      */
-    public static Number number(final Object object) {
-        if (object instanceof Number) {
-            return (Number) object;
-        }
-        if (object instanceof Boolean) {
-            return ((Boolean) object).booleanValue() ? ONE : ZERO;
-        }
-        if (object instanceof String) {
-            try {
-                return Double.valueOf((String) object);
-            }
-            catch (final NumberFormatException ex) {
-                return NOT_A_NUMBER;
-            }
-        }
-        if (object instanceof EvalContext) {
-            final EvalContext ctx = (EvalContext) object;
-            final Pointer ptr = ctx.getSingleNodePointer();
-            return ptr == null ? NOT_A_NUMBER : number(ptr);
-        }
-        if (object instanceof NodePointer) {
-            return number(((NodePointer) object).getValue());
-        }
-        return number(stringValue(object));
-    }
-
-    /**
-     * Converts the supplied object to double.
-     * @param object to convert
-     * @return double
-     */
-    public static double doubleValue(final Object object) {
-        if (object instanceof Number) {
-            return ((Number) object).doubleValue();
-        }
-        if (object instanceof Boolean) {
-            return ((Boolean) object).booleanValue() ? 0.0 : 1.0;
-        }
-        if (object instanceof String) {
-            if (object.equals("")) {
-                return 0.0;
-            }
-            try {
-                return Double.parseDouble((String) object);
-            }
-            catch (final NumberFormatException ex) {
-                return Double.NaN;
-            }
-        }
-        if (object instanceof NodePointer) {
-            return doubleValue(((NodePointer) object).getValue());
-        }
-        if (object instanceof EvalContext) {
-            final EvalContext ctx = (EvalContext) object;
-            final Pointer ptr = ctx.getSingleNodePointer();
-            return ptr == null ? Double.NaN : doubleValue(ptr);
-        }
-        return doubleValue(stringValue(object));
-    }
-
-    /**
-     * Converts the supplied object to boolean.
-     * @param object to convert
-     * @return boolean
-     */
-    public static boolean booleanValue(final Object object) {
-        if (object instanceof Number) {
-            final double value = ((Number) object).doubleValue();
-            final int negZero = -0;
-            return value != 0 && value != negZero && !Double.isNaN(value);
-        }
-        if (object instanceof Boolean) {
-            return ((Boolean) object).booleanValue();
-        }
-        if (object instanceof EvalContext) {
-            final EvalContext ctx = (EvalContext) object;
-            final Pointer ptr = ctx.getSingleNodePointer();
-            return ptr != null && booleanValue(ptr);
-        }
-        if (object instanceof String) {
-            return ((String) object).length() != 0;
-        }
-        if (object instanceof NodePointer) {
-            NodePointer pointer = (NodePointer) object;
-            if (pointer instanceof VariablePointer) {
-                return booleanValue(pointer.getNode());
-            }
-            pointer = pointer.getValuePointer();
-            return pointer.isActual();
-        }
-        return object != null;
+    @Deprecated
+    public InfoSetUtil() {
+        // empty
     }
 }

@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 /**
+ * Abstract operation expressions.
  */
 public abstract class Operation extends Expression {
 
@@ -24,19 +26,12 @@ public abstract class Operation extends Expression {
     protected Expression[] args;
 
     /**
-     * Create a new Operation.
+     * Constructs a new Operation.
+     *
      * @param args Expression[]
      */
     public Operation(final Expression[] args) {
         this.args = args;
-    }
-
-    /**
-     * Gets the arguments.
-     * @return Expression[]
-     */
-    public Expression[] getArguments() {
-        return args;
     }
 
     @Override
@@ -49,5 +44,14 @@ public abstract class Operation extends Expression {
             }
         }
         return false;
+    }
+
+    /**
+     * Gets the arguments.
+     *
+     * @return Expression[]
+     */
+    public Expression[] getArguments() {
+        return args;
     }
 }

@@ -14,23 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri;
 
 import java.io.Serializable;
 
 /**
- * A qualified name: a combination of an optional namespace prefix
- * and an local name.
+ * A qualified name: a combination of an optional namespace prefix and an local name.
  */
 public class QName implements Serializable {
+
     private static final long serialVersionUID = 7616199282015091496L;
 
+    /**
+     * Prefix.
+     */
     private final String prefix;
+
+    /**
+     * Name.
+     */
     private final String name;
+
+    /**
+     * Qualified name.
+     */
     private final String qualifiedName;
 
     /**
-     * Create a new QName.
+     * Constructs a new QName.
+     *
      * @param qualifiedName value
      */
     public QName(final String qualifiedName) {
@@ -41,40 +54,15 @@ public class QName implements Serializable {
     }
 
     /**
-     * Create a new QName.
-     * @param prefix ns
+     * Constructs a new QName.
+     *
+     * @param prefix    ns
      * @param localName String
      */
     public QName(final String prefix, final String localName) {
         this.prefix = prefix;
         this.name = localName;
         this.qualifiedName = prefix == null ? localName : prefix + ':' + localName;
-    }
-
-    /**
-     * Gets the prefix of this QName.
-     * @return String
-     */
-    public String getPrefix() {
-        return prefix;
-    }
-
-    /**
-     * Gets the local name.
-     * @return String
-     */
-    public String getName() {
-        return name;
-    }
-
-    @Override
-    public String toString() {
-        return qualifiedName;
-    }
-
-    @Override
-    public int hashCode() {
-        return name.hashCode();
     }
 
     @Override
@@ -86,5 +74,33 @@ public class QName implements Serializable {
             return false;
         }
         return qualifiedName.equals(((QName) object).qualifiedName);
+    }
+
+    /**
+     * Gets the local name.
+     *
+     * @return String
+     */
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Gets the prefix of this QName.
+     *
+     * @return String
+     */
+    public String getPrefix() {
+        return prefix;
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+
+    @Override
+    public String toString() {
+        return qualifiedName;
     }
 }

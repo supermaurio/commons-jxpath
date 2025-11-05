@@ -14,7 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.jdom;
+
+import static org.junit.jupiter.api.Assertions.assertInstanceOf;
 
 import java.util.List;
 
@@ -30,89 +33,30 @@ import org.jdom.Text;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertInstanceOf;
-
 /**
  * Tests JXPath with JDOM
  */
 public class JDOMModelTest extends AbstractXMLModelTest {
 
-    @Override
-    protected String getModel() {
-        return DocumentContainer.MODEL_JDOM;
+    private void appendXMLSignature(final StringBuilder buffer, final List children, final boolean elements, final boolean attributes, final boolean text,
+            final boolean pi) {
+        for (final Object child : children) {
+            appendXMLSignature(buffer, child, elements, attributes, text, pi);
+        }
     }
 
-    @Test
-    public void testGetNode() {
-        assertXPathNodeType(context, "/", Document.class);
-        assertXPathNodeType(context, "/vendor/location", Element.class);
-        assertXPathNodeType(context, "//location/@name", Attribute.class);
-        assertXPathNodeType(context, "//vendor", Element.class); //bugzilla #38586
-    }
-
-    @Test
-    public void testGetElementDescendantOrSelf() {
-        final JXPathContext childContext = context.getRelativeContext(context.getPointer("/vendor"));
-        assertInstanceOf(Element.class, childContext.getContextBean());
-        assertXPathNodeType(childContext, "//vendor", Element.class);
-    }
-
-    @Override
-    @Test
-    @Disabled("id() is not supported by JDOM")
-    public void testID() {
-        // id() is not supported by JDOM
-    }
-
-    @Override
-    protected AbstractFactory getAbstractFactory() {
-        return new TestJDOMFactory();
-    }
-
-    @Override
-    protected String getXMLSignature(
-        final Object node,
-        final boolean elements,
-        final boolean attributes,
-        final boolean text,
-        final boolean pi)
-    {
-        final StringBuilder buffer = new StringBuilder();
-        appendXMLSignature(buffer, node, elements, attributes, text, pi);
-        return buffer.toString();
-    }
-
-    private void appendXMLSignature(
-        final StringBuilder buffer,
-        final Object object,
-        final boolean elements,
-        final boolean attributes,
-        final boolean text,
-        final boolean pi)
-    {
+    private void appendXMLSignature(final StringBuilder buffer, final Object object, final boolean elements, final boolean attributes, final boolean text,
+            final boolean pi) {
         if (object instanceof Document) {
             buffer.append("<D>");
-            appendXMLSignature(
-                buffer,
-                ((Document) object).getContent(),
-                elements,
-                attributes,
-                text,
-                pi);
+            appendXMLSignature(buffer, ((Document) object).getContent(), elements, attributes, text, pi);
             buffer.append("</D");
-        }
-        else if (object instanceof Element) {
+        } else if (object instanceof Element) {
             final String tag = elements ? ((Element) object).getName() : "E";
             buffer.append("<");
             buffer.append(tag);
             buffer.append(">");
-            appendXMLSignature(
-                buffer,
-                ((Element) object).getContent(),
-                elements,
-                attributes,
-                text,
-                pi);
+            appendXMLSignature(buffer, ((Element) object).getContent(), elements, attributes, text, pi);
             buffer.append("</");
             buffer.append(tag);
             buffer.append(">");
@@ -123,22 +67,42 @@ public class JDOMModelTest extends AbstractXMLModelTest {
         }
     }
 
-    private void appendXMLSignature(
-        final StringBuilder buffer,
-        final List children,
-        final boolean elements,
-        final boolean attributes,
-        final boolean text,
-        final boolean pi)
-    {
-        for (final Object child : children) {
-            appendXMLSignature(
-                buffer,
-                child,
-                elements,
-                attributes,
-                text,
-                pi);
-        }
+    @Override
+    protected AbstractFactory getAbstractFactory() {
+        return new TestJDOMFactory();
+    }
+
+    @Override
+    protected String getModel() {
+        return DocumentContainer.MODEL_JDOM;
+    }
+
+    @Override
+    protected String getXMLSignature(final Object node, final boolean elements, final boolean attributes, final boolean text, final boolean pi) {
+        final StringBuilder buffer = new StringBuilder();
+        appendXMLSignature(buffer, node, elements, attributes, text, pi);
+        return buffer.toString();
+    }
+
+    @Test
+    public void testGetElementDescendantOrSelf() {
+        final JXPathContext childContext = context.getRelativeContext(context.getPointer("/vendor"));
+        assertInstanceOf(Element.class, childContext.getContextBean());
+        assertXPathNodeType(childContext, "//vendor", Element.class);
+    }
+
+    @Test
+    public void testGetNode() {
+        assertXPathNodeType(context, "/", Document.class);
+        assertXPathNodeType(context, "/vendor/location", Element.class);
+        assertXPathNodeType(context, "//location/@name", Attribute.class);
+        assertXPathNodeType(context, "//vendor", Element.class); // bugzilla #38586
+    }
+
+    @Override
+    @Test
+    @Disabled("id() is not supported by JDOM")
+    public void testID() {
+        // id() is not supported by JDOM
     }
 }

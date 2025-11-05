@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.servlet;
 
 import java.util.ArrayList;
@@ -22,26 +23,32 @@ import java.util.Enumeration;
 import org.apache.commons.jxpath.DynamicPropertyHandler;
 
 /**
- * Implementation of the {@link DynamicPropertyHandler} interface that provides
- * access to attributes of a {@link PageScopeContext}.
+ * Implementation of the {@link DynamicPropertyHandler} interface that provides access to attributes of a {@link PageScopeContext}.
  */
 public class PageScopeContextHandler implements DynamicPropertyHandler {
 
     private static final int DEFAULT_LIST_SIZE = 16;
 
-    @Override
-    public String[] getPropertyNames(final Object pageScope) {
-        final Enumeration e = ((PageScopeContext) pageScope).getAttributeNames();
-        final ArrayList list = new ArrayList(DEFAULT_LIST_SIZE);
-        while (e.hasMoreElements()) {
-            list.add(e.nextElement());
-        }
-        return (String[]) list.toArray(new String[list.size()]);
+    /**
+     * Constructs a new instance.
+     */
+    public PageScopeContextHandler() {
+        // empty
     }
 
     @Override
     public Object getProperty(final Object pageScope, final String property) {
         return ((PageScopeContext) pageScope).getAttribute(property);
+    }
+
+    @Override
+    public String[] getPropertyNames(final Object pageScope) {
+        final Enumeration<String> e = ((PageScopeContext) pageScope).getAttributeNames();
+        final ArrayList<String> list = new ArrayList<>(DEFAULT_LIST_SIZE);
+        while (e.hasMoreElements()) {
+            list.add(e.nextElement());
+        }
+        return list.toArray(new String[list.size()]);
     }
 
     @Override

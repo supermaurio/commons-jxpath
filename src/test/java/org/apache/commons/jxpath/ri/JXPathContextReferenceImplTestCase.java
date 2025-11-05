@@ -15,37 +15,38 @@
  * limitations under the License.
  */
 
- package org.apache.commons.jxpath.ri;
+package org.apache.commons.jxpath.ri;
 
- import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
- 
- import junit.framework.TestCase;
- 
- public class JXPathContextReferenceImplTestCase extends TestCase {
+import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
+import org.junit.jupiter.api.Test;
 
-    @Override
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+public class JXPathContextReferenceImplTestCase {
+
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         System.setProperty("jxpath.class.allow", "org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl");
     }
 
-    @Override    
+    @AfterEach  
     protected void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
     }
-
-     /**
-      * https://issues.apache.org/jira/browse/JXPATH-166
-      */
-     public void testInit() {
-         final ContainerPointerFactory factory = new ContainerPointerFactory();
-         try {
-             JXPathContextReferenceImpl.addNodePointerFactory(factory);
-         } finally {
-             while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
- 
-             }
-         }
-     }
- }
- 
+	
+    /**
+     * https://issues.apache.org/jira/browse/JXPATH-166
+     */
+    @Test
+    public void testInit() {
+        final ContainerPointerFactory factory = new ContainerPointerFactory();
+        try {
+            JXPathContextReferenceImpl.addNodePointerFactory(factory);
+        } finally {
+            while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
+                // NOP
+            }
+        }
+    }
+}

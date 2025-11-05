@@ -14,30 +14,37 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.jxpath;
 
-import org.apache.commons.jxpath.ri.JXPathFilter;
-import org.apache.commons.jxpath.ri.SystemPropertyJXPathFilter;
+package org.apache.commons.jxpath;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.jxpath.ri.JXPathFilter;
+import org.apache.commons.jxpath.ri.SystemPropertyJXPathFilter;
+
 /**
- * An object that aggregates {@link Functions} objects into a group Functions
- * object. Since {@link JXPathContext} can only register a single Functions
- * object, FunctionLibrary should always be used to group all Functions objects
- * that need to be registered.
+ * An object that aggregates {@link Functions} objects into a group Functions object. Since {@link JXPathContext} can only register a single Functions object,
+ * FunctionLibrary should always be used to group all Functions objects that need to be registered.
  */
 public class FunctionLibrary implements Functions {
-    private final List allFunctions = new ArrayList();
-    private Map byNamespace;
+
+    private final List<Functions> allFunctions = new ArrayList<>();
+    private Map<String, Object> byNamespace;
+
+    /**
+     * Constructs a new instance.
+     */
+    public FunctionLibrary() {
+        // empty
+    }
 
     /**
      * Add functions to the library
+     *
      * @param functions to add
      */
     public void addFunctions(final Functions functions) {
@@ -48,26 +55,35 @@ public class FunctionLibrary implements Functions {
     }
 
     /**
-     * Remove functions from the library.
-     * @param functions to remove
+     * Prepare the cache.
+     *
+     * @return cache map keyed by namespace
      */
-    public void removeFunctions(final Functions functions) {
-        allFunctions.remove(functions);
-        synchronized (this) {
-            byNamespace = null;
+    private synchronized Map<String, Object> functionCache() {
+        if (byNamespace == null) {
+            byNamespace = new HashMap<>();
+            final int count = allFunctions.size();
+            for (int i = 0; i < count; i++) {
+                final Functions funcs = allFunctions.get(i);
+                final Set<String> namespaces = funcs.getUsedNamespaces();
+                for (final String ns : namespaces) {
+                    final Object candidates = byNamespace.get(ns);
+                    if (candidates == null) {
+                        byNamespace.put(ns, funcs);
+                    } else if (candidates instanceof Functions) {
+                        final List<Object> lst = new ArrayList<>();
+                        lst.add(candidates);
+                        lst.add(funcs);
+                        byNamespace.put(ns, lst);
+                    } else {
+                        ((List) candidates).add(funcs);
+                    }
+                }
+            }
         }
+        return byNamespace;
     }
-
-    /**
-     * Returns a set containing all namespaces used by the aggregated
-     * Functions.
-     * @return Set
-     */
-    @Override
-    public Set getUsedNamespaces() {
-        return functionCache().keySet();
-    }
-
+	
     /**
      * Returns a Function, if any, for the specified namespace,
      * name and parameter types.
@@ -80,28 +96,26 @@ public class FunctionLibrary implements Functions {
     public Function getFunction(final String namespace, final String name, final Object[] parameters) {
         return getFunction(namespace, name, parameters, new SystemPropertyJXPathFilter());
     }
-
-
+	
+    /**
+     * Gets a Function, if any, for the specified namespace, name and parameter types.
+     *
+     * @param namespace  function namespace
+     * @param name       function name
+     * @param parameters parameters
+     * @return Function found
+     */
     @Override
     public Function getFunction(final String namespace, final String name, final Object[] parameters, final JXPathFilter filter) {
         final Object candidates = functionCache().get(namespace);
         if (candidates instanceof Functions) {
-            return ((Functions) candidates).getFunction(
-                namespace,
-                name,
-                parameters,
-                filter);
+            return ((Functions) candidates).getFunction(namespace, name, parameters, filter);
         }
         if (candidates instanceof List) {
-            final List list = (List) candidates;
+            final List<Functions> list = (List<Functions>) candidates;
             final int count = list.size();
             for (int i = 0; i < count; i++) {
-                final Function function =
-                    ((Functions) list.get(i)).getFunction(
-                        namespace,
-                        name,
-                        parameters,
-                        filter);
+                final Function function = list.get(i).getFunction(namespace, name, parameters, filter);
                 if (function != null) {
                     return function;
                 }
@@ -111,34 +125,24 @@ public class FunctionLibrary implements Functions {
     }
 
     /**
-     * Prepare the cache.
-     * @return cache map keyed by namespace
+     * Gets a set containing all namespaces used by the aggregated Functions.
+     *
+     * @return a set containing all namespaces used by the aggregated Functions.
      */
-    private synchronized Map functionCache() {
-        if (byNamespace == null) {
-            byNamespace = new HashMap();
-            final int count = allFunctions.size();
-            for (int i = 0; i < count; i++) {
-                final Functions funcs = (Functions) allFunctions.get(i);
-                final Set namespaces = funcs.getUsedNamespaces();
-                for (final Iterator it = namespaces.iterator(); it.hasNext();) {
-                    final String ns = (String) it.next();
-                    final Object candidates = byNamespace.get(ns);
-                    if (candidates == null) {
-                        byNamespace.put(ns, funcs);
-                    }
-                    else if (candidates instanceof Functions) {
-                        final List lst = new ArrayList();
-                        lst.add(candidates);
-                        lst.add(funcs);
-                        byNamespace.put(ns, lst);
-                    }
-                    else {
-                        ((List) candidates).add(funcs);
-                    }
-                }
-            }
+    @Override
+    public Set<String> getUsedNamespaces() {
+        return functionCache().keySet();
+    }
+
+    /**
+     * Removes functions from the library.
+     *
+     * @param functions to remove.
+     */
+    public void removeFunctions(final Functions functions) {
+        allFunctions.remove(functions);
+        synchronized (this) {
+            byNamespace = null;
         }
-        return byNamespace;
     }
 }

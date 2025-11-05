@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
 /**
@@ -22,21 +23,24 @@ package org.apache.commons.jxpath.ri.model;
 public interface NodeIterator {
 
     /**
+     * Gets the NodePointer at the current position.
+     *
+     * @return NodePointer
+     */
+    NodePointer getNodePointer();
+
+    /**
      * Gets the current iterator position.
+     *
      * @return int position
      */
     int getPosition();
 
     /**
      * Sets the new current position.
+     *
      * @param position the position to set
      * @return {@code true} if there is a node at {@code position}.
      */
     boolean setPosition(int position);
-
-    /**
-     * Gets the NodePointer at the current position.
-     * @return NodePointer
-     */
-    NodePointer getNodePointer();
 }

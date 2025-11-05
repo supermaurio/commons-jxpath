@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -25,7 +26,8 @@ import org.apache.commons.jxpath.ri.InfoSetUtil;
 public class CoreOperationOr extends CoreOperation {
 
     /**
-     * Create a new CoreOperationOr.
+     * Constructs a new CoreOperationOr.
+     *
      * @param args or'd Expression components
      */
     public CoreOperationOr(final Expression[] args) {
@@ -48,12 +50,12 @@ public class CoreOperationOr extends CoreOperation {
     }
 
     @Override
-    protected boolean isSymmetric() {
-        return true;
+    public String getSymbol() {
+        return "or";
     }
 
     @Override
-    public String getSymbol() {
-        return "or";
+    protected boolean isSymmetric() {
+        return true;
     }
 }

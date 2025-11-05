@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.jdom;
 
 import java.util.ArrayList;
@@ -31,56 +32,53 @@ import org.jdom.Namespace;
  * An iterator of attributes of a DOM Node.
  */
 public class JDOMAttributeIterator implements NodeIterator {
+
     private NodePointer parent;
-    private List attributes;
-    private int position = 0;
+    private List<Attribute> attributes;
+    private int position;
 
     /**
-     * Create a new JDOMAttributeIterator.
+     * Constructs a new JDOMAttributeIterator.
+     *
      * @param parent pointer
-     * @param name test
+     * @param qName   test
      */
-    public JDOMAttributeIterator(final NodePointer parent, final QName name) {
+    public JDOMAttributeIterator(final NodePointer parent, final QName qName) {
         this.parent = parent;
         if (parent.getNode() instanceof Element) {
             final Element element = (Element) parent.getNode();
-            final String prefix = name.getPrefix();
+            final String prefix = qName.getPrefix();
             Namespace ns = null;
             if (prefix != null) {
                 if (prefix.equals("xml")) {
                     ns = Namespace.XML_NAMESPACE;
-                }
-                else {
+                } else {
                     final String uri = parent.getNamespaceResolver().getNamespaceURI(prefix);
                     if (uri != null) {
                         ns = Namespace.getNamespace(prefix, uri);
                     }
                     if (ns == null) {
                         // TBD: no attributes
-                        attributes = Collections.EMPTY_LIST;
+                        attributes = Collections.emptyList();
                         return;
                     }
                 }
-            }
-            else {
+            } else {
                 ns = Namespace.NO_NAMESPACE;
             }
-
-            final String lname = name.getName();
+            final String lname = qName.getName();
             if (!lname.equals("*")) {
-                attributes = new ArrayList();
+                attributes = new ArrayList<>();
                 final Attribute attr = element.getAttribute(lname, ns);
                 if (attr != null) {
                     attributes.add(attr);
                 }
-            }
-            else {
-                attributes = new ArrayList();
-                final List allAttributes = element.getAttributes();
+            } else {
+                attributes = new ArrayList<>();
+                final List<Attribute> allAttributes = element.getAttributes();
                 for (int i = 0; i < allAttributes.size(); i++) {
-                    final Attribute attr = (Attribute) allAttributes.get(i);
-                    if (ns == Namespace.NO_NAMESPACE
-                            || attr.getNamespace().equals(ns)) {
+                    final Attribute attr = allAttributes.get(i);
+                    if (ns == Namespace.NO_NAMESPACE || attr.getNamespace().equals(ns)) {
                         attributes.add(attr);
                     }
                 }
@@ -100,9 +98,7 @@ public class JDOMAttributeIterator implements NodeIterator {
         if (index < 0) {
             index = 0;
         }
-        return new JDOMAttributePointer(
-            parent,
-            (Attribute) attributes.get(index));
+        return new JDOMAttributePointer(parent, attributes.get(index));
     }
 
     @Override

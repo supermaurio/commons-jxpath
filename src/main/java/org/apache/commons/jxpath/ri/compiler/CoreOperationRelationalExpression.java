@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import java.util.Collection;
@@ -27,51 +28,30 @@ import org.apache.commons.jxpath.ri.axes.SelfContext;
 
 /**
  * Base implementation of Expression for the operations "&gt;", "&gt;=", "&lt;", "&lt;=".
+ *
  * @since JXPath 1.3
  */
 public abstract class CoreOperationRelationalExpression extends CoreOperation {
 
     /**
-     * Create a new CoreOperationRelationalExpression.
+     * Constructs a new CoreOperationRelationalExpression.
+     *
      * @param args arguments
      */
     protected CoreOperationRelationalExpression(final Expression[] args) {
         super(args);
     }
 
-    @Override
-    public final Object computeValue(final EvalContext context) {
-        return compute(args[0].compute(context), args[1].compute(context))
-                ? Boolean.TRUE : Boolean.FALSE;
-    }
-
-    @Override
-    protected final int getPrecedence() {
-        return RELATIONAL_EXPR_PRECEDENCE;
-    }
-
-    @Override
-    protected final boolean isSymmetric() {
-        return false;
-    }
-
-    /**
-     * Template method for subclasses to evaluate the result of a comparison.
-     * @param compare result of comparison to evaluate
-     * @return ultimate operation success/failure
-     */
-    protected abstract boolean evaluateCompare(int compare);
-
     /**
      * Compare left to right.
-     * @param left left operand
+     *
+     * @param left  left operand
      * @param right right operand
      * @return operation success/failure
      */
     private boolean compute(Object left, Object right) {
         left = reduce(left);
         right = reduce(right);
-
         if (left instanceof InitialContext) {
             ((InitialContext) left).reset();
         }
@@ -98,24 +78,15 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
         return evaluateCompare(ld == rd ? 0 : ld < rd ? -1 : 1);
     }
 
-    /**
-     * Reduce an operand for comparison.
-     * @param o Object to reduce
-     * @return reduced operand
-     */
-    private Object reduce(Object o) {
-        if (o instanceof SelfContext) {
-            o = ((EvalContext) o).getSingleNodePointer();
-        }
-        if (o instanceof Collection) {
-            o = ((Collection) o).iterator();
-        }
-        return o;
+    @Override
+    public final Object computeValue(final EvalContext context) {
+        return compute(args[0].compute(context), args[1].compute(context)) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     /**
-     * Learn whether any element returned from an Iterator matches a given value.
-     * @param it Iterator
+     * Tests whether any element returned from an Iterator matches a given value.
+     *
+     * @param it    Iterator
      * @param value to look for
      * @return whether a match was found
      */
@@ -130,8 +101,9 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
     }
 
     /**
-     * Learn whether any element returned from an Iterator matches a given value.
-     * @param it Iterator
+     * Tests whether any element returned from an Iterator matches a given value.
+     *
+     * @param it    Iterator
      * @param value to look for
      * @return whether a match was found
      */
@@ -146,7 +118,16 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
     }
 
     /**
-     * Learn whether there is an intersection between two Iterators.
+     * Template method for subclasses to evaluate the result of a comparison.
+     *
+     * @param compare result of comparison to evaluate
+     * @return ultimate operation success/failure
+     */
+    protected abstract boolean evaluateCompare(int compare);
+
+    /**
+     * Tests whether there is an intersection between two Iterators.
+     *
      * @param lit left Iterator
      * @param rit right Iterator
      * @return whether a match was found
@@ -164,4 +145,29 @@ public abstract class CoreOperationRelationalExpression extends CoreOperation {
         return false;
     }
 
+    @Override
+    protected final int getPrecedence() {
+        return RELATIONAL_EXPR_PRECEDENCE;
+    }
+
+    @Override
+    protected final boolean isSymmetric() {
+        return false;
+    }
+
+    /**
+     * Reduce an operand for comparison.
+     *
+     * @param o Object to reduce
+     * @return reduced operand
+     */
+    private Object reduce(Object o) {
+        if (o instanceof SelfContext) {
+            o = ((EvalContext) o).getSingleNodePointer();
+        }
+        if (o instanceof Collection) {
+            o = ((Collection) o).iterator();
+        }
+        return o;
+    }
 }

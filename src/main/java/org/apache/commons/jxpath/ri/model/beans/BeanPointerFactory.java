@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import java.util.Locale;
@@ -32,25 +33,30 @@ public class BeanPointerFactory implements NodePointerFactory {
     /** Factory order constant */
     public static final int BEAN_POINTER_FACTORY_ORDER = 900;
 
+    /**
+     * Constructs a new instance.
+     */
+    public BeanPointerFactory() {
+        // empty
+    }
+
+    @Override
+    public NodePointer createNodePointer(final NodePointer parent, final QName qName, final Object bean) {
+        if (bean == null) {
+            return new NullPointer(parent, qName);
+        }
+        final JXPathBeanInfo bi = JXPathIntrospector.getBeanInfo(bean.getClass());
+        return new BeanPointer(parent, qName, bean, bi);
+    }
+
+    @Override
+    public NodePointer createNodePointer(final QName qName, final Object bean, final Locale locale) {
+        final JXPathBeanInfo bi = JXPathIntrospector.getBeanInfo(bean.getClass());
+        return new BeanPointer(qName, bean, bi, locale);
+    }
+
     @Override
     public int getOrder() {
         return BEAN_POINTER_FACTORY_ORDER;
-    }
-
-    @Override
-    public NodePointer createNodePointer(final QName name, final Object bean, final Locale locale) {
-        final JXPathBeanInfo bi = JXPathIntrospector.getBeanInfo(bean.getClass());
-        return new BeanPointer(name, bean, bi, locale);
-    }
-
-    @Override
-    public NodePointer createNodePointer(final NodePointer parent, final QName name,
-            final Object bean) {
-        if (bean == null) {
-            return new NullPointer(parent, name);
-        }
-
-        final JXPathBeanInfo bi = JXPathIntrospector.getBeanInfo(bean.getClass());
-        return new BeanPointer(parent, name, bean, bi);
     }
 }

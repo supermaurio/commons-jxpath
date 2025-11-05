@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -27,24 +28,42 @@ public class VariableReference extends Expression {
     private final QName varName;
 
     /**
-     * Create a new VariableReference.
+     * Constructs a new VariableReference.
+     *
      * @param varName variable name
      */
     public VariableReference(final QName varName) {
         this.varName = varName;
     }
 
+    @Override
+    public Object compute(final EvalContext context) {
+        return computeValue(context);
+    }
+
+    @Override
+    public boolean computeContextDependent() {
+        return false;
+    }
+
+    /**
+     * Returns the value of the variable.
+     *
+     * @param context EvalContext against which to compute the variable's value.
+     * @return Object
+     */
+    @Override
+    public Object computeValue(final EvalContext context) {
+        return context.getRootContext().getVariableContext(varName);
+    }
+
     /**
      * Gets the variable name.
+     *
      * @return QName
      */
     public QName getVariableName() {
         return varName;
-    }
-
-    @Override
-    public String toString() {
-        return "$" + varName;
     }
 
     @Override
@@ -53,22 +72,7 @@ public class VariableReference extends Expression {
     }
 
     @Override
-    public boolean computeContextDependent() {
-        return false;
-    }
-
-    @Override
-    public Object compute(final EvalContext context) {
-        return computeValue(context);
-    }
-
-    /**
-     * Returns the value of the variable.
-     * @param context EvalContext against which to compute the variable's value.
-     * @return Object
-     */
-    @Override
-    public Object computeValue(final EvalContext context) {
-        return context.getRootContext().getVariableContext(varName);
+    public String toString() {
+        return "$" + varName;
     }
 }

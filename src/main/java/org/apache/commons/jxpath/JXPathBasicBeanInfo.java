@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import java.beans.BeanInfo;
@@ -25,27 +26,44 @@ import java.util.Comparator;
 import java.util.HashMap;
 
 /**
- * An implementation of JXPathBeanInfo based on JavaBeans' BeanInfo. Properties
- * advertised by JXPathBasicBeanInfo are the same as those advertised by
- * BeanInfo for the corresponding class.
+ * An implementation of JXPathBeanInfo based on JavaBeans' BeanInfo. Properties advertised by JXPathBasicBeanInfo are the same as those advertised by BeanInfo
+ * for the corresponding class.
  *
  * @see java.beans.BeanInfo
  * @see java.beans.Introspector
  */
 public class JXPathBasicBeanInfo implements JXPathBeanInfo {
+
     private static final long serialVersionUID = -3863803443111484155L;
-
-    private static final Comparator PROPERTY_DESCRIPTOR_COMPARATOR = (left, right) -> ((PropertyDescriptor) left).getName().compareTo(
-        ((PropertyDescriptor) right).getName());
-
-    private boolean atomic = false;
-    private final Class clazz;
-    private Class dynamicPropertyHandlerClass;
-    private transient PropertyDescriptor[] propertyDescriptors;
-    private transient HashMap propertyDescriptorMap;
+    private static final Comparator<PropertyDescriptor> PROPERTY_DESCRIPTOR_COMPARATOR = (left, right) -> left.getName().compareTo(right.getName());
+    /**
+     * Whether objects of this class are treated as atomic objects which have no properties of their own.
+     */
+    private boolean atomic;
 
     /**
-     * Create a new JXPathBasicBeanInfo.
+     * Bean class.
+     */
+    private final Class clazz;
+
+    /**
+     * The DynamicPropertyHandler class for a dynamic class.
+     */
+    private Class dynamicPropertyHandlerClass;
+
+    /**
+     * List of property descriptors for the beans described by this bean info object.
+     */
+    private transient PropertyDescriptor[] propertyDescriptors;
+
+    /**
+     * PropertyDescriptor for the specified name or null if there is no such property.
+     */
+    private transient HashMap<String, PropertyDescriptor> propertyDescriptorMap;
+
+    /**
+     * Constructs a new JXPathBasicBeanInfo.
+     *
      * @param clazz bean class
      */
     public JXPathBasicBeanInfo(final Class clazz) {
@@ -53,10 +71,10 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
     }
 
     /**
-     * Create a new JXPathBasicBeanInfo.
-     * @param clazz bean class
-     * @param atomic whether objects of this class are treated as atomic
-     *               objects which have no properties of their own.
+     * Constructs a new JXPathBasicBeanInfo.
+     *
+     * @param clazz  bean class
+     * @param atomic whether objects of this class are treated as atomic objects which have no properties of their own.
      */
     public JXPathBasicBeanInfo(final Class clazz, final boolean atomic) {
         this.clazz = clazz;
@@ -64,8 +82,9 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
     }
 
     /**
-     * Create a new JXPathBasicBeanInfo.
-     * @param clazz bean class
+     * Constructs a new JXPathBasicBeanInfo.
+     *
+     * @param clazz                       bean class
      * @param dynamicPropertyHandlerClass dynamic property handler class
      */
     public JXPathBasicBeanInfo(final Class clazz, final Class dynamicPropertyHandlerClass) {
@@ -75,22 +94,25 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
     }
 
     /**
-     * Returns true if objects of this class are treated as atomic
-     * objects which have no properties of their own.
-     * @return boolean
+     * Gets the DynamicPropertyHandler class for a dynamic class.
+     *
+     * @return the DynamicPropertyHandler class for a dynamic class.
      */
     @Override
-    public boolean isAtomic() {
-        return atomic;
+    public Class getDynamicPropertyHandlerClass() {
+        return dynamicPropertyHandlerClass;
     }
 
-    /**
-     * Return true if the corresponding objects have dynamic properties.
-     * @return boolean
-     */
     @Override
-    public boolean isDynamic() {
-        return dynamicPropertyHandlerClass != null;
+    public synchronized PropertyDescriptor getPropertyDescriptor(final String propertyName) {
+        if (propertyDescriptorMap == null) {
+            propertyDescriptorMap = new HashMap<>();
+            final PropertyDescriptor[] pds = getPropertyDescriptors();
+            for (final PropertyDescriptor pd : pds) {
+                propertyDescriptorMap.put(pd.getName(), pd);
+            }
+        }
+        return propertyDescriptorMap.get(propertyName);
     }
 
     @Override
@@ -98,14 +120,12 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
         if (propertyDescriptors == null) {
             if (clazz == Object.class) {
                 propertyDescriptors = new PropertyDescriptor[0];
-            }
-            else {
+            } else {
                 try {
                     BeanInfo bi;
                     if (clazz.isInterface()) {
                         bi = Introspector.getBeanInfo(clazz);
-                    }
-                    else {
+                    } else {
                         bi = Introspector.getBeanInfo(clazz, Object.class);
                     }
                     final PropertyDescriptor[] pds = bi.getPropertyDescriptors();
@@ -113,8 +133,7 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
                     System.arraycopy(pds, 0, descriptors, 0, pds.length);
                     Arrays.sort(descriptors, PROPERTY_DESCRIPTOR_COMPARATOR);
                     propertyDescriptors = descriptors;
-                }
-                catch (final IntrospectionException ex) {
+                } catch (final IntrospectionException ex) {
                     ex.printStackTrace();
                     return new PropertyDescriptor[0];
                 }
@@ -128,26 +147,24 @@ public class JXPathBasicBeanInfo implements JXPathBeanInfo {
         return result;
     }
 
+    /**
+     * Tests whether objects of this class are treated as atomic objects which have no properties of their own.
+     *
+     * @return whether objects of this class are treated as atomic objects which have no properties of their own.
+     */
     @Override
-    public synchronized PropertyDescriptor getPropertyDescriptor(final String propertyName) {
-        if (propertyDescriptorMap == null) {
-            propertyDescriptorMap = new HashMap();
-            final PropertyDescriptor[] pds = getPropertyDescriptors();
-            for (final PropertyDescriptor pd : pds) {
-                propertyDescriptorMap.put(pd.getName(), pd);
-            }
-        }
-        return (PropertyDescriptor) propertyDescriptorMap.get(propertyName);
+    public boolean isAtomic() {
+        return atomic;
     }
 
     /**
-     * For a dynamic class, returns the corresponding DynamicPropertyHandler
-     * class.
-     * @return Class
+     * Return true if the corresponding objects have dynamic properties.
+     *
+     * @return boolean
      */
     @Override
-    public Class getDynamicPropertyHandlerClass() {
-        return dynamicPropertyHandlerClass;
+    public boolean isDynamic() {
+        return dynamicPropertyHandlerClass != null;
     }
 
     @Override

@@ -14,13 +14,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
 
 /**
- * The common subclass for tree elements representing core operations like "+",
- * "- ", "*" etc.
+ * The common subclass for tree elements representing core operations like "+", "- ", "*" etc.
  */
 public abstract class CoreOperation extends Operation {
 
@@ -42,7 +42,8 @@ public abstract class CoreOperation extends Operation {
     protected static final int UNION_PRECEDENCE = 7;
 
     /**
-     * Create a new CoreOperation.
+     * Constructs a new CoreOperation.
+     *
      * @param args Expression[]
      */
     public CoreOperation(final Expression[] args) {
@@ -58,23 +59,47 @@ public abstract class CoreOperation extends Operation {
     public abstract Object computeValue(EvalContext context);
 
     /**
+     * Computes the precedence of the operation.
+     *
+     * @return int precedence
+     */
+    protected abstract int getPrecedence();
+
+    /**
      * Returns the XPath symbol for this operation, e.g. "+", "div", etc.
+     *
      * @return String symbol
      */
     public abstract String getSymbol();
 
     /**
-     * Returns true if the operation is not sensitive to the order of arguments,
-     * e.g. "=", "and" etc, and false if it is, e.g. "&lt;=", "div".
+     * Returns true if the operation is not sensitive to the order of arguments, e.g. "=", "and" etc, and false if it is, e.g. "&lt;=", "div".
+     *
      * @return boolean
      */
     protected abstract boolean isSymmetric();
 
     /**
-     * Computes the precedence of the operation.
-     * @return int precedence
+     * Wrap an expression in parens if necessary.
+     *
+     * @param expression other Expression
+     * @param left       whether {@code expression} is left of this one.
+     * @return String
      */
-    protected abstract int getPrecedence();
+    private String parenthesize(final Expression expression, final boolean left) {
+        final String s = expression.toString();
+        if (!(expression instanceof CoreOperation)) {
+            return s;
+        }
+        final int compared = getPrecedence() - ((CoreOperation) expression).getPrecedence();
+        if (compared < 0) {
+            return s;
+        }
+        if (compared == 0 && (isSymmetric() || left)) {
+            return s;
+        }
+        return '(' + s + ')';
+    }
 
     @Override
     public String toString() {
@@ -91,27 +116,5 @@ public abstract class CoreOperation extends Operation {
             buffer.append(parenthesize(args[i], i == 0));
         }
         return buffer.toString();
-    }
-
-    /**
-     * Wrap an expression in parens if necessary.
-     * @param expression other Expression
-     * @param left whether {@code expression} is left of this one.
-     * @return String
-     */
-    private String parenthesize(final Expression expression, final boolean left) {
-        final String s = expression.toString();
-        if (!(expression instanceof CoreOperation)) {
-            return s;
-        }
-        final int compared = getPrecedence() - ((CoreOperation) expression).getPrecedence();
-
-        if (compared < 0) {
-            return s;
-        }
-        if (compared == 0 && (isSymmetric() || left)) {
-            return s;
-        }
-        return '(' + s + ')';
     }
 }

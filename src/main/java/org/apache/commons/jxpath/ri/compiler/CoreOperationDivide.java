@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -25,7 +26,8 @@ import org.apache.commons.jxpath.ri.InfoSetUtil;
 public class CoreOperationDivide extends CoreOperation {
 
     /**
-     * Create a new CoreOperationDivide.
+     * Constructs a new CoreOperationDivide.
+     *
      * @param arg1 dividend
      * @param arg2 divisor
      */
@@ -46,12 +48,12 @@ public class CoreOperationDivide extends CoreOperation {
     }
 
     @Override
-    protected boolean isSymmetric() {
-        return false;
+    public String getSymbol() {
+        return "div";
     }
 
     @Override
-    public String getSymbol() {
-        return "div";
+    protected boolean isSymmetric() {
+        return false;
     }
 }

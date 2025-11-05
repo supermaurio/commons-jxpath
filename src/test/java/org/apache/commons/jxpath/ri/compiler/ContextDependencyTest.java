@@ -14,13 +14,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.ri.Parser;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Tests the determination of whether an expression is context dependent.
@@ -43,7 +44,6 @@ public class ContextDependencyTest extends AbstractJXPathTest {
 
     public void testContextDependency(final String xpath, final boolean expected) {
         final Expression expr = (Expression) Parser.parseExpression(xpath, new TreeCompiler());
-
         assertEquals(expected, expr.isContextDependent(), "Context dependency <" + xpath + ">");
     }
 }

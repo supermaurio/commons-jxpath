@@ -14,15 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 /**
+ * Processing instruction test.
  */
 public class ProcessingInstructionTest extends NodeTest {
+
     private final String target;
 
     /**
-     * Create a new ProcessingInstructionTest.
+     * Constructs a new ProcessingInstructionTest.
+     *
      * @param target string
      */
     public ProcessingInstructionTest(final String target) {
@@ -31,6 +35,7 @@ public class ProcessingInstructionTest extends NodeTest {
 
     /**
      * Gets the target.
+     *
      * @return String
      */
     public String getTarget() {

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.jdom;
 
 import java.util.Locale;
@@ -32,32 +33,37 @@ public class JDOMPointerFactory implements NodePointerFactory {
     /** Factory order constant */
     public static final int JDOM_POINTER_FACTORY_ORDER = 110;
 
+    /**
+     * Constructs a new instance.
+     */
+    public JDOMPointerFactory() {
+        // empty
+    }
+
+    @Override
+    public NodePointer createNodePointer(final NodePointer parent, final QName qName, final Object bean) {
+        if (bean instanceof Document) {
+            return new JDOMNodePointer(parent, bean);
+        }
+        if (bean instanceof Element) {
+            return new JDOMNodePointer(parent, bean);
+        }
+        return null;
+    }
+
+    @Override
+    public NodePointer createNodePointer(final QName qName, final Object bean, final Locale locale) {
+        if (bean instanceof Document) {
+            return new JDOMNodePointer(bean, locale);
+        }
+        if (bean instanceof Element) {
+            return new JDOMNodePointer(bean, locale);
+        }
+        return null;
+    }
+
     @Override
     public int getOrder() {
         return JDOM_POINTER_FACTORY_ORDER;
-    }
-
-    @Override
-    public NodePointer createNodePointer(
-            final QName name, final Object bean, final Locale locale) {
-        if (bean instanceof Document) {
-            return new JDOMNodePointer(bean, locale);
-        }
-        if (bean instanceof Element) {
-            return new JDOMNodePointer(bean, locale);
-        }
-        return null;
-    }
-
-    @Override
-    public NodePointer createNodePointer(
-            final NodePointer parent, final QName name, final Object bean) {
-        if (bean instanceof Document) {
-            return new JDOMNodePointer(parent, bean);
-        }
-        if (bean instanceof Element) {
-            return new JDOMNodePointer(parent, bean);
-        }
-        return null;
     }
 }

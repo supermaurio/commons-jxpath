@@ -14,28 +14,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import org.apache.commons.jxpath.BasicNodeSet;
-import org.apache.commons.jxpath.Pointer;
 import org.apache.commons.jxpath.ri.EvalContext;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
- * EvalContext that represents a union between other contexts - result
- * of a union operation like (a | b)
+ * EvalContext that represents a union between other contexts - result of a union operation like (a | b)
  */
 public class UnionContext extends NodeSetContext {
+
     private final EvalContext[] contexts;
     private boolean prepared;
 
     /**
-     * Create a new UnionContext.
+     * Constructs a new UnionContext.
+     *
      * @param parentContext parent context
-     * @param contexts child contexts
+     * @param contexts      child contexts
      */
     public UnionContext(final EvalContext parentContext, final EvalContext[] contexts) {
         super(parentContext, new BasicNodeSet());
@@ -52,7 +53,7 @@ public class UnionContext extends NodeSetContext {
         if (!prepared) {
             prepared = true;
             final BasicNodeSet nodeSet = (BasicNodeSet) getNodeSet();
-            final ArrayList pointers = new ArrayList();
+            final ArrayList<NodePointer> pointers = new ArrayList<>();
             for (final EvalContext ctx : contexts) {
                 while (ctx.nextSet()) {
                     while (ctx.nextNode()) {
@@ -64,9 +65,8 @@ public class UnionContext extends NodeSetContext {
                 }
             }
             sortPointers(pointers);
-
-            for (final Iterator it = pointers.iterator(); it.hasNext();) {
-                nodeSet.add((Pointer) it.next());
+            for (final Iterator<NodePointer> it = pointers.iterator(); it.hasNext();) {
+                nodeSet.add(it.next());
             }
         }
         return super.setPosition(position);

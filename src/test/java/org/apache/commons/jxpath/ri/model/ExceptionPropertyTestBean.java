@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
 import org.apache.commons.jxpath.TestBean;
@@ -22,15 +23,15 @@ import org.apache.commons.jxpath.TestBean;
  */
 public class ExceptionPropertyTestBean {
 
+    public TestBean getErrorBean() {
+        throw new IllegalStateException("errorBean");
+    }
+
     public String getErrorString() {
         throw new IllegalStateException("errorString");
     }
 
     public String[] getErrorStringArray() {
         throw new IllegalStateException("errorStringArray");
-    }
-
-    public TestBean getErrorBean() {
-        throw new IllegalStateException("errorBean");
     }
 }

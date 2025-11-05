@@ -14,122 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.issues;
-
-import java.util.HashMap;
-
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.AbstractJXPathTest;
-import org.apache.commons.jxpath.Pointer;
-import org.apache.commons.jxpath.ri.model.dynamic.DynamicPropertyPointer;
-
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 
-public class JXPath172DynamicTest extends AbstractJXPathTest
-{
+import java.util.HashMap;
+
+import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.Pointer;
+import org.apache.commons.jxpath.ri.model.dynamic.DynamicPropertyPointer;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+public class JXPath172DynamicTest extends AbstractJXPathTest {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    public void tearDown() throws Exception {
+    @AfterEach
+	public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
     }
 
-    @Test
-    public void testIssue172_propertyExistAndIsNotNull()
-    {
-        final JXPathContext context = getContext("ciao", false);
-        final Object bRet = context.selectSingleNode("value");
-        assertNotNull(bRet, "null!!");
-        assertEquals("ciao", bRet, "Is " + bRet.getClass());
-
-        final Pointer pointer = context.getPointer("value");
-        assertNotNull(pointer);
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertEquals("ciao", pointer.getValue());
-    }
-
-    @Test
-    public void testIssue172_propertyExistAndIsNull()
-    {
-        final JXPathContext context = getContext(null, false);
-        final Object bRet = context.selectSingleNode("value");
-        assertNull(bRet,"not null!!");
-
-        final Pointer pointer = context.getPointer("value");
-        assertNotNull(pointer);
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-    }
-
-    @Test
-    public void testIssue172_propertyDoesNotExist()
-    {
-        final JXPathContext context = getContext(null, false);
-        final Object bRet = context.selectSingleNode("unexisting");
-        assertNull(bRet);
-
-        final Pointer pointer = context.getPointer("unexisting");
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-
-    }
-
-    @Test
-    public void testIssue172_propertyDoesNotExist_Lenient()
-    {
-        final JXPathContext context = getContext(null, true);
-        final Object bRet = context.selectSingleNode("unexisting");
-        assertNull(bRet);
-
-        final Pointer pointer = context.getPointer("unexisting");
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-
-    }
-
-    @Test
-    public void testIssue172_nestedpropertyDoesNotExist_Lenient()
-    {
-        final JXPathContext context = getContext(null, true);
-        final Object bRet = context.selectSingleNode("value.unexisting");
-        assertNull(bRet);
-
-        final Pointer pointer = context.getPointer("value.unexisting");
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-
-    }
-
-    @Test
-    public void testIssue172_nestedpropertyDoesNotExist_NotLenient()
-    {
-        final JXPathContext context = getContext(null, false);
-        final Object bRet = context.selectSingleNode("value.unexisting");
-        assertNull(bRet);
-
-        final Pointer pointer = context.getPointer("value.unexisting");
-        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-
-    }
-
     /**
-     * Helper, returns a {@link JXPathContext} filled with a Map whose "value"
-     * key is associated to the passed {@code val} value.
+     * Helper, returns a {@link JXPathContext} filled with a Map whose "value" key is associated to the passed {@code val} value.
      *
      * @param val
      * @return A {@link JXPathContext}, never {@code null}.
      */
-    private JXPathContext getContext(final String val, final boolean lenient)
-    {
+    private JXPathContext getContext(final String val, final boolean lenient) {
         final HashMap map = new HashMap();
         // if (val!=null) // no diffs
         map.put("value", val);
@@ -139,4 +61,66 @@ public class JXPath172DynamicTest extends AbstractJXPathTest
         return context;
     }
 
+    @Test
+    public void testIssue172_nestedpropertyDoesNotExist_Lenient() {
+        final JXPathContext context = getContext(null, true);
+        final Object bRet = context.selectSingleNode("value.unexisting");
+        assertNull(bRet);
+        final Pointer pointer = context.getPointer("value.unexisting");
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_nestedpropertyDoesNotExist_NotLenient() {
+        final JXPathContext context = getContext(null, false);
+        final Object bRet = context.selectSingleNode("value.unexisting");
+        assertNull(bRet);
+        final Pointer pointer = context.getPointer("value.unexisting");
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_propertyDoesNotExist() {
+        final JXPathContext context = getContext(null, false);
+        final Object bRet = context.selectSingleNode("unexisting");
+        assertNull(bRet);
+        final Pointer pointer = context.getPointer("unexisting");
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_propertyDoesNotExist_Lenient() {
+        final JXPathContext context = getContext(null, true);
+        final Object bRet = context.selectSingleNode("unexisting");
+        assertNull(bRet);
+        final Pointer pointer = context.getPointer("unexisting");
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_propertyExistAndIsNotNull() {
+        final JXPathContext context = getContext("ciao", false);
+        final Object bRet = context.selectSingleNode("value");
+        assertNotNull(bRet, "null!!");
+        assertEquals("ciao", bRet, "Is " + bRet.getClass());
+        final Pointer pointer = context.getPointer("value");
+        assertNotNull(pointer);
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertEquals("ciao", pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_propertyExistAndIsNull() {
+        final JXPathContext context = getContext(null, false);
+        final Object bRet = context.selectSingleNode("value");
+        assertNull(bRet, "not null!!");
+        final Pointer pointer = context.getPointer("value");
+        assertNotNull(pointer);
+        assertEquals(DynamicPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
 }

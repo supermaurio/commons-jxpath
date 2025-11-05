@@ -14,10 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
-import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.junit.jupiter.api.Test;
 
@@ -25,22 +26,21 @@ import org.junit.jupiter.api.Test;
  * Test externally registered XML namespaces; JXPATH-97.
  */
 public class ExternalXMLNamespaceTest extends AbstractJXPathTest {
+
     protected JXPathContext context;
 
-    protected DocumentContainer createDocumentContainer(final String model) {
-        final DocumentContainer result = new DocumentContainer(AbstractJXPathTest.class
-                .getResource("ExternalNS.xml"), model);
-        // this setting only works for DOM, so no JDOM tests :|
-        result.setNamespaceAware(false);
-        return result;
-    }
-
     protected JXPathContext createContext(final String model) {
-        final JXPathContext context = JXPathContext
-                .newContext(createDocumentContainer(model));
+        final JXPathContext context = JXPathContext.newContext(createDocumentContainer(model));
         context.registerNamespace("A", "foo");
         context.registerNamespace("B", "bar");
         return context;
+    }
+
+    protected DocumentContainer createDocumentContainer(final String model) {
+        final DocumentContainer result = new DocumentContainer(AbstractJXPathTest.class.getResource("ExternalNS.xml"), model);
+        // this setting only works for DOM, so no JDOM tests :|
+        result.setNamespaceAware(false);
+        return result;
     }
 
     protected void doTest(final String xpath, final String model, final String expected) {
@@ -51,13 +51,12 @@ public class ExternalXMLNamespaceTest extends AbstractJXPathTest {
         doTest("/ElementA/@A:myAttr", model, "Mytype");
     }
 
-    protected void doTestElement(final String model) {
-        doTest("/ElementA/B:ElementB", model, "MY VALUE");
+    protected void doTestCreateAndSetAttribute(final String model) {
+        assertXPathCreatePathAndSetValue(createContext(model), "/ElementA/@A:newAttr", "newValue", "/ElementA[1]/@A:newAttr");
     }
 
-    protected void doTestCreateAndSetAttribute(final String model) {
-        assertXPathCreatePathAndSetValue(createContext(model),
-                "/ElementA/@A:newAttr", "newValue", "/ElementA[1]/@A:newAttr");
+    protected void doTestElement(final String model) {
+        doTest("/ElementA/B:ElementB", model, "MY VALUE");
     }
 
     @Test
@@ -66,13 +65,12 @@ public class ExternalXMLNamespaceTest extends AbstractJXPathTest {
     }
 
     @Test
-    public void testElementDOM() {
-        doTestElement(DocumentContainer.MODEL_DOM);
-    }
-
-    @Test
     public void testCreateAndSetAttributeDOM() {
         doTestCreateAndSetAttribute(DocumentContainer.MODEL_DOM);
     }
 
+    @Test
+    public void testElementDOM() {
+        doTestElement(DocumentContainer.MODEL_DOM);
+    }
 }

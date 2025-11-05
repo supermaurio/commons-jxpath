@@ -47,7 +47,7 @@ The <action> type attribute can be add,update,fix,remove.
   </properties>
   <body>
     <!-- The release date is the date RC is cut -->
-    <release version="1.4" date="YYYY-MM-DD" description="New features and bug fixes.">
+    <release version="1.4.0" date="YYYY-MM-DD" description="New features and bug fixes.">
       <!-- FIX -->
       <action issue="JXPATH-172" dev="britter" type="fix" due-to="Michele Vivoda">
         Clarify Javadoc of JXPathContext#getPointer.
@@ -100,19 +100,47 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
         [StepSecurity] CI: Harden GitHub Actions #66.
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Add missing Javadoc.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Fix PMD UnnecessaryFullyQualifiedName.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iterate(String).</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.iteratePointers(String).</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Add generics to JXPathContext.decimalFormats.</action>
       <action dev="ggregory" type="fix" due-to="strangelookingnerd">Migrate tests to JUnit5 #214.</action>
       <action dev="ggregory" type="fix" due-to="strangelookingnerd, Gary Gregory">Replace try-catch constructs in tests with assertThrows #215.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Use generics internally.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">NodeSet.getPointers() is now typed with generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">ServletContextHandler.collectPropertyNames(HashSet, Object) is now typed with generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate ClassLoaderUtil.ClassLoaderUtil().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate MethodLookupUtils.MethodLookupUtils().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate KeyManagerUtils.KeyManagerUtils().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate TypeUtils.TypeUtils().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate ValueUtils.ValueUtils().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">PageScopeContext.getAttributeNames() is now typed with generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Functions.getUsedNamespaces() is now typed with generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">JXPathException now reuses its superclass' Throwable cause.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Bump JXPathException serialVersionUID from 4306409701468017766L to 2L.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">JXPathContextFactoryConfigurationError now reuses its superclass' Throwable cause.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Bump JXPathContextFactoryConfigurationError serialVersionUID from 1L to 2L.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate SimplePathInterpreter.SimplePathInterpreter().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate JXPathServletContexts.JXPathServletContexts().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate JXPathIntrospector.JXPathIntrospector().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate InfoSetUtil.InfoSetUtil().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate Constants.Constants().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate Parser.Parser().</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">JXPathException.JXPathException(Throwable) now remembers its Throwable cause argument.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Make the private DOMNodePointer.id field final.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Make the private NullPointer.id field final.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Make the private NullPointer.qname field final.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">Make the private JDOMNodePointer.id field final.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">ExpressionContext.getContextNodeList() now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">BasicTypeConverter.unmodifiableCollection(Collection) now uses generics.</action>
       <!-- ADD -->
       <action issue="JXPATH-123" dev="mbenson" type="add">
         XPath function "ends-with" is not implemented (although "starts-with" is).
       </action>
       <!-- UPDATE -->
       <action dev="ggregory" type="update" due-to="Dependabot, Gary Gregory">
-        Bump commons-parent from 54 to 78 #45, #49, #64, #110, #121, #403, #167, #173, #176, #181, #185, #188, #196.
+        Bump commons-parent from 54 to 81 #45, #49, #64, #110, #121, #403, #167, #173, #176, #181, #185, #188, #196.
       </action>
       <action issue="JXPATH-184" dev="britter" type="update" due-to="britter, Gary Gregory">
         Bump Java to 8.
