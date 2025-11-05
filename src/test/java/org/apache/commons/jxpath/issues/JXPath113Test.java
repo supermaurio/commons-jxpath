@@ -40,10 +40,8 @@ public class JXPath113Test extends AbstractJXPathTest
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    @Override
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     @Test

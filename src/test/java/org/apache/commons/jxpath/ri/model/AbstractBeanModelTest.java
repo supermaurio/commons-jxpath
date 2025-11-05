@@ -59,10 +59,8 @@ public abstract class AbstractBeanModelTest extends AbstractJXPathTest {
 //        }
     }
 
-    @Override
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     protected abstract Object createContextBean();

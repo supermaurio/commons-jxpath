@@ -21,14 +21,13 @@ import java.util.Iterator;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.Pointer;
 
-import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import junit.framework.Assert;
+import junit.framework.TestCase;
 
 /**
  * Testcase proving JXPATH-118 issue with asPath() returning wrong names.
  */
-public class JXPath118Test
+public class JXPath118Test extends TestCase
 {
     @Override
     public void setUp() throws Exception {
@@ -39,18 +38,16 @@ public class JXPath118Test
     @Override
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
-
-    @Test
+    
     public void testJXPATH118IssueWithAsPath() throws Exception
     {
         final Object contextBean = new SomeChildClass();
         final JXPathContext context = JXPathContext.newContext(contextBean);
         final Iterator<Pointer> iteratePointers = context.iteratePointers("//*");
-        assertEquals("/bar", iteratePointers.next().asPath());
-        assertEquals("/baz", iteratePointers.next().asPath());
-        assertEquals("/foo", iteratePointers.next().asPath());
+        Assert.assertEquals("/bar", iteratePointers.next().asPath());
+        Assert.assertEquals("/baz", iteratePointers.next().asPath());
+        Assert.assertEquals("/foo", iteratePointers.next().asPath());
     }
 
     public static class SomeChildClass

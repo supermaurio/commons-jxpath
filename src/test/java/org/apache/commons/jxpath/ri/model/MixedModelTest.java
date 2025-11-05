@@ -68,9 +68,7 @@ public class MixedModelTest extends AbstractJXPathTest {
         vars.declareVariable("matrix", matrix);
     }
 
-    @Override
     protected void tearDown() throws Exception {
-        super.tearDown();
         System.clearProperty("jxpath.class.allow");
     }
 

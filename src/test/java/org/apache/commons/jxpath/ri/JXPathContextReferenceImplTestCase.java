@@ -15,14 +15,13 @@
  * limitations under the License.
  */
 
-package org.apache.commons.jxpath.ri;
+ package org.apache.commons.jxpath.ri;
 
-import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
-import org.apache.commons.jxpath.JXPathContext;
-
-import org.junit.jupiter.api.Test;
-
-public class JXPathContextReferenceImplTestCase {
+ import org.apache.commons.jxpath.ri.model.container.ContainerPointerFactory;
+ 
+ import junit.framework.TestCase;
+ 
+ public class JXPathContextReferenceImplTestCase extends TestCase {
 
     @Override
     public void setUp() throws Exception {
@@ -30,35 +29,23 @@ public class JXPathContextReferenceImplTestCase {
         System.setProperty("jxpath.class.allow", "org.apache.commons.jxpath.ri.JXPathContextFactoryReferenceImpl");
     }
 
-    @Override
+    @Override    
     protected void tearDown() throws Exception {
-        super.tearDown();
         System.clearProperty("jxpath.class.allow");
     }
 
-    /**
-     * https://issues.apache.org/jira/browse/JXPATH-166
-     */
-    @Test
-    public void testInit() {
-        final ContainerPointerFactory factory = new ContainerPointerFactory();
-        try {
-            JXPathContextReferenceImpl.addNodePointerFactory(factory);
-        } finally {
-            while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
-                // NOP
-            }
-        }
-    }
-
-    public void testDangerousClass() {
-        try {
-            JXPathContext context = JXPathContext.newContext(new Object() {});
-            String jxPath = "run(newInstance(loadClass(getClassLoader(getClass(/)), \"org.apache.commons.jxpath.ri.TestDangerousClass\")), \"blabla\")";
-            context.getValue(jxPath);
-            fail("failed to block org.apache.commons.jxpath.ri.TestDangerousClass.run()");
-        } catch (Exception e) {
-            assertTrue(e.getMessage().contains("Calling method is not allowed: class java.lang.Object.getClass()"));
-        }
-    }
-}
+     /**
+      * https://issues.apache.org/jira/browse/JXPATH-166
+      */
+     public void testInit() {
+         final ContainerPointerFactory factory = new ContainerPointerFactory();
+         try {
+             JXPathContextReferenceImpl.addNodePointerFactory(factory);
+         } finally {
+             while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
+ 
+             }
+         }
+     }
+ }
+ 

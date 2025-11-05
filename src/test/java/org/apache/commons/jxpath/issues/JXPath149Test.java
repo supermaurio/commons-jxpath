@@ -27,10 +27,9 @@ public class JXPath149Test extends AbstractJXPathTest {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
-    @Override
+
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     @Test

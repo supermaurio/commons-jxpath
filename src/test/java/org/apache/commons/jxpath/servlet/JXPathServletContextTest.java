@@ -40,20 +40,21 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
 /**
  */
 public class JXPathServletContextTest {
 
-    @Override
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     private ServletContext getServletContext() {

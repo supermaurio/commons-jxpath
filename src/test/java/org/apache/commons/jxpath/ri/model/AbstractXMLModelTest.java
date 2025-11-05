@@ -53,9 +53,7 @@ public abstract class AbstractXMLModelTest extends AbstractJXPathTest {
         }
     }
 
-    @Override
     protected void tearDown() throws Exception {
-        super.tearDown();
         System.clearProperty("jxpath.class.allow");
     }
 

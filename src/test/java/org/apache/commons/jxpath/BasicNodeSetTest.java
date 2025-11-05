@@ -19,6 +19,7 @@ package org.apache.commons.jxpath;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
@@ -45,10 +46,9 @@ public class BasicNodeSetTest extends AbstractJXPathTest {
         nodeSet = new BasicNodeSet();
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     /**
