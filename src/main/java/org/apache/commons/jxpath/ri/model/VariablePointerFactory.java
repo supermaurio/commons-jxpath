@@ -27,7 +27,7 @@ import org.apache.commons.jxpath.ri.QName;
  * @since JXPath 1.3
  */
 public class VariablePointerFactory implements NodePointerFactory {
-    /** factory order constant */
+    /** Factory order constant */
     public static final int VARIABLE_POINTER_FACTORY_ORDER = 890;
 
     /**
@@ -45,7 +45,7 @@ public class VariablePointerFactory implements NodePointerFactory {
         }
 
         /**
-         * Get the original (unwrapped) context.
+         * Gets the original (unwrapped) context.
          *
          * @return JXPathContext.
          */

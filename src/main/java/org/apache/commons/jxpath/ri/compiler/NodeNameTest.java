@@ -43,7 +43,7 @@ public class NodeNameTest extends NodeTest {
     }
 
     /**
-     * Get the node name.
+     * Gets the node name.
      * @return QName
      */
     public QName getNodeName() {
@@ -51,7 +51,7 @@ public class NodeNameTest extends NodeTest {
     }
 
     /**
-     * Get the ns URI.
+     * Gets the ns URI.
      * @return String
      */
     public String getNamespaceURI() {
@@ -60,7 +60,7 @@ public class NodeNameTest extends NodeTest {
 
     /**
      * Learn whether this is a wildcard test.
-     * @return <code>true</code> if the node name is "*".
+     * @return {@code true} if the node name is "*".
      */
     public boolean isWildcard() {
         return qname.getName().equals("*");

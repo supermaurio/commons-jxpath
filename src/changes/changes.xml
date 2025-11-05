@@ -39,14 +39,16 @@ then tweak the source formatting if necessary and regenerate, then commit
 The <action> type attribute can be add,update,fix,remove.
 -->
 
-<document>
+<document xmlns="http://maven.apache.org/changes/1.0.0"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          xsi:schemaLocation="http://maven.apache.org/changes/1.0.0 http://maven.apache.org/xsd/changes-1.0.0.xsd">
   <properties>
     <title>Release Notes</title>
   </properties>
 
   <body>
     <!-- The release date is the date RC is cut -->
-    <release version="1.4" date="20YY-MM-DD" description="New features and bug fixes.">
+    <release version="1.4" date="YYYY-MM-DD" description="New features and bug fixes.">
       <!-- FIX -->
       <action issue="JXPATH-172" dev="britter" type="fix" due-to="Michele Vivoda">
         Clarify Javadoc of JXPathContext#getPointer.
@@ -84,6 +86,21 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="fix">
         Fix possible NPE in PackageFunctions.getFunction(String, String, Object[]).
       </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        JDOMNodePointer.compareChildNodePointers() now throws IllegalStateException instead of RuntimeException.
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        ValueUtils.setValue() now throws IllegalArgumentException instead of RuntimeException.
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        ClassLoaderUtil.toCanonicalName() now calls Objects.requireNonNull() instead of throwing a RuntimeException.
+      </action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">
+        XMLDocumentContainer.XMLDocumentContainer(Source) now calls Objects.requireNonNull() instead of throwing a RuntimeException.
+      </action>
+      <action dev="ggregory" type="fix" due-to="step-security-bot, Gary Gregory">
+        [StepSecurity] ci: Harden GitHub Actions #66.
+      </action>            
       <!-- ADD -->
       <action issue="JXPATH-123" dev="mbenson" type="add">
         XPath function "ends-with" is not implemented (although "starts-with" is).
@@ -95,8 +112,8 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="update" due-to="britter, Gary Gregory">
         Bump JUnit 3.8.1 to 4.13.2.
       </action>
-      <action dev="ggregory" type="update" due-to="Dependabot">
-        Bump commons-logging from 1.1.1 to 1.2 #34.
+      <action dev="ggregory" type="update" due-to="Dependabot, Gary Gregory">
+        Bump commons-logging from 1.1.1 to 1.3.2 #34, #129, #147.
       </action>
       <action dev="ggregory" type="update" due-to="Dependabot">
         Bump commons-beanutils from 1.8.2 to 1.9.4 #24.
@@ -108,7 +125,10 @@ The <action> type attribute can be add,update,fix,remove.
         Bump servlet-api from 2.4 to 2.5 #29.
       </action>
       <action dev="ggregory" type="update" due-to="Dependabot">
-        Bump commons-parent from 54 to 56 #45, #49.
+        Bump commons-parent from 54 to 69 #45, #49, #64, #110, #121, #403.
+      </action>
+      <action dev="ggregory" type="update" due-to="Dependabot">
+        Bump JDOM from jdom:jdom 1.0 to org.jdom:jdom 1.1.3.
       </action>
     </release>
   </body>

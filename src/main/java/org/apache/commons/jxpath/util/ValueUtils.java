@@ -478,23 +478,15 @@ public class ValueUtils {
             final PropertyDescriptor propertyDescriptor, final int index, final Object value) {
         if (propertyDescriptor instanceof IndexedPropertyDescriptor) {
             try {
-                final IndexedPropertyDescriptor ipd =
-                    (IndexedPropertyDescriptor) propertyDescriptor;
+                final IndexedPropertyDescriptor ipd = (IndexedPropertyDescriptor) propertyDescriptor;
                 final Method method = ipd.getIndexedWriteMethod();
                 if (method != null) {
-                    method.invoke(
-                        bean,
-                            Integer.valueOf(index),
-                            convert(value, ipd.getIndexedPropertyType()));
+                    method.invoke(bean, Integer.valueOf(index), convert(value, ipd.getIndexedPropertyType()));
                     return;
                 }
             }
             catch (final Exception ex) {
-                throw new RuntimeException(
-                    "Cannot access property: "
-                        + propertyDescriptor.getName()
-                        + ", "
-                        + ex.getMessage());
+                throw new IllegalArgumentException("Cannot access property: " + propertyDescriptor.getName() + ", " + ex.getMessage());
             }
         }
         // We will fall through if there is no indexed read
@@ -506,8 +498,7 @@ public class ValueUtils {
             setValue(bean, propertyDescriptor, value);
         }
         else {
-            throw new RuntimeException(
-                "Not a collection: " + propertyDescriptor.getName());
+            throw new IllegalArgumentException("Not a collection: " + propertyDescriptor.getName());
         }
     }
 
@@ -531,24 +522,16 @@ public class ValueUtils {
      * @return DynamicPropertyHandler
      */
     public static DynamicPropertyHandler getDynamicPropertyHandler(final Class clazz) {
-        DynamicPropertyHandler handler =
-            (DynamicPropertyHandler) dynamicPropertyHandlerMap.get(clazz);
-        if (handler == null) {
+        return (DynamicPropertyHandler) dynamicPropertyHandlerMap.computeIfAbsent(clazz, k -> {
             try {
-                handler = (DynamicPropertyHandler) clazz.newInstance();
-            }
+                return (DynamicPropertyHandler) clazz.getConstructor().newInstance();
+            } 
             catch (final Exception ex) {
-                throw new JXPathException(
-                    "Cannot allocate dynamic property handler of class "
-                        + clazz.getName(),
-                    ex);
+                throw new JXPathException("Cannot allocate dynamic property handler of class " + clazz.getName(), ex);
             }
-            dynamicPropertyHandlerMap.put(clazz, handler);
-        }
-        return handler;
+        });
     }
 
-    // -------------------------------------------------------- Private Methods
     //
     //  The rest of the code in this file was copied FROM
     //  org.apache.commons.beanutils.PropertyUtil. We don't want to introduce
@@ -556,9 +539,9 @@ public class ValueUtils {
     //
 
     /**
-     * Return an accessible method (that is, one that can be invoked via
+     * Gets an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified Method.  If no such method
-     * can be found, return <code>null</code>.
+     * can be found, return {@code null}.
      *
      * @param method The method that we wish to call
      * @return Method
@@ -605,10 +588,10 @@ public class ValueUtils {
     }
 
     /**
-     * Return an accessible method (that is, one that can be invoked via
+     * Gets an accessible method (that is, one that can be invoked via
      * reflection) that implements the specified method, by scanning through
      * all implemented interfaces and subinterfaces.  If no such Method
-     * can be found, return <code>null</code>.
+     * can be found, return {@code null}.
      *
      * @param clazz Parent class for the interfaces to be checked
      * @param methodName Method name of the method we wish to call

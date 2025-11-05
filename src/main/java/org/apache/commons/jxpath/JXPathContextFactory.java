@@ -80,8 +80,8 @@ public abstract class JXPathContextFactory {
      * </li>
      * <li>
      * Use the Services API (as detailed in the JAR specification), if
-     * available, to determine the classname. The Services API will look
-     * for a classname in the file
+     * available, to determine the class name. The Services API will look
+     * for a class name in the file
      * <code>META- INF/services/<i>org.apache.commons.jxpath.
      * JXPathContextFactory</i></code> in jars available to the runtime.
      * </li>
@@ -102,9 +102,9 @@ public abstract class JXPathContextFactory {
         JXPathContextFactory factoryImpl;
         try {
             final Class clazz = ClassLoaderUtil.getClass( FACTORY_IMPL_NAME, true );
-            factoryImpl = (JXPathContextFactory) clazz.newInstance();
+            factoryImpl = (JXPathContextFactory) clazz.getConstructor().newInstance();
         }
-        catch (final ClassNotFoundException | IllegalAccessException | InstantiationException ie) {
+        catch (final ReflectiveOperationException ie) {
             throw new JXPathContextFactoryConfigurationError(ie);
         }
         return factoryImpl;
@@ -124,7 +124,6 @@ public abstract class JXPathContextFactory {
         JXPathContext parentContext,
         Object contextBean);
 
-    // -------------------- private methods --------------------
     // This code is duplicated in all factories.
     // Keep it in sync or move it to a common place
     // Because it's small probably it's easier to keep it here

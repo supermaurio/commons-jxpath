@@ -126,8 +126,6 @@ public class MixedModelTest extends JXPathTestCase {
             "$container/vendor[1]/location[2]/address[1]/city[1]");
     }
 
-    // ----------------------------------------------------------------------
-
     public void testBeanPrimitive() {
         assertXPathValueAndPointer(context, "string", "string", "/string");
     }
@@ -175,8 +173,6 @@ public class MixedModelTest extends JXPathTestCase {
             "Fruit Market",
             "/container/vendor[1]/location[2]/address[1]/city[1]");
     }
-
-    // ----------------------------------------------------------------------
 
     public void testMapPrimitive() {
         assertXPathValueAndPointer(
@@ -235,8 +231,6 @@ public class MixedModelTest extends JXPathTestCase {
             "/map[@name='container']"
                 + "/vendor[1]/location[2]/address[1]/city[1]");
     }
-
-    // ----------------------------------------------------------------------
 
     public void testListPrimitive() {
         assertXPathValueAndPointer(context, "list[1]", "string", "/list[1]");

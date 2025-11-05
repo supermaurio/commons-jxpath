@@ -33,10 +33,10 @@ public abstract class PropertyPointer extends NodePointer {
 
     public static final int UNSPECIFIED_PROPERTY = Integer.MIN_VALUE;
 
-    /** property index */
+    /** Property index */
     protected int propertyIndex = UNSPECIFIED_PROPERTY;
 
-    /** owning object */
+    /** Owning object */
     protected Object bean;
 
     /**
@@ -49,7 +49,7 @@ public abstract class PropertyPointer extends NodePointer {
     }
 
     /**
-     * Get the property index.
+     * Gets the property index.
      * @return int index
      */
     public int getPropertyIndex() {
@@ -57,7 +57,7 @@ public abstract class PropertyPointer extends NodePointer {
     }
 
     /**
-     * Set the property index.
+     * Sets the property index.
      * @param index property index
      */
     public void setPropertyIndex(final int index) {
@@ -68,7 +68,7 @@ public abstract class PropertyPointer extends NodePointer {
     }
 
     /**
-     * Get the parent bean.
+     * Gets the parent bean.
      * @return Object
      */
     public Object getBean() {
@@ -84,13 +84,13 @@ public abstract class PropertyPointer extends NodePointer {
     }
 
     /**
-     * Get the property name.
+     * Gets the property name.
      * @return String property name.
      */
     public abstract String getPropertyName();
 
     /**
-     * Set the property name.
+     * Sets the property name.
      * @param propertyName property name to set.
      */
     public abstract void setPropertyName(String propertyName);
@@ -102,7 +102,7 @@ public abstract class PropertyPointer extends NodePointer {
     public abstract int getPropertyCount();
 
     /**
-     * Get the names of the included properties.
+     * Gets the names of the included properties.
      * @return String[]
      */
     public abstract String[] getPropertyNames();

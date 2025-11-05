@@ -109,7 +109,7 @@ public void tearDown() {
     try {
       context.selectSingleNode(EXAMPLE_CLASS_NAME+".getMessage()");
       fail("We should not be able to load "+EXAMPLE_CLASS_NAME+".");
-    } catch( final Exception e ) {
+    } catch ( final Exception e ) {
       assertTrue( e instanceof JXPathException );
     }
   }
@@ -124,7 +124,7 @@ public void tearDown() {
     try {
       value = context.selectSingleNode(EXAMPLE_CLASS_NAME+".getMessage()");
       assertEquals("an example class", value);
-    } catch( final Exception e ) {
+    } catch ( final Exception e ) {
       fail(e.getMessage());
     }
   }
@@ -156,7 +156,7 @@ public void tearDown() {
     } catch (final IllegalArgumentException | IllegalAccessException e) {
       fail(e.getMessage());
     } catch (final InvocationTargetException e) {
-      if( e.getCause() instanceof RuntimeException ) {
+      if (e.getCause() instanceof RuntimeException) {
         // Allow the runtime exception to propagate up.
         throw (RuntimeException) e.getCause();
       }
@@ -173,7 +173,7 @@ public void tearDown() {
    * whether the parent can/has loaded it.
    *
    */
-  private static class TestClassLoader extends ClassLoader {
+  private static final class TestClassLoader extends ClassLoader {
     private Class testCaseClass = null;
 
     public TestClassLoader(final ClassLoader classLoader) {
@@ -182,11 +182,11 @@ public void tearDown() {
 
     @Override
     public synchronized Class loadClass(final String name, final boolean resolved) throws ClassNotFoundException {
-      if( EXAMPLE_CLASS_NAME.equals(name) ) {
+      if ( EXAMPLE_CLASS_NAME.equals(name) ) {
         throw new ClassNotFoundException();
       }
-      else if( TEST_CASE_CLASS_NAME.equals(name) ) {
-        if( testCaseClass == null ) {
+      else if ( TEST_CASE_CLASS_NAME.equals(name) ) {
+        if ( testCaseClass == null ) {
           final URL clazzUrl = this.getParent().getResource("org/apache/commons/jxpath/util/ClassLoaderUtilTest.class");
 
           final ByteArrayOutputStream out = new ByteArrayOutputStream();
@@ -197,11 +197,11 @@ public void tearDown() {
             for( int read = in.read(buffer); read > -1; read = in.read(buffer) ) {
               out.write(buffer, 0, read);
             }
-          } catch( final IOException e ) {
+          } catch ( final IOException e ) {
             throw new ClassNotFoundException("Could not read class from resource "+clazzUrl+".", e);
           } finally {
-            try { in.close(); } catch( final Exception e ) { }
-            try { out.close(); } catch( final Exception e ) { }
+            try { in.close(); } catch ( final Exception e ) { }
+            try { out.close(); } catch ( final Exception e ) { }
           }
 
           final byte[] clazzBytes = out.toByteArray();

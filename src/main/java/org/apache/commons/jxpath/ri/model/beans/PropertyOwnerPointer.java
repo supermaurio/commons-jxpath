@@ -115,7 +115,7 @@ public abstract class PropertyOwnerPointer extends NodePointer {
     /**
      * Learn whether <code>name</code> is a valid child name for this PropertyOwnerPointer.
      * @param name the QName to test
-     * @return <code>true</code> if <code>QName</code> is a valid property name.
+     * @return {@code true} if <code>QName</code> is a valid property name.
      * @since JXPath 1.3
      */
     public boolean isValidProperty(final QName name) {
@@ -168,7 +168,7 @@ public abstract class PropertyOwnerPointer extends NodePointer {
     }
 
     /**
-     * Get a PropertyPointer for this PropertyOwnerPointer.
+     * Gets a PropertyPointer for this PropertyOwnerPointer.
      * @return PropertyPointer
      */
     public abstract PropertyPointer getPropertyPointer();

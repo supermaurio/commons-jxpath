@@ -25,13 +25,13 @@ import org.apache.commons.jxpath.ri.model.NodePointerFactory;
 
 /**
  * Implements NodePointerFactory for DynaBeans.
- * See <a href="http://commons.apache.org/beanutils/">
+ * See <a href="https://commons.apache.org/beanutils/">
  * Apache Commons BeanUtils
  * </a>
  */
 public class DynaBeanPointerFactory implements NodePointerFactory {
 
-    /** factory order constant */
+    /** Factory order constant */
     public static final int DYNA_BEAN_POINTER_FACTORY_ORDER = 700;
 
     @Override

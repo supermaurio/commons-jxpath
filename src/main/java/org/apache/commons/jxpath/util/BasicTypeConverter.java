@@ -378,12 +378,12 @@ public class BasicTypeConverter implements TypeConverter {
             // TODO ? https://pmd.sourceforge.io/pmd-6.50.0/pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor
             return new BigDecimal(value); // NOPMD
         }
-        final String classname = type.getName();
+        final String className = type.getName();
         Class initialValueType = null;
-        if ("java.util.concurrent.atomic.AtomicInteger".equals(classname)) {
+        if ("java.util.concurrent.atomic.AtomicInteger".equals(className)) {
             initialValueType = int.class;
         }
-        if ("java.util.concurrent.atomic.AtomicLong".equals(classname)) {
+        if ("java.util.concurrent.atomic.AtomicLong".equals(className)) {
             initialValueType = long.class;
         }
         if (initialValueType != null) {
@@ -395,7 +395,7 @@ public class BasicTypeConverter implements TypeConverter {
                                         value));
             }
             catch (final Exception e) {
-                throw new JXPathTypeConversionException(classname, e);
+                throw new JXPathTypeConversionException(className, e);
             }
         }
         return null;
@@ -429,7 +429,7 @@ public class BasicTypeConverter implements TypeConverter {
         if (!type.isInterface()
                 && (type.getModifiers() & Modifier.ABSTRACT) == 0) {
             try {
-                return (Collection) type.newInstance();
+                return (Collection) type.getConstructor().newInstance();
             }
             catch (final Exception ex) {
                 throw new JXPathInvalidAccessException(
@@ -448,7 +448,7 @@ public class BasicTypeConverter implements TypeConverter {
     }
 
     /**
-     * Get an unmodifiable version of a collection.
+     * Gets an unmodifiable version of a collection.
      * @param collection to wrap
      * @return Collection
      */

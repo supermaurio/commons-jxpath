@@ -380,13 +380,13 @@ import org.apache.commons.jxpath.util.KeyManagerUtils;
  * depending on the last value configured with {@link #setLenient(boolean)}:</p>
  *
  *  <ol style='list-style:upper-alpha'>
- *      <li>If <code>lenient</code> is <code>false</code> (default) - methods
+ *      <li>If <code>lenient</code> is {@code false} (default) - methods
  *          will throw {@link JXPathNotFoundException}.
- *      <li>If <code>lenient</code> is <code>true</code> - methods will throw
+ *      <li>If <code>lenient</code> is {@code true} - methods will throw
  *          no exception and return a value appropriate for that method to
- *          express the absence: might be a Java <code>null</code> or a
+ *          express the absence: might be a Java {@code null} or a
  *          {@link Pointer} whose {@link Pointer#getValue()} returns
- *          <code>null</code>, depends on the method.
+ *          {@code null}, depends on the method.
  *  </ol>
  * </li>
  * </ul>
@@ -396,9 +396,8 @@ import org.apache.commons.jxpath.util.KeyManagerUtils;
  * Language (XPath) Version 1.0</a><br><br>
  *
  * You will also find more information and examples in
- * <a href="http://commons.apache.org/jxpath/users-guide.html">
+ * <a href="https://commons.apache.org/jxpath/users-guide.html">
  * JXPath User's Guide</a>
- *
  */
 public abstract class JXPathContext {
     private static volatile JXPathContextFactory contextFactory;
@@ -407,13 +406,13 @@ public abstract class JXPathContext {
     private static final PackageFunctions GENERIC_FUNCTIONS =
         new PackageFunctions("", null);
 
-    /** parent context */
+    /** Parent context */
     protected JXPathContext parentContext;
-    /** context bean */
+    /** Context bean */
     protected Object contextBean;
-    /**  variables */
+    /**  Variables */
     protected Variables vars;
-    /** functions */
+    /** Functions */
     protected Functions functions;
     /** AbstractFactory */
     protected AbstractFactory factory;
@@ -421,7 +420,7 @@ public abstract class JXPathContext {
     protected IdentityManager idManager;
     /** KeyManager */
     protected KeyManager keyManager;
-    /** decimal format map */
+    /** Decimal format map */
     protected HashMap decimalFormats;
 
     protected JXPathFilter filter;
@@ -577,7 +576,7 @@ public abstract class JXPathContext {
     }
 
     /**
-     * Set the locale for this context.  The value of the "lang"
+     * Sets the locale for this context.  The value of the "lang"
      * attribute as well as the lang() function will be
      * affected by the locale.  By default, JXPath uses
      * <code>Locale.getDefault()</code>
@@ -637,7 +636,7 @@ public abstract class JXPathContext {
     }
 
     /**
-     * Get the named DecimalFormatSymbols.
+     * Gets the named DecimalFormatSymbols.
      * @param name key
      * @return DecimalFormatSymbols
      * @see #setDecimalFormatSymbols(String, DecimalFormatSymbols)
@@ -819,14 +818,14 @@ public abstract class JXPathContext {
      * properties in the graph</a> the behavior depends on the value that has
      * been configured with {@link #setLenient(boolean)}:</p>
      * <ul>
-     * <li> <code>false</code> (default) the method will throw a
+     * <li> {@code false} (default) the method will throw a
      * {@link JXPathNotFoundException}.
-     * <li> <code>true</code> the method returns a pointer whose
+     * <li> {@code true} the method returns a pointer whose
      * {@link Pointer#getValue()} method will always return null.
      * </ul>
      *
      * @param xpath desired
-     * @return Pointer A {@link Pointer}, never <code>null</code>.
+     * @return Pointer A {@link Pointer}, never {@code null}.
      * @throws JXPathNotFoundException see method description.
      */
     public abstract Pointer getPointer(String xpath);
@@ -958,7 +957,7 @@ public abstract class JXPathContext {
     }
 
     /**
-     * Get the prefix associated with the specifed namespace URI.
+     * Gets the prefix associated with the specifed namespace URI.
      * @param namespaceURI the ns URI to check.
      * @return String prefix
      * @since JXPath 1.3
@@ -995,7 +994,7 @@ public abstract class JXPathContext {
     }
 
     /**
-     * Set the ExceptionHandler used by this context, if any.
+     * Sets the ExceptionHandler used by this context, if any.
      * @param exceptionHandler to set
      * @since 1.4
      */

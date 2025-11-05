@@ -97,8 +97,6 @@ public abstract class XMLModelTestCase extends JXPathTestCase {
         assertEquals("XML Signature mismatch: ", signature, sig);
     }
 
-    // ------------------------------------------------ Individual Test Methods
-
     public void testDocumentOrder() {
         assertDocumentOrder(
             context,

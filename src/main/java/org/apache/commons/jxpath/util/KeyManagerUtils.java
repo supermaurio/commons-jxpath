@@ -32,7 +32,7 @@ public class KeyManagerUtils {
     /**
      * Adapt KeyManager to implement ExtendedKeyManager.
      */
-    private static class SingleNodeExtendedKeyManager implements
+    private static final class SingleNodeExtendedKeyManager implements
             ExtendedKeyManager {
         private final KeyManager delegate;
 
@@ -61,7 +61,7 @@ public class KeyManagerUtils {
     }
 
     /**
-     * Get an ExtendedKeyManager from the specified KeyManager.
+     * Gets an ExtendedKeyManager from the specified KeyManager.
      * @param keyManager to adapt, if necessary
      * @return <code>keyManager</code> if it implements ExtendedKeyManager
      *         or a basic single-result ExtendedKeyManager that delegates to

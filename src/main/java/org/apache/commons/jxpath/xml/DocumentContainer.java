@@ -73,7 +73,7 @@ public class DocumentContainer extends XMLParser2 implements Container {
      * Add a class of a custom XML parser.
      * Parsers for the models "DOM" and "JDOM" are pre-registered.
      * @param model model name
-     * @param parserClassName parser classname
+     * @param parserClassName parser class name
      */
     public static void registerXMLParser(final String model, final String parserClassName) {
         parserClasses.put(model, parserClassName);
@@ -91,7 +91,7 @@ public class DocumentContainer extends XMLParser2 implements Container {
     }
 
     /**
-     * Construct a new DocumentContainer.
+     * Constructs a new DocumentContainer.
      * @param xmlURL is a URL for an XML file. Use getClass().getResource
      *               (resourceName) to load XML from a resource file.
      *
@@ -172,22 +172,18 @@ public class DocumentContainer extends XMLParser2 implements Container {
      * @return XMLParser
      */
     private static XMLParser getParser(final String model) {
-        XMLParser parser = (XMLParser) parsers.get(model);
-        if (parser == null) {
+        return (XMLParser) parsers.computeIfAbsent(model, k -> {
             final String className = (String) parserClasses.get(model);
             if (className == null) {
                 throw new JXPathException("Unsupported XML model: " + model);
             }
             try {
                 final Class clazz = ClassLoaderUtil.getClass(className, true);
-                parser = (XMLParser) clazz.newInstance();
+                return (XMLParser) clazz.getConstructor().newInstance();
             }
             catch (final Exception ex) {
-                throw new JXPathException(
-                    "Cannot allocate XMLParser: " + className, ex);
+                throw new JXPathException("Cannot allocate XMLParser: " + className, ex);
             }
-            parsers.put(model, parser);
-        }
-        return parser;
+        });
     }
 }

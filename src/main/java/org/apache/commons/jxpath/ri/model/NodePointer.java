@@ -142,7 +142,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the NamespaceResolver associated with this NodePointer.
+     * Gets the NamespaceResolver associated with this NodePointer.
      * @return NamespaceResolver
      */
     public NamespaceResolver getNamespaceResolver() {
@@ -153,7 +153,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Set the NamespaceResolver for this NodePointer.
+     * Sets the NamespaceResolver for this NodePointer.
      * @param namespaceResolver NamespaceResolver
      */
     public void setNamespaceResolver(final NamespaceResolver namespaceResolver) {
@@ -161,7 +161,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the parent pointer.
+     * Gets the parent pointer.
      * @return NodePointer
      */
     public NodePointer getParent() {
@@ -173,7 +173,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the immediate parent pointer.
+     * Gets the immediate parent pointer.
      * @return NodePointer
      */
     public NodePointer getImmediateParentPointer() {
@@ -181,7 +181,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Set to true if the pointer represents the "attribute::" axis.
+     * Sets to true if the pointer represents the "attribute::" axis.
      * @param attribute boolean
      */
     public void setAttribute(final boolean attribute) {
@@ -242,7 +242,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Set the index of this NodePointer.
+     * Sets the index of this NodePointer.
      * @param index int
      */
     public void setIndex(final int index) {
@@ -250,7 +250,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Returns <code>true</code> if the value of the pointer is an array or
+     * Returns {@code true} if the value of the pointer is an array or
      * a Collection.
      * @return boolean
      */
@@ -368,7 +368,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the root node.
+     * Gets the root node.
      * @return Object value of this pointer's root (top parent).
      */
     @Override
@@ -620,7 +620,7 @@ public abstract class NodePointer implements Pointer {
      * Returns true if the supplied prefix represents the
      * default namespace in the context of the current node.
      * @param prefix the prefix to check
-     * @return <code>true</code> if prefix is default
+     * @return {@code true} if prefix is default
      */
     protected boolean isDefaultNamespace(final String prefix) {
         if (prefix == null) {
@@ -632,7 +632,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the default ns uri
+     * Gets the default ns uri
      * @return String uri
      */
     protected String getDefaultNamespaceURI() {
@@ -809,7 +809,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Set the exceptionHandler of this NodePointer.
+     * Sets the exceptionHandler of this NodePointer.
      * @param exceptionHandler the ExceptionHandler to set
      */
     public void setExceptionHandler(final ExceptionHandler exceptionHandler) {
@@ -877,7 +877,7 @@ public abstract class NodePointer implements Pointer {
     }
 
     /**
-     * Get the AbstractFactory associated with the specified JXPathContext.
+     * Gets the AbstractFactory associated with the specified JXPathContext.
      * @param context JXPathContext
      * @return AbstractFactory
      */

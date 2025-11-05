@@ -21,6 +21,7 @@ import org.apache.commons.jxpath.ri.SystemPropertyJXPathFilter;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * Port of class loading methods from <code>org.apache.commons.lang3.ClassUtils</code> from
@@ -62,7 +63,6 @@ public class ClassLoaderUtil {
     }
 
     // Class loading
-    // ----------------------------------------------------------------------
     /**
      * Returns the class represented by <code>className</code> using the
      * <code>classLoader</code>.  This implementation supports names like
@@ -218,10 +218,8 @@ public class ClassLoaderUtil {
      * @return the converted name
      */
     private static String toCanonicalName(String className) {
-        if (className == null) {
-            throw new RuntimeException("Argument className was null.");
-        }
-        else if (className.endsWith("[]")) {
+        Objects.requireNonNull(className, "className");
+        if (className.endsWith("[]")) {
             final StringBuilder classNameBuffer = new StringBuilder();
             while (className.endsWith("[]")) {
                 className = className.substring(0, className.length() - 2);

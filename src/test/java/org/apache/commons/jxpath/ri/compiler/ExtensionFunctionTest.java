@@ -531,7 +531,7 @@ public class ExtensionFunctionTest extends JXPathTestCase {
         System.setProperty("jxpath.class.allow", DEFAULT_ALLOW_LIST);
     }
 
-    private static class Context implements ExpressionContext {
+    private static final class Context implements ExpressionContext {
         private final Object object;
 
         public Context(final Object object) {

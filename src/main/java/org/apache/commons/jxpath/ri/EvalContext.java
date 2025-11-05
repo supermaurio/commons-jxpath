@@ -41,13 +41,13 @@ import org.apache.commons.jxpath.util.ReverseComparator;
  * implement behavior of various XPath axes: "child::", "parent::" etc.
  */
 public abstract class EvalContext implements ExpressionContext, Iterator {
-    /** parent context */
+    /** Parent context */
     protected EvalContext parentContext;
 
-    /** root context */
+    /** Root context */
     protected RootContext rootContext;
 
-    /** position */
+    /** Position */
     protected int position = 0;
 
     private boolean startedSetIteration = false;
@@ -174,7 +174,7 @@ public abstract class EvalContext implements ExpressionContext, Iterator {
     }
 
     /**
-     * Construct an iterator.
+     * Constructs an iterator.
      * @return whether the Iterator was constructed
      */
     private boolean constructIterator() {
@@ -300,7 +300,7 @@ public abstract class EvalContext implements ExpressionContext, Iterator {
     }
 
     /**
-     * Get the current position.
+     * Gets the current position.
      * @return int position.
      */
     public int getCurrentPosition() {
