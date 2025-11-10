@@ -38,52 +38,12 @@ import org.apache.commons.jxpath.NodeSet;
 import org.apache.commons.jxpath.Pointer;
 
 /**
- * The default implementation of TypeConverter.
+ * The default implementation of {@link TypeConverter}.
  */
 public class BasicTypeConverter implements TypeConverter {
 
     /**
-     * NodeSet implementation
-     */
-    static final class ValueNodeSet implements NodeSet {
-
-        private final List values;
-        private List<Pointer> pointers;
-
-        /**
-         * Constructs a new ValueNodeSet.
-         *
-         * @param values to return
-         */
-        public ValueNodeSet(final List values) {
-            this.values = values;
-        }
-
-        @Override
-        public List getNodes() {
-            return Collections.unmodifiableList(values);
-        }
-
-        @Override
-        public List<Pointer> getPointers() {
-            if (pointers == null) {
-                pointers = new ArrayList();
-                for (final Object value : values) {
-                    pointers.add(new ValuePointer(value));
-                }
-                pointers = Collections.unmodifiableList(pointers);
-            }
-            return pointers;
-        }
-
-        @Override
-        public List getValues() {
-            return Collections.unmodifiableList(values);
-        }
-    }
-
-    /**
-     * Value pointer
+     * Value {@link Pointer}.
      */
     static final class ValuePointer implements Pointer {
 
@@ -162,8 +122,8 @@ public class BasicTypeConverter implements TypeConverter {
     /**
      * Create a collection of a given type.
      *
-     * @param type destination class
-     * @return Collection
+     * @param type destination class.
+     * @return A new Collection.
      */
     protected Collection allocateCollection(final Class type) {
         if (!type.isInterface() && (type.getModifiers() & Modifier.ABSTRACT) == 0) {
@@ -187,7 +147,7 @@ public class BasicTypeConverter implements TypeConverter {
      *
      * @param type  destination class
      * @param value double
-     * @return Number
+     * @return Number A Number, possibly cached.
      */
     protected Number allocateNumber(Class type, final double value) {
         type = TypeUtils.wrapPrimitive(type);
@@ -213,8 +173,7 @@ public class BasicTypeConverter implements TypeConverter {
             return BigInteger.valueOf((long) value);
         }
         if (type == BigDecimal.class) {
-            // TODO ? https://pmd.sourceforge.io/pmd-6.50.0/pmd_rules_java_errorprone.html#avoiddecimalliteralsinbigdecimalconstructor
-            return new BigDecimal(value); // NOPMD
+            return new BigDecimal(Double.toString(value));
         }
         final String className = type.getName();
         Class initialValueType = null;

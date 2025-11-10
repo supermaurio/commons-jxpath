@@ -188,7 +188,7 @@ public abstract class NodePointer implements Pointer {
     /**
      * Returns an XPath that maps to this Pointer.
      *
-     * @return String xpath expression
+     * @return String XPath expression
      */
     @Override
     public String asPath() {
@@ -685,7 +685,7 @@ public abstract class NodePointer implements Pointer {
      */
     public void handle(final Throwable t, final NodePointer originator) {
         if (exceptionHandler != null) {
-            exceptionHandler.handle(t, originator);
+            exceptionHandler.accept(t, originator);
             return;
         }
         if (parent != null) {

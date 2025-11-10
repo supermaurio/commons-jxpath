@@ -47,7 +47,7 @@ The <action> type attribute can be add,update,fix,remove.
   </properties>
   <body>
     <!-- The release date is the date RC is cut -->
-    <release version="1.4.0" date="YYYY-MM-DD" description="New features and bug fixes.">
+    <release version="1.4.0" date="2025-04-12" description="New features and bug fixes.">
       <!-- FIX -->
       <action issue="JXPATH-172" dev="britter" type="fix" due-to="Michele Vivoda">
         Clarify Javadoc of JXPathContext#getPointer.
@@ -110,7 +110,6 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Use generics internally.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">NodeSet.getPointers() is now typed with generics.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">ServletContextHandler.collectPropertyNames(HashSet, Object) is now typed with generics.</action>
-      <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate ClassLoaderUtil.ClassLoaderUtil().</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate MethodLookupUtils.MethodLookupUtils().</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate KeyManagerUtils.KeyManagerUtils().</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Deprecate TypeUtils.TypeUtils().</action>
@@ -134,10 +133,25 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="fix" due-to="Gary Gregory">Make the private JDOMNodePointer.id field final.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">ExpressionContext.getContextNodeList() now uses generics.</action>
       <action dev="ggregory" type="fix" due-to="Gary Gregory">BasicTypeConverter.unmodifiableCollection(Collection) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory. PMD">Fix PMD AvoidDecimalLiteralsInBigDecimalConstructor in org.apache.commons.jxpath.util.BasicTypeConverter.allocateNumber(Class, double).</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.ri.JXPathContextReferenceImpl.iteratePointers(String) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.ri.JXPathContextReferenceImpl.iteratePointers(String, Expression) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.CompiledExpression.iteratePointers(JXPathContext) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.JXPathCompiledExpression.iteratePointers(JXPathContext) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.util.ClassLoaderUtil.getClass(ClassLoader, String) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.util.ClassLoaderUtil.getClass(ClassLoader, String, boolean) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.util.ClassLoaderUtil.getClass(String) now uses generics.</action>
+      <action dev="ggregory" type="fix" due-to="Gary Gregory">org.apache.commons.jxpath.util.ClassLoaderUtil.getClass(String, boolean) now uses generics.</action>
       <!-- ADD -->
       <action issue="JXPATH-123" dev="mbenson" type="add">
         XPath function "ends-with" is not implemented (although "starts-with" is).
       </action>
+      <action dev="ggregory" type="update">public class org.apache.commons.jxpath.JXPathContextFactoryConfigurationError is Serializable incompatible.</action>
+      <action dev="ggregory" type="update">public abstract class org.apache.commons.jxpath.ri.model.beans.PropertyOwnerPointer is Serializable incompatible.</action>
+      <action dev="ggregory" type="update">public abstract class org.apache.commons.jxpath.ri.model.beans.PropertyPointer is Serializable incompatible.</action>
+      <action dev="ggregory" type="update">public abstract class org.apache.commons.jxpath.ri.model.NodePointer is Serializable incompatible.</action>
+      <action dev="ggregory" type="update">public class org.apache.commons.jxpath.ri.parser.ParseException is Serializable incompatible.</action>
+      <action dev="ggregory" type="update">public class org.apache.commons.jxpath.XMLDocumentContainer is Serializable incompatible.</action>
       <!-- UPDATE -->
       <action dev="ggregory" type="update" due-to="Dependabot, Gary Gregory">
         Bump commons-parent from 54 to 81 #45, #49, #64, #110, #121, #403, #167, #173, #176, #181, #185, #188, #196.
@@ -166,6 +180,14 @@ The <action> type attribute can be add,update,fix,remove.
       <action dev="ggregory" type="update" due-to="Dependabot">
         Bump org.codehaus.mojo:taglist-maven-plugin from 3.0.0 to 3.2.1 #161, #194.
       </action>
+      <!-- REMOVE -->
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete Apache RAT file.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete Apache Ant files.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete src/conf/MANIFEST.MF file.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete maven-surefire-plugin configuration. Configuration is done in the parent POM.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete maven-assembly-plugin configuration. Configuration is done in the parent POM.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove obsolete STATUS.html files.</action>
+      <action dev="ggregory" type="remove" due-to="Gary Gregory">Remove unused package-private class org.apache.commons.jxpath.util.BasicTypeConverter.ValueNodeSet.</action>
     </release>
   </body>
 </document>
