@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 /**
@@ -22,7 +23,8 @@ package org.apache.commons.jxpath.ri.compiler;
 public class CoreOperationEqual extends CoreOperationCompare {
 
     /**
-     * Create a new CoreOperationEqual
+     * Constructs a new CoreOperationEqual
+     *
      * @param arg1 first comparison Expression
      * @param arg2 second comparison Expression
      */

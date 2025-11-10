@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import org.apache.commons.jxpath.Function;
@@ -28,20 +29,25 @@ import org.apache.commons.jxpath.ri.model.NodePointer;
  * EvalContext that is used to hold the root node for the path traversal.
  */
 public class RootContext extends EvalContext {
+
+    /**
+     * Unknown value marker.
+     */
+    public static final Object UNKNOWN_VALUE = new Object();
+
+    private static final int MAX_REGISTER = 4;
     private final JXPathContextReferenceImpl jxpathContext;
     private final NodePointer pointer;
     private Object[] registers;
-    private int availableRegister = 0;
-    public static final Object UNKNOWN_VALUE = new Object();
-    private static final int MAX_REGISTER = 4;
+    private int availableRegister;
 
     /**
-     * Create a new RootContext.
+     * Constructs a new RootContext.
+     *
      * @param jxpathContext context
-     * @param pointer pointer
+     * @param pointer       pointer
      */
-    public RootContext(final JXPathContextReferenceImpl jxpathContext,
-            final NodePointer pointer) {
+    public RootContext(final JXPathContextReferenceImpl jxpathContext, final NodePointer pointer) {
         super(null);
         this.jxpathContext = jxpathContext;
         this.pointer = pointer;
@@ -50,22 +56,32 @@ public class RootContext extends EvalContext {
         }
     }
 
-    @Override
-    public JXPathContext getJXPathContext() {
-        return jxpathContext;
-    }
-
-    @Override
-    public RootContext getRootContext() {
-        return this;
-    }
-
     /**
-     * Get absolute root context
+     * Gets absolute root context
+     *
      * @return EvalContext
      */
     public EvalContext getAbsoluteRootContext() {
         return jxpathContext.getAbsoluteRootContext();
+    }
+
+    /**
+     * Gets a context that points to the specified object.
+     *
+     * @param constant object
+     * @return EvalContext
+     */
+    public EvalContext getConstantContext(final Object constant) {
+        if (constant instanceof NodeSet) {
+            return new NodeSetContext(new RootContext(jxpathContext, null), (NodeSet) constant);
+        }
+        NodePointer pointer;
+        if (constant instanceof NodePointer) {
+            pointer = (NodePointer) constant;
+        } else {
+            pointer = NodePointer.newNodePointer(new QName(null, ""), constant, null);
+        }
+        return new InitialContext(new RootContext(jxpathContext, pointer));
     }
 
     @Override
@@ -74,13 +90,57 @@ public class RootContext extends EvalContext {
     }
 
     @Override
+    public int getCurrentPosition() {
+        throw new UnsupportedOperationException();
+    }
+
+    /**
+     * Gets the specified function from the context.
+     *
+     * @param functionName QName
+     * @param parameters   Object[]
+     * @return Function
+     */
+    public Function getFunction(final QName functionName, final Object[] parameters) {
+        return jxpathContext.getFunction(functionName, parameters);
+    }
+
+    @Override
+    public JXPathContext getJXPathContext() {
+        return jxpathContext;
+    }
+
+    /**
+     * Gets a registered value.
+     *
+     * @param id int
+     * @return Object
+     */
+    public Object getRegisteredValue(final int id) {
+        if (registers == null || id >= MAX_REGISTER || id == -1) {
+            return UNKNOWN_VALUE;
+        }
+        return registers[id];
+    }
+
+    @Override
+    public RootContext getRootContext() {
+        return this;
+    }
+
+    @Override
     public Object getValue() {
         return pointer;
     }
 
-    @Override
-    public int getCurrentPosition() {
-        throw new UnsupportedOperationException();
+    /**
+     * Gets variable context.
+     *
+     * @param variableName variable name
+     * @return EvalContext
+     */
+    public EvalContext getVariableContext(final QName variableName) {
+        return new InitialContext(new RootContext(jxpathContext, jxpathContext.getVariablePointer(variableName)));
     }
 
     @Override
@@ -99,66 +159,8 @@ public class RootContext extends EvalContext {
     }
 
     /**
-     * Get a context that points to the specified object.
-     * @param constant object
-     * @return EvalContext
-     */
-    public EvalContext getConstantContext(final Object constant) {
-        if (constant instanceof NodeSet) {
-            return new NodeSetContext(
-                new RootContext(jxpathContext, null),
-                (NodeSet) constant);
-        }
-
-        NodePointer pointer;
-        if (constant instanceof NodePointer) {
-            pointer = (NodePointer) constant;
-        }
-        else {
-            pointer = NodePointer.newNodePointer(
-                    new QName(null, ""),
-                    constant,
-                    null);
-        }
-        return new InitialContext(new RootContext(jxpathContext, pointer));
-    }
-
-    /**
-     * Get variable context.
-     * @param variableName variable name
-     * @return EvalContext
-     */
-    public EvalContext getVariableContext(final QName variableName) {
-        return new InitialContext(
-            new RootContext(
-                jxpathContext,
-                jxpathContext.getVariablePointer(variableName)));
-    }
-
-    /**
-     * Get the specified function from the context.
-     * @param functionName QName
-     * @param parameters Object[]
-     * @return Function
-     */
-    public Function getFunction(final QName functionName, final Object[] parameters) {
-        return jxpathContext.getFunction(functionName, parameters);
-    }
-
-    /**
-     * Get a registered value.
-     * @param id int
-     * @return Object
-     */
-    public Object getRegisteredValue(final int id) {
-        if (registers == null || id >= MAX_REGISTER || id == -1) {
-            return UNKNOWN_VALUE;
-        }
-        return registers[id];
-    }
-
-    /**
-     * Set the next registered value.
+     * Sets the next registered value.
+     *
      * @param value Object
      * @return the id that can reclaim value.
      */

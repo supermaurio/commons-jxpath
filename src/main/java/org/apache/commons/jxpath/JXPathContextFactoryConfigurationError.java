@@ -14,89 +14,58 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 /**
- * Thrown when a problem with configuration with the {@link JXPathContextFactory JXPathContextFactories}
- * exists. This error will typically be thrown when the class of a
- * factory specified in the system properties cannot be found
- * or instantiated.
+ * Thrown when a problem with configuration with the {@link JXPathContextFactory JXPathContextFactories} exists. This error will typically be thrown when the
+ * class of a factory specified in the system properties cannot be found or instantiated.
  */
 public class JXPathContextFactoryConfigurationError extends Error {
 
-    private static final long serialVersionUID = 1L;
-    /** @serial */
-    private final Exception exception;
+    private static final long serialVersionUID = 2L;
 
     /**
-     * Create a new <code>JXPathContextFactoryConfigurationError</code> with no
-     * detail mesage.
+     * Constructs a new {@code JXPathContextFactoryConfigurationError} with no detail mesage.
      */
-     public JXPathContextFactoryConfigurationError() {
-         this.exception = null;
-     }
+    public JXPathContextFactoryConfigurationError() {
+    }
 
     /**
-     * Create a new <code>JXPathContextFactoryConfigurationError</code> with
-     * the <code>String </code> specified as an error message.
+     * Constructs a new {@code JXPathContextFactoryConfigurationError} with a given {@code Exception} base cause of the error.
+     *
+     * @param cause The exception to be encapsulated in a JXPathContextFactoryConfigurationError.
+     */
+    public JXPathContextFactoryConfigurationError(final Exception cause) {
+        super(cause);
+    }
+
+    /**
+     * Constructs a new {@code JXPathContextFactoryConfigurationError} with the given {@code Exception} base cause and detail message.
+     *
+     * @param cause   The exception to be encapsulated in a JXPathContextFactoryConfigurationError
+     * @param msg The detail message.
+     */
+    public JXPathContextFactoryConfigurationError(final Exception cause, final String msg) {
+        super(msg, cause);
+    }
+
+    /**
+     * Constructs a new {@code JXPathContextFactoryConfigurationError} with the {@code String } specified as an error message.
      *
      * @param msg The error message for the exception.
      */
     public JXPathContextFactoryConfigurationError(final String msg) {
         super(msg);
-        this.exception = null;
-    }
-
-
-    /**
-     * Create a new <code>JXPathContextFactoryConfigurationError</code> with a
-     * given <code>Exception</code> base cause of the error.
-     *
-     * @param e The exception to be encapsulated in a
-     * JXPathContextFactoryConfigurationError.
-     */
-    public JXPathContextFactoryConfigurationError(final Exception e) {
-        super(e.toString());
-        this.exception = e;
     }
 
     /**
-     * Create a new <code>JXPathContextFactoryConfigurationError</code> with the
-     * given <code>Exception</code> base cause and detail message.
-     *
-     * @param e The exception to be encapsulated in a
-     * JXPathContextFactoryConfigurationError
-     * @param msg The detail message.
-     */
-    public JXPathContextFactoryConfigurationError(final Exception e, final String msg) {
-        super(msg);
-        this.exception = e;
-    }
-
-
-    /**
-     * Return the message (if any) for this error . If there is no
-     * message for the exception and there is an encapsulated
-     * exception then the message of that exception will be returned.
-     *
-     * @return The error message.
-     */
-    @Override
-    public String getMessage () {
-        final String message = super.getMessage();
-        if (message == null && exception != null) {
-            return exception.getMessage();
-        }
-        return message;
-    }
-
-    /**
-     * Return the actual exception (if any) that caused this exception to
-     * be raised.
+     * Gets the actual exception (if any) that caused this exception to be raised.
      *
      * @return The encapsulated exception, or null if there is none.
      */
-    public Exception getException () {
-        return exception;
+    public Exception getException() {
+        return (Exception) super.getCause();
     }
+
 }

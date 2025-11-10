@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.servlet;
 
 import java.util.Enumeration;
@@ -24,30 +25,30 @@ import javax.servlet.ServletContext;
 import org.apache.commons.jxpath.DynamicPropertyHandler;
 
 /**
- * Implementation of the {@link DynamicPropertyHandler} interface that provides
- * access to attributes of a {@link ServletContext}.
+ * Implementation of the {@link DynamicPropertyHandler} interface that provides access to attributes of a {@link ServletContext}.
  */
 public class ServletContextHandler implements DynamicPropertyHandler {
 
     private static final int DEFAULT_PROPERTY_COUNT = 16;
 
-    @Override
-    public String[] getPropertyNames(final Object context) {
-        final HashSet list = new HashSet(DEFAULT_PROPERTY_COUNT);
-        collectPropertyNames(list, context);
-        return (String[]) list.toArray(new String[list.size()]);
+    /**
+     * Constructs a new instance.
+     */
+    public ServletContextHandler() {
+        // empty
     }
 
     /**
      * Collect the property names from bean, storing in set.
-     * @param set destination
+     *
+     * @param set  destination
      * @param bean to read
      */
-    protected void collectPropertyNames(final HashSet set, Object bean) {
+    protected void collectPropertyNames(final HashSet<String> set, Object bean) {
         if (bean instanceof HttpSessionAndServletContext) {
             bean = ((HttpSessionAndServletContext) bean).getServletContext();
         }
-        final Enumeration e = ((ServletContext) bean).getAttributeNames();
+        final Enumeration<String> e = ((ServletContext) bean).getAttributeNames();
         while (e.hasMoreElements()) {
             set.add(e.nextElement());
         }
@@ -56,6 +57,13 @@ public class ServletContextHandler implements DynamicPropertyHandler {
     @Override
     public Object getProperty(final Object context, final String property) {
         return ((ServletContext) context).getAttribute(property);
+    }
+
+    @Override
+    public String[] getPropertyNames(final Object context) {
+        final HashSet<String> set = new HashSet<>(DEFAULT_PROPERTY_COUNT);
+        collectPropertyNames(set, context);
+        return set.toArray(new String[set.size()]);
     }
 
     @Override

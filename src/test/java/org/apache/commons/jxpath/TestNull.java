@@ -14,36 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.apache.commons.jxpath;
 
+package org.apache.commons.jxpath;
 
 /**
  * General purpose test bean for JUnit tests for the "jxpath" component.
  */
 public class TestNull {
 
-    private Object nothing = null;
-    public Object getNothing() {
-        return nothing;
-    }
-
-    public void setNothing(final Object something) {
-        this.nothing = something;
-    }
-
     /**
      */
     private static String[] array = { "a", null, "b" };
+    private Object nothing = null;
+    private TestNull child;
+
     public String[] getArray() {
         return array;
     }
-
-    private TestNull child;
 
     public TestNull getChild() {
         if (child == null) {
             child = new TestNull();
         }
         return child;
+    }
+
+    public Object getNothing() {
+        return nothing;
+    }
+
+    public void setNothing(final Object something) {
+        this.nothing = something;
     }
 }

@@ -14,122 +14,44 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.issues;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
-import org.apache.commons.jxpath.JXPathTestCase;
 import org.apache.commons.jxpath.Pointer;
 import org.apache.commons.jxpath.ri.model.beans.BeanPropertyPointer;
 import org.apache.commons.jxpath.ri.model.beans.NullPropertyPointer;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.TestSuite;
+public class JXPath172Test extends AbstractJXPathTest {
 
-public class JXPath172Test extends JXPathTestCase
-{
+    public static class TestBean172 {
 
-    /**
-     * Return the tests included in this test suite.
-     */
-    public static TestSuite suite()
-    {
-        return new TestSuite(JXPath172Test.class);
-    }
+        String value;
 
-    public void testIssue172_propertyExistAndIsNotNull()
-    {
-        final JXPathContext context = getContext("ciao", false);
-        final Object bRet = context.selectSingleNode("value");
-        assertNotNull("null!!", bRet);
-        assertEquals("Is " + bRet.getClass(), "ciao", bRet);
-
-        final Pointer pointer = context.getPointer("value");
-        assertNotNull(pointer);
-        assertEquals(BeanPropertyPointer.class, pointer.getClass());
-        assertEquals("ciao", pointer.getValue());
-    }
-
-    public void testIssue172_propertyExistAndIsNull()
-    {
-        final JXPathContext context = getContext(null, false);
-        final Object bRet = context.selectSingleNode("value");
-        assertNull("not null!!", bRet);
-
-        final Pointer pointer = context.getPointer("value");
-        assertNotNull(pointer);
-        assertEquals(BeanPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-    }
-
-    public void testIssue172_PropertyUnexisting()
-    {
-        final JXPathContext context = getContext(null, true);
-        final Object bRet = context.selectSingleNode("unexisting");
-        assertNull("not null!!", bRet);
-
-        final Pointer pointer = context.getPointer("unexisting");
-        assertNotNull(pointer);
-        assertEquals(NullPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-    }
-
-    public void testIssue172_NestedPropertyUnexisting()
-    {
-        final JXPathContext context = getContext(null, true);
-        final Object bRet = context.selectSingleNode("value.child");
-        assertNull("not null!!", bRet);
-
-        final Pointer pointer = context.getPointer("value.child");
-        assertNotNull(pointer);
-        assertEquals(NullPropertyPointer.class, pointer.getClass());
-        assertNull(pointer.getValue());
-    }
-
-    public void testIssue172_propertyDoesNotExist_NotLenient()
-    {
-        final JXPathContext context = getContext(null, false);
-        try
-        {
-            final Object bRet = context.selectSingleNode("unexisting");
-            fail(" " + bRet);
-        }
-        catch (final JXPathNotFoundException e)
-        {
-
+        public String getValue() {
+            return value;
         }
 
-        try
-        {
-            final Pointer pointer = context.getPointer("unexisting");
-            fail(" " + pointer);
+        public void setValue(final String value) {
+            this.value = value;
         }
-        catch (final JXPathNotFoundException e)
-        {
-
-        }
-
-        try
-        {
-            final Pointer pointer = context.getPointer("value.unexisting");
-            fail(" " + pointer);
-        }
-        catch (final JXPathNotFoundException e)
-        {
-
-        }
-
     }
 
     /**
-     * Helper, returns a {@link JXPathContext} filled with {@link TestBean172}
-     * whose {@link TestBean172#getValue()} method returns the passed
-     * <code>val</code> value.
+     * Helper, returns a {@link JXPathContext} filled with {@link TestBean172} whose {@link TestBean172#getValue()} method returns the passed {@code val} value.
      *
      * @param val
-     * @return A {@link JXPathContext}, never <code>null</code>.
+     * @return A {@link JXPathContext}, never {@code null}.
      */
-    private JXPathContext getContext(final String val, final boolean lenient)
-    {
+    private JXPathContext getContext(final String val, final boolean lenient) {
         final TestBean172 b = new TestBean172();
         b.setValue(val);
         final Object target = b;
@@ -138,19 +60,56 @@ public class JXPath172Test extends JXPathTestCase
         return context;
     }
 
-    public static class TestBean172
-    {
-        String value;
-
-        public String getValue()
-        {
-            return value;
-        }
-
-        public void setValue(final String value)
-        {
-            this.value = value;
-        }
+    @Test
+    public void testIssue172_NestedPropertyUnexisting() {
+        final JXPathContext context = getContext(null, true);
+        final Object bRet = context.selectSingleNode("value.child");
+        assertNull(bRet, "not null!!");
+        final Pointer pointer = context.getPointer("value.child");
+        assertNotNull(pointer);
+        assertEquals(NullPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
     }
 
+    @Test
+    public void testIssue172_propertyDoesNotExist_NotLenient() {
+        final JXPathContext context = getContext(null, false);
+        assertThrows(JXPathNotFoundException.class, () -> context.selectSingleNode("unexisting"));
+        assertThrows(JXPathNotFoundException.class, () -> context.getPointer("unexisting"));
+        assertThrows(JXPathNotFoundException.class, () -> context.getPointer("value.unexisting"));
+    }
+
+    @Test
+    public void testIssue172_propertyExistAndIsNotNull() {
+        final JXPathContext context = getContext("ciao", false);
+        final Object bRet = context.selectSingleNode("value");
+        assertNotNull(bRet, "null!!");
+        assertEquals("ciao", bRet, "Is " + bRet.getClass());
+        final Pointer pointer = context.getPointer("value");
+        assertNotNull(pointer);
+        assertEquals(BeanPropertyPointer.class, pointer.getClass());
+        assertEquals("ciao", pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_propertyExistAndIsNull() {
+        final JXPathContext context = getContext(null, false);
+        final Object bRet = context.selectSingleNode("value");
+        assertNull(bRet, "not null!!");
+        final Pointer pointer = context.getPointer("value");
+        assertNotNull(pointer);
+        assertEquals(BeanPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
+
+    @Test
+    public void testIssue172_PropertyUnexisting() {
+        final JXPathContext context = getContext(null, true);
+        final Object bRet = context.selectSingleNode("unexisting");
+        assertNull(bRet, "not null!!");
+        final Pointer pointer = context.getPointer("unexisting");
+        assertNotNull(pointer);
+        assertEquals(NullPropertyPointer.class, pointer.getClass());
+        assertNull(pointer.getValue());
+    }
 }

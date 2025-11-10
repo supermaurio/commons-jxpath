@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -27,7 +28,8 @@ public class Constant extends Expression {
     private final Object value;
 
     /**
-     * Create a new Constant.
+     * Constructs a new Constant.
+     *
      * @param number constant
      */
     public Constant(final Number number) {
@@ -35,7 +37,8 @@ public class Constant extends Expression {
     }
 
     /**
-     * Create a new Constant.
+     * Constructs a new Constant.
+     *
      * @param string constant
      */
     public Constant(final String string) {
@@ -47,6 +50,16 @@ public class Constant extends Expression {
         return value;
     }
 
+    /**
+     * Returns false
+     *
+     * @return false
+     */
+    @Override
+    public boolean computeContextDependent() {
+        return false;
+    }
+
     @Override
     public Object computeValue(final EvalContext context) {
         return value;
@@ -54,19 +67,11 @@ public class Constant extends Expression {
 
     /**
      * Returns false
+     *
      * @return false
      */
     @Override
     public boolean isContextDependent() {
-        return false;
-    }
-
-    /**
-     * Returns false
-     * @return false
-     */
-    @Override
-    public boolean computeContextDependent() {
         return false;
     }
 

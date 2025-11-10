@@ -14,60 +14,65 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import java.util.List;
 
 /**
- * If an extenstion function has an argument of type ExpressionContext,
- * it can gain access to the current node of an XPath expression context.
+ * If an extenstion function has an argument of type ExpressionContext, it can gain access to the current node of an XPath expression context.
  * <p>
- * Example:
- * <blockquote><pre>
- * public class MyExtenstionFunctions {
- *    public static String objectType(ExpressionContext context){
- *       Object value = context.getContextNodePointer().getValue();
- *       if (value == null){
- *           return "null";
- *       }
- *       return value.getClass().getName();
- *    }
- * }
- * </pre></blockquote>
+ * Example: <blockquote>
  *
- * You can then register this extension function using a {@link ClassFunctions
- * ClassFunctions} object and call it like this:
- * <blockquote><pre>
- *   "/descendent-or-self::node()[ns:objectType() = 'java.util.Date']"
- * </pre></blockquote>
- * This expression will find all nodes of the graph that are dates.
+ * <pre>
+ * public class MyExtenstionFunctions {
+ *
+ *     public static String objectType(ExpressionContext context) {
+ *         Object value = context.getContextNodePointer().getValue();
+ *         if (value == null) {
+ *             return "null";
+ *         }
+ *         return value.getClass().getName();
+ *     }
+ * }
+ * </pre>
+ *
+ * </blockquote>
+ *
+ * You can then register this extension function using a {@link ClassFunctions ClassFunctions} object and call it like this: <blockquote>
+ *
+ * <pre>
+ * "/descendent-or-self::node()[ns:objectType() = 'java.util.Date']"
+ * </pre>
+ *
+ * </blockquote> This expression will find all nodes of the graph that are dates.
  */
 public interface ExpressionContext {
 
     /**
-     * Get the JXPathContext in which this function is being evaluated.
+     * Gets the current context node list. Each element of the list is a Pointer.
      *
      * @return A list representing the current context nodes.
      */
-    JXPathContext getJXPathContext();
+    List<Pointer> getContextNodeList();
 
     /**
-     * Get the current context node.
+     * Gets the current context node.
      *
      * @return The current context node pointer.
      */
     Pointer getContextNodePointer();
 
     /**
-     * Get the current context node list.  Each element of the list is
-     * a Pointer.
+     * Gets the JXPathContext in which this function is being evaluated.
      *
      * @return A list representing the current context nodes.
      */
-    List getContextNodeList();
+    JXPathContext getJXPathContext();
 
     /**
      * Returns the current context position.
+     *
      * @return int
      */
     int getPosition();

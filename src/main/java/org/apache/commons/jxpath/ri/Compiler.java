@@ -14,20 +14,19 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri;
 
 /**
- * The Compiler APIs are completely agnostic to the actual types of objects
- * produced and consumed by the APIs.  Arguments and return values are
- * declared as java.lang.Object.
+ * The Compiler APIs are completely agnostic to the actual types of objects produced and consumed by the APIs. Arguments and return values are declared as
+ * java.lang.Object.
  * <p>
- * Since objects returned by Compiler methods are passed as arguments to other
- * Compiler methods, the descriptions of these methods use virtual types.  There
- * are four virtual object types: EXPRESSION, QNAME, STEP and NODE_TEST.
+ * Since objects returned by Compiler methods are passed as arguments to other Compiler methods, the descriptions of these methods use virtual types. There are
+ * four virtual object types: EXPRESSION, QNAME, STEP and NODE_TEST.
  * <p>
- * The following example illustrates this notion.  This sequence compiles
- * the xpath "foo[round(1 div 2)]/text()":
- * <blockquote><pre>
+ * The following example illustrates this notion. This sequence compiles the XPath "foo[round(1 div 2)]/text()": <blockquote>
+ *
+ * <pre>
  *      Object qname1 = compiler.qname(null, "foo")
  *      Object expr1 = compiler.number("1");
  *      Object expr2 = compiler.number("2");
@@ -40,190 +39,262 @@ package org.apache.commons.jxpath.ri;
  *      Object test2 = compiler.nodeTypeTest(Compiler.NODE_TYPE_TEXT);
  *      Object step2 = compiler.nodeTypeTest(Compiler.AXIS_CHILD, test2, null);
  *      Object expr5 = compiler.locationPath(false, new Object[]{step1, step2});
- * </pre></blockquote>
+ * </pre>
+ *
+ * </blockquote>
  */
 public interface Compiler {
 
+    /** Constant {@value} */
     int NODE_TYPE_NODE = 1;
+
+    /** Constant {@value} */
     int NODE_TYPE_TEXT = 2;
+
+    /** Constant {@value} */
     int NODE_TYPE_COMMENT = 3;
+
+    /** Constant {@value} */
     int NODE_TYPE_PI = 4;
 
+    /** Constant {@value} */
     int AXIS_SELF = 1;
+
+    /** Constant {@value} */
     int AXIS_CHILD = 2;
+
+    /** Constant {@value} */
     int AXIS_PARENT = 3;
+
+    /** Constant {@value} */
     int AXIS_ANCESTOR = 4;
+
+    /** Constant {@value} */
     int AXIS_ATTRIBUTE = 5;
+
+    /** Constant {@value} */
     int AXIS_NAMESPACE = 6;
+
+    /** Constant {@value} */
     int AXIS_PRECEDING = 7;
+
+    /** Constant {@value} */
     int AXIS_FOLLOWING = 8;
+
+    /** Constant {@value} */
     int AXIS_DESCENDANT = 9;
+
+    /** Constant {@value} */
     int AXIS_ANCESTOR_OR_SELF = 10;
+
+    /** Constant {@value} */
     int AXIS_FOLLOWING_SIBLING = 11;
+
+    /** Constant {@value} */
     int AXIS_PRECEDING_SIBLING = 12;
+
+    /** Constant {@value} */
     int AXIS_DESCENDANT_OR_SELF = 13;
 
+    /** Constant {@value} */
     int FUNCTION_LAST = 1;
+
+    /** Constant {@value} */
     int FUNCTION_POSITION = 2;
+
+    /** Constant {@value} */
     int FUNCTION_COUNT = 3;
+
+    /** Constant {@value} */
     int FUNCTION_ID = 4;
+
+    /** Constant {@value} */
     int FUNCTION_LOCAL_NAME = 5;
+
+    /** Constant {@value} */
     int FUNCTION_NAMESPACE_URI = 6;
+
+    /** Constant {@value} */
     int FUNCTION_NAME = 7;
+
+    /** Constant {@value} */
     int FUNCTION_STRING = 8;
+
+    /** Constant {@value} */
     int FUNCTION_CONCAT = 9;
+
+    /** Constant {@value} */
     int FUNCTION_STARTS_WITH = 10;
+
+    /** Constant {@value} */
     int FUNCTION_CONTAINS = 11;
+
+    /** Constant {@value} */
     int FUNCTION_SUBSTRING_BEFORE = 12;
+
+    /** Constant {@value} */
     int FUNCTION_SUBSTRING_AFTER = 13;
+
+    /** Constant {@value} */
     int FUNCTION_SUBSTRING = 14;
+
+    /** Constant {@value} */
     int FUNCTION_STRING_LENGTH = 15;
+
+    /** Constant {@value} */
     int FUNCTION_NORMALIZE_SPACE = 16;
+
+    /** Constant {@value} */
     int FUNCTION_TRANSLATE = 17;
+
+    /** Constant {@value} */
     int FUNCTION_BOOLEAN = 18;
+
+    /** Constant {@value} */
     int FUNCTION_NOT = 19;
+
+    /** Constant {@value} */
     int FUNCTION_TRUE = 20;
+
+    /** Constant {@value} */
     int FUNCTION_FALSE = 21;
+
+    /** Constant {@value} */
     int FUNCTION_LANG = 22;
+
+    /** Constant {@value} */
     int FUNCTION_NUMBER = 23;
+
+    /** Constant {@value} */
     int FUNCTION_SUM = 24;
+
+    /** Constant {@value} */
     int FUNCTION_FLOOR = 25;
+
+    /** Constant {@value} */
     int FUNCTION_CEILING = 26;
+
+    /** Constant {@value} */
     int FUNCTION_ROUND = 27;
+
+    /** Constant {@value} */
     int FUNCTION_NULL = 28;
+
+    /** Constant {@value} */
     int FUNCTION_KEY = 29;
+
+    /** Constant {@value} */
     int FUNCTION_FORMAT_NUMBER = 30;
 
+    /** Constant {@value} */
     int FUNCTION_ENDS_WITH = 31;
 
     /**
-     * Produces an EXPRESSION object that represents a numeric constant.
-     * @param value numeric String
-     * @return Object
-     */
-    Object number(String value);
-
-    /**
-     * Produces an EXPRESSION object that represents a string constant.
-     * @param value String literal
-     * @return Object
-     */
-    Object literal(String value);
-
-    /**
-     * Produces an QNAME that represents a name with an optional prefix.
-     * @param prefix String prefix
-     * @param name String name
-     * @return Object
-     */
-    Object qname(String prefix, String name);
-
-    /**
-     * Produces an EXPRESSION object representing the sum of all argumens
+     * Produces an EXPRESSION object representing logical conjunction of all arguments
      *
      * @param arguments are EXPRESSION objects
      * @return Object
      */
-    Object sum(Object[] arguments);
+    Object and(Object[] arguments);
 
     /**
-     * Produces an EXPRESSION object representing <i>left</i> minus <i>right</i>
+     * Produces an EXPRESSION object representing <em>left</em> divided by <em>right</em>
      *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object minus(Object left, Object right);
-
-    /**
-     * Produces  an EXPRESSION object representing <i>left</i> multiplied by
-     * <i>right</i>
-     *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object multiply(Object left, Object right);
-
-    /**
-     * Produces  an EXPRESSION object representing <i>left</i> divided by
-     * <i>right</i>
-     *
-     * @param left is an EXPRESSION object
+     * @param left  is an EXPRESSION object
      * @param right is an EXPRESSION object
      * @return Object
      */
     Object divide(Object left, Object right);
 
     /**
-     * Produces  an EXPRESSION object representing <i>left</i> modulo
-     * <i>right</i>
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> equals to <em>right</em>
      *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object mod(Object left, Object right);
-
-    /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> less than <i>right</i>
-     *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object lessThan(Object left, Object right);
-
-    /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> less than or equal to <i>right</i>
-     *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object lessThanOrEqual(Object left, Object right);
-
-    /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> greater than <i>right</i>
-     *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object greaterThan(Object left, Object right);
-
-    /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> greater than or equal to <i>right</i>
-     *
-     * @param left is an EXPRESSION object
-     * @param right is an EXPRESSION object
-     * @return Object
-     */
-    Object greaterThanOrEqual(Object left, Object right);
-
-    /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> equals to <i>right</i>
-     *
-     * @param left is an EXPRESSION object
+     * @param left  is an EXPRESSION object
      * @param right is an EXPRESSION object
      * @return Object
      */
     Object equal(Object left, Object right);
 
     /**
-     * Produces an EXPRESSION object representing the comparison:
-     * <i>left</i> is not equal to <i>right</i>
+     * Produces an EXPRESSION object representing a filter expression
      *
-     * @param left is an EXPRESSION object
+     * @param expression is an EXPRESSION object
+     * @param predicates are EXPRESSION objects
+     * @param steps      are STEP objects
+     * @return Object
+     */
+    Object expressionPath(Object expression, Object[] predicates, Object[] steps);
+
+    /**
+     * Produces an EXPRESSION object representing the computation of a core function with the supplied arguments.
+     *
+     * @param code is one of FUNCTION_... constants
+     * @param args are EXPRESSION objects
+     * @return Object
+     */
+    Object function(int code, Object[] args);
+
+    /**
+     * Produces an EXPRESSION object representing the computation of a library function with the supplied arguments.
+     *
+     * @param name is a QNAME object (function name)
+     * @param args are EXPRESSION objects
+     * @return Object
+     */
+    Object function(Object name, Object[] args);
+
+    /**
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> greater than <em>right</em>
+     *
+     * @param left  is an EXPRESSION object
      * @param right is an EXPRESSION object
      * @return Object
      */
-    Object notEqual(Object left, Object right);
+    Object greaterThan(Object left, Object right);
+
+    /**
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> greater than or equal to <em>right</em>
+     *
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
+     * @return Object
+     */
+    Object greaterThanOrEqual(Object left, Object right);
+
+    /**
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> less than <em>right</em>
+     *
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
+     * @return Object
+     */
+    Object lessThan(Object left, Object right);
+
+    /**
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> less than or equal to <em>right</em>
+     *
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
+     * @return Object
+     */
+    Object lessThanOrEqual(Object left, Object right);
+
+    /**
+     * Produces an EXPRESSION object that represents a string constant.
+     *
+     * @param value String literal
+     * @return Object
+     */
+    Object literal(String value);
+
+    /**
+     * Produces an EXPRESSION object representing a location path
+     *
+     * @param absolute indicates whether the path is absolute
+     * @param steps    are STEP objects
+     * @return Object
+     */
+    Object locationPath(boolean absolute, Object[] steps);
 
     /**
      * Produces an EXPRESSION object representing unary negation of the argument
@@ -234,58 +305,31 @@ public interface Compiler {
     Object minus(Object argument);
 
     /**
-     * Produces an EXPRESSION object representing variable reference
+     * Produces an EXPRESSION object representing <em>left</em> minus <em>right</em>
      *
-     * @param qname is a QNAME object
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
      * @return Object
      */
-    Object variableReference(Object qname);
+    Object minus(Object left, Object right);
 
     /**
-     * Produces an EXPRESSION object representing the computation of
-     * a core function with the supplied arguments.
+     * Produces an EXPRESSION object representing <em>left</em> modulo <em>right</em>
      *
-     * @param code is one of FUNCTION_... constants
-     * @param args are EXPRESSION objects
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
      * @return Object
      */
-    Object function(int code, Object[] args);
+    Object mod(Object left, Object right);
 
     /**
-     * Produces an EXPRESSION object representing the computation of
-     * a library function with the supplied arguments.
+     * Produces an EXPRESSION object representing <em>left</em> multiplied by <em>right</em>
      *
-     * @param name is a QNAME object (function name)
-     * @param args are EXPRESSION objects
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
      * @return Object
      */
-    Object function(Object name, Object[] args);
-
-    /**
-     * Produces an EXPRESSION object representing logical conjunction of
-     * all arguments
-     *
-     * @param arguments are EXPRESSION objects
-     * @return Object
-     */
-    Object and(Object[] arguments);
-
-    /**
-     * Produces an EXPRESSION object representing logical disjunction of
-     * all arguments
-     *
-     * @param arguments are EXPRESSION objects
-     * @return Object
-     */
-    Object or(Object[] arguments);
-
-    /**
-     * Produces an EXPRESSION object representing union of all node sets
-     *
-     * @param arguments are EXPRESSION objects
-     * @return Object
-     */
-    Object union(Object[] arguments);
+    Object multiply(Object left, Object right);
 
     /**
      * Produces a NODE_TEST object that represents a node name test.
@@ -304,8 +348,32 @@ public interface Compiler {
     Object nodeTypeTest(int nodeType);
 
     /**
-     * Produces  a NODE_TEST object that represents a processing instruction
-     * test.
+     * Produces an EXPRESSION object representing the comparison: <em>left</em> is not equal to <em>right</em>
+     *
+     * @param left  is an EXPRESSION object
+     * @param right is an EXPRESSION object
+     * @return Object
+     */
+    Object notEqual(Object left, Object right);
+
+    /**
+     * Produces an EXPRESSION object that represents a numeric constant.
+     *
+     * @param value numeric String
+     * @return Object
+     */
+    Object number(String value);
+
+    /**
+     * Produces an EXPRESSION object representing logical disjunction of all arguments
+     *
+     * @param arguments are EXPRESSION objects
+     * @return Object
+     */
+    Object or(Object[] arguments);
+
+    /**
+     * Produces a NODE_TEST object that represents a processing instruction test.
      *
      * @param instruction is a NODE_TEST object
      * @return Object
@@ -313,34 +381,45 @@ public interface Compiler {
     Object processingInstructionTest(String instruction);
 
     /**
+     * Produces an QNAME that represents a name with an optional prefix.
+     *
+     * @param prefix String prefix
+     * @param name   String name
+     * @return Object
+     */
+    Object qname(String prefix, String name);
+
+    /**
      * Produces a STEP object that represents a node test.
      *
-     * @param axis is one of the AXIS_... constants
-     * @param nodeTest is a NODE_TEST object
+     * @param axis       is one of the AXIS_... constants
+     * @param nodeTest   is a NODE_TEST object
      * @param predicates are EXPRESSION objects
      * @return Object
      */
     Object step(int axis, Object nodeTest, Object[] predicates);
 
     /**
-     * Produces an EXPRESSION object representing a location path
+     * Produces an EXPRESSION object representing the sum of all argumens
      *
-     * @param absolute indicates whether the path is absolute
-     * @param steps are STEP objects
+     * @param arguments are EXPRESSION objects
      * @return Object
      */
-    Object locationPath(boolean absolute, Object[] steps);
+    Object sum(Object[] arguments);
 
     /**
-     * Produces an EXPRESSION object representing a filter expression
+     * Produces an EXPRESSION object representing union of all node sets
      *
-     * @param expression is an EXPRESSION object
-     * @param predicates are EXPRESSION objects
-     * @param steps are STEP objects
+     * @param arguments are EXPRESSION objects
      * @return Object
      */
-    Object expressionPath(
-        Object expression,
-        Object[] predicates,
-        Object[] steps);
+    Object union(Object[] arguments);
+
+    /**
+     * Produces an EXPRESSION object representing variable reference
+     *
+     * @param qname is a QNAME object
+     * @return Object
+     */
+    Object variableReference(Object qname);
 }

@@ -14,54 +14,72 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
- * A simple implementation of {@link NodeSet} that behaves as a collection
- * of pointers.
+ * A simple implementation of {@link NodeSet} that behaves as a collection of pointers.
  */
 public class BasicNodeSet implements NodeSet {
-    private final List pointers = new ArrayList();
-    private List readOnlyPointers;
+
+    private final List<Pointer> pointers = new ArrayList<>();
+    private List<Pointer> readOnlyPointers;
     private List nodes;
     private List values;
 
     /**
-     * Add a pointer to this NodeSet.
-     * @param pointer to add
+     * Constructs a new instance.
      */
-    public void add(final Pointer pointer) {
-        if (pointers.add(pointer)) {
-            clearCacheLists();
-        }
+    public BasicNodeSet() {
+        // empty
     }
 
     /**
      * Add the specified NodeSet to this NodeSet.
+     *
      * @param nodeSet to add
      */
     public void add(final NodeSet nodeSet) {
         if (pointers.addAll(nodeSet.getPointers())) {
-            clearCacheLists();
+            clear();
         }
     }
 
     /**
-     * Remove a pointer from this NodeSet.
-     * @param pointer to remove
+     * Add a pointer to this NodeSet.
+     *
+     * @param pointer to add
      */
-    public void remove(final Pointer pointer) {
-        if (pointers.remove(pointer)) {
-            clearCacheLists();
+    public void add(final Pointer pointer) {
+        if (pointers.add(pointer)) {
+            clear();
         }
     }
 
+    /**
+     * Clear cache list members.
+     */
+    private synchronized void clear() {
+        readOnlyPointers = null;
+        nodes = null;
+        values = null;
+    }
+
     @Override
-    public synchronized List getPointers() {
+    public synchronized List getNodes() {
+        if (nodes == null) {
+            nodes = Collections.unmodifiableList(pointers.stream().map(Pointer::getNode).collect(Collectors.toList()));
+        }
+        return nodes;
+    }
+
+    @Override
+    public synchronized List<Pointer> getPointers() {
         if (readOnlyPointers == null) {
             readOnlyPointers = Collections.unmodifiableList(pointers);
         }
@@ -69,43 +87,26 @@ public class BasicNodeSet implements NodeSet {
     }
 
     @Override
-    public synchronized List getNodes() {
-        if (nodes == null) {
-            nodes = new ArrayList();
-            for (int i = 0; i < pointers.size(); i++) {
-                final Pointer pointer = (Pointer) pointers.get(i);
-                nodes.add(pointer.getNode());
-            }
-            nodes = Collections.unmodifiableList(nodes);
-        }
-        return nodes;
-    }
-
-    @Override
     public synchronized List getValues() {
         if (values == null) {
-            values = new ArrayList();
-            for (int i = 0; i < pointers.size(); i++) {
-                final Pointer pointer = (Pointer) pointers.get(i);
-                values.add(pointer.getValue());
-            }
-            values = Collections.unmodifiableList(values);
+            values = Collections.unmodifiableList(pointers.stream().map(Pointer::getValue).collect(Collectors.toList()));
         }
         return values;
+    }
+
+    /**
+     * Remove a pointer from this NodeSet.
+     *
+     * @param pointer to remove
+     */
+    public void remove(final Pointer pointer) {
+        if (pointers.remove(pointer)) {
+            clear();
+        }
     }
 
     @Override
     public String toString() {
         return pointers.toString();
     }
-
-    /**
-     * Clear cache list members.
-     */
-    private synchronized void clearCacheLists() {
-        readOnlyPointers = null;
-        nodes = null;
-        values = null;
-    }
-
 }

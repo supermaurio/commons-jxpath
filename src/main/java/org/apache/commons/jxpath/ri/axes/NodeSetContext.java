@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import org.apache.commons.jxpath.NodeSet;
@@ -24,22 +25,19 @@ import org.apache.commons.jxpath.ri.model.NodePointer;
  * A simple context that is based on a {@link NodeSet}.
  */
 public class NodeSetContext extends EvalContext {
-    private boolean startedSet = false;
+
+    private boolean startedSet;
     private final NodeSet nodeSet;
 
     /**
-     * Create a new NodeSetContext.
+     * Constructs a new NodeSetContext.
+     *
      * @param parentContext parent context
-     * @param nodeSet associated NodeSet
+     * @param nodeSet       associated NodeSet
      */
     public NodeSetContext(final EvalContext parentContext, final NodeSet nodeSet) {
         super(parentContext);
         this.nodeSet = nodeSet;
-    }
-
-    @Override
-    public NodeSet getNodeSet() {
-        return nodeSet;
     }
 
     @Override
@@ -51,9 +49,13 @@ public class NodeSetContext extends EvalContext {
     }
 
     @Override
-    public boolean setPosition(final int position) {
-        super.setPosition(position);
-        return position >= 1 && position <= nodeSet.getPointers().size();
+    public NodeSet getNodeSet() {
+        return nodeSet;
+    }
+
+    @Override
+    public boolean nextNode() {
+        return setPosition(position + 1);
     }
 
     @Override
@@ -66,7 +68,8 @@ public class NodeSetContext extends EvalContext {
     }
 
     @Override
-    public boolean nextNode() {
-        return setPosition(position + 1);
+    public boolean setPosition(final int position) {
+        super.setPosition(position);
+        return position >= 1 && position <= nodeSet.getPointers().size();
     }
 }

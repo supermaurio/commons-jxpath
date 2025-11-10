@@ -6,7 +6,7 @@
  * (the "License"); you may not use this file except in compliance with
  * the License.  You may obtain a copy of the License at
  *
- *      http://www.apache.org/licenses/LICENSE-2.0
+ *      https://www.apache.org/licenses/LICENSE-2.0
  *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,38 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.util;
+
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
 
 import org.apache.commons.jxpath.ri.JXPathFilter;
 import org.apache.commons.jxpath.ri.SystemPropertyJXPathFilter;
 
-import java.util.HashMap;
-import java.util.Map;
-
 /**
- * Port of class loading methods from <code>org.apache.commons.lang3.ClassUtils</code> from
- * the Apache Commons Lang Component. Some adjustments made to remove dependency on
- * <code>org.apache.commons.lang3.StringUtils</code>. Also modified to fall back on the
- * current class loader when an attempt to load a class with the context class loader
- * results in a <code>java.lang.ClassNotFoundException</code>.
+ * Port of class loading methods from {@code org.apache.commons.lang3.ClassUtils} from the Apache Commons Lang Component. Some adjustments made to remove
+ * dependency on {@code org.apache.commons.lang3.StringUtils}. Also modified to fall back on the current class loader when an attempt to load a class with the
+ * context class loader results in a {@code java.lang.ClassNotFoundException}.
  *
  * See org.apache.commons.lang3.ClassUtils
+ * @since 1.4.0
  */
-public class ClassLoaderUtil {
+public final class ClassLoaderUtil {
+
     /**
      * Maps a primitive class name to its corresponding abbreviation used in array class names.
      */
-    private static Map abbreviationMap = new HashMap();
-
-    /**
-     * Add primitive type abbreviation to maps of abbreviations.
-     *
-     * @param primitive Canonical name of primitive type
-     * @param abbreviation Corresponding abbreviation of primitive type
-     */
-    private static void addAbbreviation(final String primitive, final String abbreviation) {
-        abbreviationMap.put(primitive, abbreviation);
-    }
+    private static final Map<String, String> abbreviationMap = new HashMap<>();
 
     /**
      * Feed abbreviation maps
@@ -61,23 +53,30 @@ public class ClassLoaderUtil {
         addAbbreviation("char", "C");
     }
 
-    // Class loading
-    // ----------------------------------------------------------------------
     /**
-     * Returns the class represented by <code>className</code> using the
-     * <code>classLoader</code>.  This implementation supports names like
-     * "<code>java.lang.String[]</code>" as well as "<code>[Ljava.lang.String;</code>".
+     * Adds primitive type abbreviation to map of abbreviations.
      *
-     * @param classLoader  the class loader to use to load the class
-     * @param className  the class name
+     * @param primitive    Canonical name of primitive type
+     * @param abbreviation Corresponding abbreviation of primitive type
+     */
+    private static void addAbbreviation(final String primitive, final String abbreviation) {
+        abbreviationMap.put(primitive, abbreviation);
+    }
+
+    /**
+     * Gets the class represented by {@code className} using the {@code classLoader}. This implementation supports names like "{@code java.lang.String[]}" as
+     * well as "{@code [Ljava.lang.String;}".
+     *
+     * @param <T> The expected class type.
+     * @param classLoader the class loader to use to load the class
+     * @param className   the class name
      * @param initialize  whether the class must be initialized
-     * @param jxPathFilter  the XPath filter
-     * @return the class represented by <code>className</code> using the <code>classLoader</code>
+     * @return the class represented by {@code className} using the {@code classLoader}
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(final ClassLoader classLoader, final String className, final boolean initialize, final JXPathFilter jxPathFilter)
-        throws ClassNotFoundException {
-        Class clazz;
+    @SuppressWarnings("unchecked") // assume the call site knows what it's doing.
+    private static <T> Class<T> getClass(final ClassLoader classLoader, final String className, final boolean initialize, final JXPathFilter jxPathFilter) throws ClassNotFoundException {
+        Class<T> clazz;
 
         // give chance to ClassFilter to filter out, if present
         if (jxPathFilter == null || !jxPathFilter.isClassNameExposed(className)) {
@@ -86,125 +85,34 @@ public class ClassLoaderUtil {
 
         if (abbreviationMap.containsKey(className)) {
             final String clsName = "[" + abbreviationMap.get(className);
-            clazz = Class.forName(clsName, initialize, classLoader).getComponentType();
-        }
-        else {
-            clazz = Class.forName(toCanonicalName(className), initialize, classLoader);
+            clazz = (Class<T>) Class.forName(clsName, initialize, classLoader).getComponentType();
+        } else {
+            clazz = (Class<T>) Class.forName(toCanonicalName(className), initialize, classLoader);
         }
         return clazz;
     }
 
-    /**
-     * Returns the class represented by <code>className</code> using the
-     * <code>classLoader</code>.  This implementation supports names like
-     * "<code>java.lang.String[]</code>" as well as "<code>[Ljava.lang.String;</code>".
-     *
-     * @param classLoader  the class loader to use to load the class
-     * @param className  the class name
-     * @param initialize  whether the class must be initialized
-     * @return the class represented by <code>className</code> using the <code>classLoader</code>
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(ClassLoader classLoader, String className, boolean initialize)
-            throws ClassNotFoundException {
-        return getClass(classLoader, className, initialize, new SystemPropertyJXPathFilter());
-    }
-
-    /**
-     * Returns the (initialized) class represented by <code>className</code>
-     * using the <code>classLoader</code>.  This implementation supports names
-     * like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
-     *
-     * @param classLoader  the class loader to use to load the class
-     * @param className  the class name
-     * @param jxPathFilter  the XPath filter
-     * @return the class represented by <code>className</code> using the <code>classLoader</code>
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(ClassLoader classLoader, String className, JXPathFilter jxPathFilter) throws ClassNotFoundException {
-        return getClass(classLoader, className, true, jxPathFilter);
-    }
-
-    /**
-     * Returns the (initialized) class represented by <code>className</code>
-     * using the <code>classLoader</code>.  This implementation supports names
-     * like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
-     *
-     * @param classLoader  the class loader to use to load the class
-     * @param className  the class name
-     * @return the class represented by <code>className</code> using the <code>classLoader</code>
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(final ClassLoader classLoader, final String className) throws ClassNotFoundException {
-        return getClass(classLoader, className, true, new SystemPropertyJXPathFilter());
-    }
-
-    /**
-     * Returns the (initialized) class represented by <code>className</code>
-     * using the current thread's context class loader. This implementation
-     * supports names like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
-     *
-     * @param className  the class name
-     * @return the class represented by <code>className</code> using the current thread's context class loader
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(final String className) throws ClassNotFoundException {
-        return getClass(className, true, new SystemPropertyJXPathFilter());
-    }
-
-    /**
-     * Returns the (initialized) class represented by <code>className</code>
-     * using the current thread's context class loader. This implementation
-     * supports names like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
-     *
-     * @param className  the class name
-     * @param jxPathFilter  the XPath filter
-     * @return the class represented by <code>className</code> using the current thread's context class loader
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(String className, JXPathFilter jxPathFilter) throws ClassNotFoundException {
-        return getClass(className, true, jxPathFilter);
-    }
-
-    /**
-     * Returns the class represented by <code>className</code> using the
-     * current thread's context class loader. This implementation supports
-     * names like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
-     *
-     * @param className  the class name
-     * @param initialize  whether the class must be initialized
-     * @return the class represented by <code>className</code> using the current thread's context class loader
-     * @throws ClassNotFoundException if the class is not found
-     */
-    public static Class getClass(final String className, final boolean initialize) throws ClassNotFoundException {
+    public static <T> Class<T> getClass(final String className, final boolean initialize) throws ClassNotFoundException {
         return getClass(className, initialize, new SystemPropertyJXPathFilter());
-    }
+    }        
 
     /**
-     * Returns the class represented by <code>className</code> using the
-     * current thread's context class loader. This implementation supports
-     * names like "<code>java.lang.String[]</code>" as well as
-     * "<code>[Ljava.lang.String;</code>".
+     * Gets the class represented by {@code className} using the current thread's context class loader. This implementation supports names like
+     * "{@code java.lang.String[]}" as well as "{@code [Ljava.lang.String;}".
      *
+     * @param <T> The expected class type.
      * @param className  the class name
-     * @param initialize  whether the class must be initialized
-     * @param jxPathFilter  the XPath filter
-     * @return the class represented by <code>className</code> using the current thread's context class loader
+     * @param initialize whether the class must be initialized
+     * @return the class represented by {@code className} using the current thread's context class loader
      * @throws ClassNotFoundException if the class is not found
      */
-    public static Class getClass(final String className, final boolean initialize, final JXPathFilter jxPathFilter) throws ClassNotFoundException {
+    public static <T> Class<T> getClass(final String className, final boolean initialize, final JXPathFilter jxPathFilter) throws ClassNotFoundException {
         final ClassLoader contextCL = Thread.currentThread().getContextClassLoader();
         final ClassLoader currentCL = ClassLoaderUtil.class.getClassLoader();
         if (contextCL != null) {
             try {
                 return getClass(contextCL, className, initialize, jxPathFilter);
-            }
-            catch (final ClassNotFoundException ignore) { // NOPMD
+            } catch (final ClassNotFoundException ignore) { // NOPMD
                 // ignore this exception and try the current class loader
             }
         }
@@ -214,28 +122,32 @@ public class ClassLoaderUtil {
     /**
      * Converts a class name to a JLS style class name.
      *
-     * @param className  the class name
+     * @param className the class name
      * @return the converted name
      */
     private static String toCanonicalName(String className) {
-        if (className == null) {
-            throw new RuntimeException("Argument className was null.");
-        }
-        else if (className.endsWith("[]")) {
+        Objects.requireNonNull(className, "className");
+        if (className.endsWith("[]")) {
             final StringBuilder classNameBuffer = new StringBuilder();
             while (className.endsWith("[]")) {
                 className = className.substring(0, className.length() - 2);
                 classNameBuffer.append("[");
             }
-            final String abbreviation = (String) abbreviationMap.get(className);
+            final String abbreviation = abbreviationMap.get(className);
             if (abbreviation != null) {
                 classNameBuffer.append(abbreviation);
-            }
-            else {
+            } else {
                 classNameBuffer.append("L").append(className).append(";");
             }
             className = classNameBuffer.toString();
         }
         return className;
+    }
+
+    /**
+     * New need to constructs new instances.
+     */
+    private ClassLoaderUtil() {
+        // empty
     }
 }

@@ -14,17 +14,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
+import java.util.function.BiConsumer;
+
 /**
- * Exception handler interface.  Actually handles Throwables.
- * @since 1.4
+ * Exception handler interface. Actually handles Throwables.
+ *
+ * @since 1.4.0
  */
-public interface ExceptionHandler {
-    /**
-     * Handle an encountered Throwable.
-     * @param t to handle
-     * @param ptr specific context
-     */
-    void handle(Throwable t, Pointer ptr);
+@FunctionalInterface
+public interface ExceptionHandler extends BiConsumer<Throwable, Pointer> {
+    // empty
 }

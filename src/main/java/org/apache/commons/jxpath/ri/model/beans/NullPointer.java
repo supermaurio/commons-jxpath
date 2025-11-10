@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import java.util.Locale;
@@ -23,126 +24,56 @@ import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
- * Pointer whose value is <code>null</code>.
+ * Pointer whose value is {@code null}.
  */
 public class NullPointer extends PropertyOwnerPointer {
-    private QName name;
-    private String id;
 
     private static final long serialVersionUID = 2193425983220679887L;
 
     /**
-     * Create a new NullPointer.
-     * @param name node name
-     * @param locale Locale
+     * The name of this node
      */
-    public NullPointer(final QName name, final Locale locale) {
-        super(null, locale);
-        this.name = name;
-    }
+    private final QName qName;
 
     /**
-     * Used for the root node.
-     * @param parent parent pointer
-     * @param name node name
+     * Optional ID, may be null.
      */
-    public NullPointer(final NodePointer parent, final QName name) {
-        super(parent);
-        this.name = name;
-    }
+    private final String id;
 
     /**
-     * Create a new NullPointer.
-     * @param locale Locale
-     * @param id String
+     * Constructs a new NullPointer.
+     *
+     * @param locale Locale.
+     * @param id     ID.
      */
     public NullPointer(final Locale locale, final String id) {
         super(null, locale);
         this.id = id;
+        this.qName = null;
     }
 
-    @Override
-    public QName getName() {
-        return name;
+    /**
+     * Used for the root node.
+     *
+     * @param parent parent pointer
+     * @param qName  node name
+     */
+    public NullPointer(final NodePointer parent, final QName qName) {
+        super(parent);
+        this.qName = qName;
+        this.id = null;
     }
 
-    @Override
-    public Object getBaseValue() {
-        return null;
-    }
-
-    @Override
-    public boolean isCollection() {
-        return false;
-    }
-
-    @Override
-    public boolean isLeaf() {
-        return true;
-    }
-
-    @Override
-    public boolean isActual() {
-        return false;
-    }
-
-    @Override
-    public PropertyPointer getPropertyPointer() {
-        return new NullPropertyPointer(this);
-    }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context, final Object value) {
-        if (parent != null) {
-            return parent.createPath(context, value).getValuePointer();
-        }
-        throw new UnsupportedOperationException(
-            "Cannot create the root object: " + asPath());
-    }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context) {
-        if (parent != null) {
-            return parent.createPath(context).getValuePointer();
-        }
-        throw new UnsupportedOperationException(
-            "Cannot create the root object: " + asPath());
-    }
-
-    @Override
-    public NodePointer createChild(
-        final JXPathContext context,
-        final QName name,
-        final int index) {
-        return createPath(context).createChild(context, name, index);
-    }
-
-    @Override
-    public NodePointer createChild(
-        final JXPathContext context,
-        final QName name,
-        final int index,
-        final Object value) {
-        return createPath(context).createChild(context, name, index, value);
-    }
-
-    @Override
-    public int hashCode() {
-        return name == null ? 0 : name.hashCode();
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
-            return true;
-        }
-
-        if (!(object instanceof NullPointer)) {
-            return false;
-        }
-
-        final NullPointer other = (NullPointer) object;
-        return name == other.name || name != null && name.equals(other.name);
+    /**
+     * Constructs a new NullPointer.
+     *
+     * @param qName  node name
+     * @param locale Locale
+     */
+    public NullPointer(final QName qName, final Locale locale) {
+        super(null, locale);
+        this.qName = qName;
+        this.id = null;
     }
 
     @Override
@@ -154,7 +85,80 @@ public class NullPointer extends PropertyOwnerPointer {
     }
 
     @Override
+    public NodePointer createChild(final JXPathContext context, final QName qName, final int index) {
+        return createPath(context).createChild(context, qName, index);
+    }
+
+    @Override
+    public NodePointer createChild(final JXPathContext context, final QName qName, final int index, final Object value) {
+        return createPath(context).createChild(context, qName, index, value);
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context) {
+        if (parent != null) {
+            return parent.createPath(context).getValuePointer();
+        }
+        throw new UnsupportedOperationException("Cannot create the root object: " + asPath());
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context, final Object value) {
+        if (parent != null) {
+            return parent.createPath(context, value).getValuePointer();
+        }
+        throw new UnsupportedOperationException("Cannot create the root object: " + asPath());
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (!(object instanceof NullPointer)) {
+            return false;
+        }
+        final NullPointer other = (NullPointer) object;
+        return qName == other.qName || qName != null && qName.equals(other.qName);
+    }
+
+    @Override
+    public Object getBaseValue() {
+        return null;
+    }
+
+    @Override
     public int getLength() {
         return 0;
+    }
+
+    @Override
+    public QName getName() {
+        return qName;
+    }
+
+    @Override
+    public PropertyPointer getPropertyPointer() {
+        return new NullPropertyPointer(this);
+    }
+
+    @Override
+    public int hashCode() {
+        return qName == null ? 0 : qName.hashCode();
+    }
+
+    @Override
+    public boolean isActual() {
+        return false;
+    }
+
+    @Override
+    public boolean isCollection() {
+        return false;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
     }
 }

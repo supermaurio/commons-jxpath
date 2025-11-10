@@ -14,25 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model;
 
 import org.apache.commons.jxpath.TestBean;
 
 /**
- *
- * @version $Id$
  */
 public class ExceptionPropertyTestBean {
 
+    public TestBean getErrorBean() {
+        throw new IllegalStateException("errorBean");
+    }
+
     public String getErrorString() {
-        throw new RuntimeException("errorString");
+        throw new IllegalStateException("errorString");
     }
 
     public String[] getErrorStringArray() {
-        throw new RuntimeException("errorStringArray");
-    }
-
-    public TestBean getErrorBean() {
-        throw new RuntimeException("errorBean");
+        throw new IllegalStateException("errorStringArray");
     }
 }

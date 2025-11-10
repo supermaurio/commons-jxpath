@@ -14,17 +14,42 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.Compiler;
 
 /**
+ * Node type test.
  */
 public class NodeTypeTest extends NodeTest {
+
+    /**
+     * Render the given node type as a String.
+     *
+     * @param code int
+     * @return String
+     */
+    public static String nodeTypeToString(final int code) {
+        switch (code) {
+        case Compiler.NODE_TYPE_NODE:
+            return "node";
+        case Compiler.NODE_TYPE_TEXT:
+            return "text";
+        case Compiler.NODE_TYPE_COMMENT:
+            return "comment";
+        case Compiler.NODE_TYPE_PI:
+            return "processing-instruction";
+        default:
+            return "UNKNOWN";
+        }
+    }
+
     private final int nodeType;
 
     /**
-     * Create a new NodeTypeTest.
+     * Constructs a new NodeTypeTest.
+     *
      * @param nodeType to match
      */
     public NodeTypeTest(final int nodeType) {
@@ -32,7 +57,8 @@ public class NodeTypeTest extends NodeTest {
     }
 
     /**
-     * Get the nodeType.
+     * Gets the nodeType.
+     *
      * @return int
      */
     public int getNodeType() {
@@ -42,25 +68,5 @@ public class NodeTypeTest extends NodeTest {
     @Override
     public String toString() {
         return nodeTypeToString(nodeType) + "()";
-    }
-
-    /**
-     * Render the given node type as a String.
-     * @param code int
-     * @return String
-     */
-    public static String nodeTypeToString(final int code) {
-        switch (code) {
-            case Compiler.NODE_TYPE_NODE :
-                return "node";
-            case Compiler.NODE_TYPE_TEXT :
-                return "text";
-            case Compiler.NODE_TYPE_COMMENT :
-                return "comment";
-            case Compiler.NODE_TYPE_PI :
-                return "processing-instruction";
-            default:
-                return "UNKNOWN";
-        }
     }
 }

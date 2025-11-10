@@ -17,5 +17,7 @@
 
 /**
  * Implementation of "model" APIs for dynamic property objects e.g. Maps or anything else for which a client can provide a DynamicPropertyHandler class.
+ *
+ * @see <a href="https://commons.apache.org/proper/commons-jxpath/apidocs/index.html">User Guide</a>
  */
 package org.apache.commons.jxpath.ri.model.dynamic;

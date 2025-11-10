@@ -14,25 +14,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.issues;
 
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
-public class JXPath149Test extends JXPathTestCase {
+public class JXPath149Test extends AbstractJXPathTest {
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
+    @Test
     public void testComplexOperationWithVariables() {
         final JXPathContext context = JXPathContext.newContext(null);
         context.getVariables().declareVariable("a", Integer.valueOf(0));

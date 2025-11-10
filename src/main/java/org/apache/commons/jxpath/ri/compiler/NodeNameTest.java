@@ -14,18 +14,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.QName;
 
 /**
+ * Node name test.
  */
 public class NodeNameTest extends NodeTest {
+
     private final QName qname;
     private String namespaceURI;
 
     /**
-     * Create a new NodeNameTest.
+     * Constructs a new NodeNameTest.
+     *
      * @param qname name to match
      */
     public NodeNameTest(final QName qname) {
@@ -33,8 +37,9 @@ public class NodeNameTest extends NodeTest {
     }
 
     /**
-     * Create a new NodeNameTest.
-     * @param qname name to match
+     * Constructs a new NodeNameTest.
+     *
+     * @param qname        name to match
      * @param namespaceURI uri to match
      */
     public NodeNameTest(final QName qname, final String namespaceURI) {
@@ -43,15 +48,8 @@ public class NodeNameTest extends NodeTest {
     }
 
     /**
-     * Get the node name.
-     * @return QName
-     */
-    public QName getNodeName() {
-        return qname;
-    }
-
-    /**
-     * Get the ns URI.
+     * Gets the ns URI.
+     *
      * @return String
      */
     public String getNamespaceURI() {
@@ -59,8 +57,18 @@ public class NodeNameTest extends NodeTest {
     }
 
     /**
-     * Learn whether this is a wildcard test.
-     * @return <code>true</code> if the node name is "*".
+     * Gets the node name.
+     *
+     * @return QName
+     */
+    public QName getNodeName() {
+        return qname;
+    }
+
+    /**
+     * Tests whether this is a wildcard test.
+     *
+     * @return {@code true} if the node name is "*".
      */
     public boolean isWildcard() {
         return qname.getName().equals("*");

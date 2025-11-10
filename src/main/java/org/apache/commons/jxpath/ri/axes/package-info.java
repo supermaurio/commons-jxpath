@@ -18,5 +18,7 @@
 /**
  * Implementations of EvalContext used for different XPath axes (child::, parent:: etc). In order to evaluate a path, RI creates a chain of EvalContexts, one
  * for each step in the path.
+ *
+ * @see <a href="https://commons.apache.org/proper/commons-jxpath/apidocs/index.html">User's Guide</a>
  */
 package org.apache.commons.jxpath.ri.axes;

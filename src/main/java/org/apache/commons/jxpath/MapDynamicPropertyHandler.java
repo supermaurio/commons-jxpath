@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import java.util.Iterator;
@@ -25,6 +26,18 @@ import java.util.Set;
  */
 public class MapDynamicPropertyHandler implements DynamicPropertyHandler {
 
+    /**
+     * Constructs a new instance.
+     */
+    public MapDynamicPropertyHandler() {
+        // empty
+    }
+
+    @Override
+    public Object getProperty(final Object object, final String propertyName) {
+        return ((Map) object).get(propertyName);
+    }
+
     @Override
     public String[] getPropertyNames(final Object object) {
         final Map map = (Map) object;
@@ -35,11 +48,6 @@ public class MapDynamicPropertyHandler implements DynamicPropertyHandler {
             names[i] = String.valueOf(it.next());
         }
         return names;
-    }
-
-    @Override
-    public Object getProperty(final Object object, final String propertyName) {
-        return ((Map) object).get(propertyName);
     }
 
     @Override

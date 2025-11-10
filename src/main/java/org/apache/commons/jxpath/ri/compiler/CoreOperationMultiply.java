@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -25,7 +26,8 @@ import org.apache.commons.jxpath.ri.InfoSetUtil;
 public class CoreOperationMultiply extends CoreOperation {
 
     /**
-     * Create a new CoreOperationMultiply.
+     * Constructs a new CoreOperationMultiply.
+     *
      * @param arg1 factor 1
      * @param arg2 factor 2
      */
@@ -46,12 +48,12 @@ public class CoreOperationMultiply extends CoreOperation {
     }
 
     @Override
-    protected boolean isSymmetric() {
-        return true;
+    public String getSymbol() {
+        return "*";
     }
 
     @Override
-    public String getSymbol() {
-        return "*";
+    protected boolean isSymmetric() {
+        return true;
     }
 }

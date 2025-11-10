@@ -14,37 +14,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dynabeans;
 
+import static org.junit.jupiter.api.Assertions.assertThrows;
+
 import org.apache.commons.beanutils.LazyDynaBean;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.JXPathNotFoundException;
-import org.apache.commons.jxpath.JXPathTestCase;
 import org.apache.commons.jxpath.ri.JXPathContextReferenceImpl;
+import org.junit.jupiter.api.Test;
 
 /**
- *
  */
-public class LazyDynaBeanTest extends JXPathTestCase {
+public class LazyDynaBeanTest extends AbstractJXPathTest {
 
+    @Test
     public void testLazyProperty() throws JXPathNotFoundException {
         final LazyDynaBean bean = new LazyDynaBean();
         final JXPathContext context = JXPathContext.newContext(bean);
         context.getValue("nosuch");
     }
 
+    @Test
     public void testStrictLazyDynaBeanPropertyFactory() {
         final StrictLazyDynaBeanPointerFactory factory = new StrictLazyDynaBeanPointerFactory();
         JXPathContextReferenceImpl.addNodePointerFactory(factory);
-        try {
-            testLazyProperty();
-            fail();
-        } catch (final JXPathNotFoundException e) {
-            // okay
-        } finally {
-            while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
-
-            }
+        assertThrows(JXPathNotFoundException.class, this::testLazyProperty);
+        while (JXPathContextReferenceImpl.removeNodePointerFactory(factory)) {
+            // NOP
         }
     }
 }

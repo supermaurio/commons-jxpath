@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath;
 
 import org.apache.commons.jxpath.ri.JXPathFilter;
@@ -21,31 +22,29 @@ import org.apache.commons.jxpath.ri.JXPathFilter;
 import java.util.Set;
 
 /**
- * A group of Function objects sharing a common namespace or a set of
- * common namespaces. Use the classes
- * {@link ClassFunctions ClassFunctions} and
- * {@link PackageFunctions PackageFunctions}
- * to register extension functions implemented as Java methods.
+ * A group of Function objects sharing a common namespace or a set of common namespaces. Use the classes {@link ClassFunctions ClassFunctions} and
+ * {@link PackageFunctions PackageFunctions} to register extension functions implemented as Java methods.
  */
 public interface Functions {
 
     /**
-     * Returns all namespaces in which this function collection defines
-     * functions.
-     * @return Set
-     */
-    Set getUsedNamespaces();
-
-    /**
-     * Returns a Function, if any, for the specified namespace,
-     * name and parameter types.
-     * @param namespace ns
-     * @param name function name
+     * Gets a Function, if any, for the specified namespace, name and parameter types.
+     *
+     * @param namespace  ns
+     * @param name       function name
      * @param parameters Object[]
      * @return Function
      */
     Function getFunction(String namespace, String name, Object[] parameters);
 
+    /**
+     * Gets all namespaces in which this function collection defines functions.
+     *
+     * @return all namespaces in which this function collection defines functions.
+     */
+    Set<String> getUsedNamespaces();
+	
+	
     /**
      * Returns a Function, if any, for the specified namespace,
      * name and parameter types if the function is allowed by the filter.

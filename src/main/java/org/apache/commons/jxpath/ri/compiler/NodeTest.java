@@ -14,9 +14,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 /**
+ * Node test.
  */
 public abstract class NodeTest {
+
+    /**
+     * Constructs a new instance for subclasses.
+     */
+    public NodeTest() {
+        // empty
+    }
 }

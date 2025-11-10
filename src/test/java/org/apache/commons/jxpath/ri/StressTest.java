@@ -14,16 +14,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri;
 
-import org.apache.commons.jxpath.JXPathContext;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
-import junit.framework.TestCase;
+import org.apache.commons.jxpath.JXPathContext;
+import org.junit.jupiter.api.Test;
 
 /**
  * Test thread safety.
  */
-public class StressTest extends TestCase {
+public class StressTest {
+
+    private static final class StressRunnable implements Runnable {
+
+        @Override
+        public void run() {
+            for (int j = 0; j < THREAD_DURATION && exception == null; j++) {
+                try {
+                    final double random = 1 + Math.random();
+                    final double sum = ((Double) context.getValue("/ + " + random)).doubleValue();
+                    assertEquals(0.0001, sum, 100 + random);
+                    synchronized (context) {
+                        count++;
+                    }
+                } catch (final Throwable t) {
+                    exception = t;
+                }
+            }
+        }
+    }
 
     private static final int THREAD_COUNT = 50;
     private static final int THREAD_DURATION = 1000;
@@ -31,50 +53,26 @@ public class StressTest extends TestCase {
     private static int count;
     private static Throwable exception;
 
+    @Test
     public void testThreads() throws Throwable {
         context = JXPathContext.newContext(null, Double.valueOf(100));
         final Thread[] threadArray = new Thread[THREAD_COUNT];
         for (int i = 0; i < THREAD_COUNT; i++) {
             threadArray[i] = new Thread(new StressRunnable());
         }
-
         for (final Thread element : threadArray) {
             element.start();
         }
-
         for (final Thread element : threadArray) {
             try {
                 element.join();
-            }
-            catch (final InterruptedException e) {
-                assertTrue("Interrupted", false);
+            } catch (final InterruptedException e) {
+                fail("Interrupted");
             }
         }
-
         if (exception != null) {
             throw exception;
         }
-        assertEquals("Test count", THREAD_COUNT * THREAD_DURATION, count);
-    }
-
-    private final class StressRunnable implements Runnable {
-        @Override
-        public void run() {
-            for (int j = 0; j < THREAD_DURATION && exception == null; j++) {
-                try {
-                    final double random = 1 + Math.random();
-                    final double sum =
-                        ((Double) context.getValue("/ + " + random))
-                            .doubleValue();
-                    assertEquals(100 + random, sum, 0.0001);
-                    synchronized (context) {
-                        count++;
-                    }
-                }
-                catch (final Throwable t) {
-                    exception = t;
-                }
-            }
-        }
+        assertEquals(THREAD_COUNT * THREAD_DURATION, count, "Test count");
     }
 }

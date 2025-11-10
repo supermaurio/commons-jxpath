@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import java.util.Locale;
@@ -28,22 +29,28 @@ import org.apache.commons.jxpath.util.ValueUtils;
  */
 public class CollectionPointerFactory implements NodePointerFactory {
 
-    /** factory order constant */
+    /** Factory order constant */
     public static final int COLLECTION_POINTER_FACTORY_ORDER = 10;
 
-    @Override
-    public int getOrder() {
-        return COLLECTION_POINTER_FACTORY_ORDER;
+    /**
+     * Constructs a new instance.
+     */
+    public CollectionPointerFactory() {
+        // empty
     }
 
     @Override
-    public NodePointer createNodePointer(final QName name, final Object bean, final Locale locale) {
+    public NodePointer createNodePointer(final NodePointer parent, final QName qName, final Object bean) {
+        return ValueUtils.isCollection(bean) ? new CollectionPointer(parent, bean) : null;
+    }
+
+    @Override
+    public NodePointer createNodePointer(final QName qName, final Object bean, final Locale locale) {
         return ValueUtils.isCollection(bean) ? new CollectionPointer(bean, locale) : null;
     }
 
     @Override
-    public NodePointer createNodePointer(final NodePointer parent, final QName name,
-            final Object bean) {
-        return ValueUtils.isCollection(bean) ? new CollectionPointer(parent, bean) : null;
+    public int getOrder() {
+        return COLLECTION_POINTER_FACTORY_ORDER;
     }
 }

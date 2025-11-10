@@ -19,12 +19,17 @@ package org.apache.commons.jxpath;
 import java.util.Iterator;
 import java.util.List;
 
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 import org.w3c.dom.Element;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Test BasicNodeSet
  */
-public class BasicNodeSetTest extends JXPathTestCase {
+public class BasicNodeSetTest extends AbstractJXPathTest {
 
     /** JXPathContext */
     protected JXPathContext context;
@@ -33,6 +38,7 @@ public class BasicNodeSetTest extends JXPathTestCase {
     protected BasicNodeSet nodeSet;
 
     @Override
+    @BeforeEach
     protected void setUp() throws Exception {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
@@ -40,32 +46,31 @@ public class BasicNodeSetTest extends JXPathTestCase {
         nodeSet = new BasicNodeSet();
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     /**
-     * Add the pointers for the specified path to <code>nodeSet</code>.
+     * Add the pointers for the specified path to {@code nodeSet}.
      *
      * @param xpath
      */
     protected void addPointers(final String xpath) {
-        for (final Iterator iter = context.iteratePointers(xpath); iter.hasNext();) {
-            nodeSet.add((Pointer) iter.next());
+        for (final Iterator<Pointer> iter = context.iteratePointers(xpath); iter.hasNext();) {
+            nodeSet.add(iter.next());
         }
         nudge();
     }
 
     /**
-     * Remove the pointers for the specified path from <code>nodeSet</code>.
+     * Remove the pointers for the specified path from {@code nodeSet}.
      *
      * @param xpath
      */
     protected void removePointers(final String xpath) {
-        for (final Iterator iter = context.iteratePointers(xpath); iter.hasNext();) {
-            nodeSet.remove((Pointer) iter.next());
+        for (final Iterator<Pointer> iter = context.iteratePointers(xpath); iter.hasNext();) {
+            nodeSet.remove(iter.next());
         }
         nudge();
     }
@@ -82,10 +87,12 @@ public class BasicNodeSetTest extends JXPathTestCase {
     /**
      * Test adding pointers.
      */
+    @Test
     public void testAdd() {
         addPointers("/bean/integers");
-        assertEquals(nodeSet.getPointers().toString(), list("/bean/integers[1]",
-                "/bean/integers[2]", "/bean/integers[3]", "/bean/integers[4]").toString());
+        assertEquals(list("/bean/integers[1]",
+                "/bean/integers[2]", "/bean/integers[3]", "/bean/integers[4]").toString(),
+                nodeSet.getPointers().toString());
         assertEquals(list(Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
                 Integer.valueOf(4)), nodeSet.getValues());
         assertEquals(list(Integer.valueOf(1), Integer.valueOf(2), Integer.valueOf(3),
@@ -95,6 +102,7 @@ public class BasicNodeSetTest extends JXPathTestCase {
     /**
      * Test removing a pointer.
      */
+    @Test
     public void testRemove() {
         addPointers("/bean/integers");
         removePointers("/bean/integers[4]");
@@ -109,6 +117,7 @@ public class BasicNodeSetTest extends JXPathTestCase {
     /**
      * Demonstrate when nodes != values:  in XML models.
      */
+    @Test
     public void testNodes() {
         addPointers("/document/vendor/contact");
         assertEquals(list("/document/vendor[1]/contact[1]",

@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import org.apache.commons.jxpath.JXPathContext;
@@ -21,114 +22,23 @@ import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
- * Used when there is a need to construct a Pointer for a collection element
- * that does not exist.  For example, if the path is "foo[3]", but the
- * collection "foo" only has one element or is empty or is null, the
- * NullElementPointer can be used to capture this situation without putting a
- * regular NodePointer into an invalid state.  Just create a NullElementPointer
- * with index 2 (= 3 - 1) and a "foo" pointer as the parent.
+ * Used when there is a need to construct a Pointer for a collection element that does not exist. For example, if the path is "foo[3]", but the collection "foo"
+ * only has one element or is empty or is null, the NullElementPointer can be used to capture this situation without putting a regular NodePointer into an
+ * invalid state. Just create a NullElementPointer with index 2 (= 3 - 1) and a "foo" pointer as the parent.
  */
 public class NullElementPointer extends CollectionPointer {
 
     private static final long serialVersionUID = 8714236818791036721L;
 
     /**
-     * Create a new NullElementPointer.
+     * Constructs a new NullElementPointer.
+     *
      * @param parent parent pointer
-     * @param index int
+     * @param index  int
      */
     public NullElementPointer(final NodePointer parent, final int index) {
         super(parent, (Object) null);
         this.index = index;
-    }
-
-    @Override
-    public QName getName() {
-        return null;
-    }
-
-    @Override
-    public Object getBaseValue() {
-        return null;
-    }
-
-    @Override
-    public Object getImmediateNode() {
-        return null;
-    }
-
-    @Override
-    public boolean isLeaf() {
-        return true;
-    }
-
-    @Override
-    public boolean isCollection() {
-        return false;
-    }
-
-    /**
-     * Get the property pointer for this.
-     * @return PropertyPointer
-     */
-    public PropertyPointer getPropertyPointer() {
-        return new NullPropertyPointer(this);
-    }
-
-    @Override
-    public NodePointer getValuePointer() {
-        return new NullPointer(this, getName());
-    }
-
-    @Override
-    public void setValue(final Object value) {
-        throw new UnsupportedOperationException(
-            "Collection element does not exist: " + this);
-    }
-
-    @Override
-    public boolean isActual() {
-        return false;
-    }
-
-    @Override
-    public boolean isContainer() {
-        return true;
-    }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context) {
-        return parent.createChild(context, null, index);
-    }
-
-    @Override
-    public NodePointer createPath(final JXPathContext context, final Object value) {
-        return parent.createChild(context, null, index, value);
-    }
-
-    @Override
-    public int hashCode() {
-        return getImmediateParentPointer().hashCode() + index;
-    }
-
-    @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
-            return true;
-        }
-
-        if (!(object instanceof NullElementPointer)) {
-            return false;
-        }
-
-        final NullElementPointer other = (NullElementPointer) object;
-        return getImmediateParentPointer() == other.getImmediateParentPointer()
-                && index == other.index;
-    }
-
-    @Override
-    public int getLength() {
-        return 0;
     }
 
     @Override
@@ -142,15 +52,97 @@ public class NullElementPointer extends CollectionPointer {
             // Address the list[1][2] case
             if (parent != null && parent.getIndex() != WHOLE_COLLECTION) {
                 buffer.append("/.");
-            }
-            else if (parent != null
-                    && parent.getImmediateParentPointer() != null
-                    && parent.getImmediateParentPointer().getIndex() != WHOLE_COLLECTION) {
+            } else if (parent != null && parent.getImmediateParentPointer() != null && parent.getImmediateParentPointer().getIndex() != WHOLE_COLLECTION) {
                 buffer.append("/.");
             }
             buffer.append("[").append(index + 1).append(']');
         }
-
         return buffer.toString();
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context) {
+        return parent.createChild(context, null, index);
+    }
+
+    @Override
+    public NodePointer createPath(final JXPathContext context, final Object value) {
+        return parent.createChild(context, null, index, value);
+    }
+
+    @Override
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (!(object instanceof NullElementPointer)) {
+            return false;
+        }
+        final NullElementPointer other = (NullElementPointer) object;
+        return getImmediateParentPointer() == other.getImmediateParentPointer() && index == other.index;
+    }
+
+    @Override
+    public Object getBaseValue() {
+        return null;
+    }
+
+    @Override
+    public Object getImmediateNode() {
+        return null;
+    }
+
+    @Override
+    public int getLength() {
+        return 0;
+    }
+
+    @Override
+    public QName getName() {
+        return null;
+    }
+
+    /**
+     * Gets the property pointer for this.
+     *
+     * @return PropertyPointer
+     */
+    public PropertyPointer getPropertyPointer() {
+        return new NullPropertyPointer(this);
+    }
+
+    @Override
+    public NodePointer getValuePointer() {
+        return new NullPointer(this, getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return getImmediateParentPointer().hashCode() + index;
+    }
+
+    @Override
+    public boolean isActual() {
+        return false;
+    }
+
+    @Override
+    public boolean isCollection() {
+        return false;
+    }
+
+    @Override
+    public boolean isContainer() {
+        return true;
+    }
+
+    @Override
+    public boolean isLeaf() {
+        return true;
+    }
+
+    @Override
+    public void setValue(final Object value) {
+        throw new UnsupportedOperationException("Collection element does not exist: " + this);
     }
 }

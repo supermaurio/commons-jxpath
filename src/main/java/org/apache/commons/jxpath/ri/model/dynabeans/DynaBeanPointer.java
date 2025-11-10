@@ -14,9 +14,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dynabeans;
 
 import java.util.Locale;
+import java.util.Objects;
 
 import org.apache.commons.beanutils.DynaBean;
 import org.apache.commons.jxpath.ri.QName;
@@ -24,49 +26,69 @@ import org.apache.commons.jxpath.ri.model.NodePointer;
 import org.apache.commons.jxpath.ri.model.beans.PropertyOwnerPointer;
 import org.apache.commons.jxpath.ri.model.beans.PropertyPointer;
 
-
 /**
- * A Pointer that points to a {@link DynaBean}.  If the target DynaBean is Serializable,
- * so should this instance be.
+ * A Pointer that points to a {@link DynaBean}. If the target DynaBean is Serializable, so should this instance be.
  */
 public class DynaBeanPointer extends PropertyOwnerPointer {
+
     private static final long serialVersionUID = -9135052498044877965L;
 
-    private final QName name;
+    /**
+     * Qualified name.
+     */
+    private final QName qName;
+
+    /**
+     * DynaBean.
+     */
     private final DynaBean dynaBean;
 
     /**
-     * Create a new DynaBeanPointer.
-     * @param name is the name given to the first node
+     * Constructs a new DynaBeanPointer.
+     *
+     * @param parent   pointer
+     * @param qName     is the name given to the first node
      * @param dynaBean pointed
-     * @param locale Locale
      */
-    public DynaBeanPointer(final QName name, final DynaBean dynaBean, final Locale locale) {
-        super(null, locale);
-        this.name = name;
+    public DynaBeanPointer(final NodePointer parent, final QName qName, final DynaBean dynaBean) {
+        super(parent);
+        this.qName = qName;
         this.dynaBean = dynaBean;
     }
 
     /**
-     * Create a new DynaBeanPointer.
-     * @param parent pointer
-     * @param name is the name given to the first node
+     * Constructs a new DynaBeanPointer.
+     *
+     * @param qName     is the name given to the first node
      * @param dynaBean pointed
+     * @param locale   Locale
      */
-    public DynaBeanPointer(final NodePointer parent, final QName name, final DynaBean dynaBean) {
-        super(parent);
-        this.name = name;
+    public DynaBeanPointer(final QName qName, final DynaBean dynaBean, final Locale locale) {
+        super(null, locale);
+        this.qName = qName;
         this.dynaBean = dynaBean;
     }
 
     @Override
-    public PropertyPointer getPropertyPointer() {
-        return new DynaBeanPropertyPointer(this, dynaBean);
+    public String asPath() {
+        return parent == null ? "/" : super.asPath();
     }
 
     @Override
-    public QName getName() {
-        return name;
+    public boolean equals(final Object object) {
+        if (object == this) {
+            return true;
+        }
+        if (!(object instanceof DynaBeanPointer)) {
+            return false;
+        }
+        final DynaBeanPointer other = (DynaBeanPointer) object;
+        if (!(Objects.equals(parent, other.parent) && Objects.equals(qName, other.qName))) {
+            return false;
+        }
+        final int iThis = index == WHOLE_COLLECTION ? 0 : index;
+        final int iOther = other.index == WHOLE_COLLECTION ? 0 : other.index;
+        return iThis == iOther && dynaBean == other.dynaBean;
     }
 
     @Override
@@ -80,57 +102,32 @@ public class DynaBeanPointer extends PropertyOwnerPointer {
     }
 
     @Override
-    public boolean isCollection() {
-        return false;
-    }
-
-    @Override
     public int getLength() {
         return 1;
     }
 
     @Override
-    public boolean isLeaf() {
-        return false;
+    public QName getName() {
+        return qName;
+    }
+
+    @Override
+    public PropertyPointer getPropertyPointer() {
+        return new DynaBeanPropertyPointer(this, dynaBean);
     }
 
     @Override
     public int hashCode() {
-        return name == null ? 0 : name.hashCode();
+        return qName == null ? 0 : qName.hashCode();
     }
 
     @Override
-    public boolean equals(final Object object) {
-        if (object == this) {
-            return true;
-        }
-
-        if (!(object instanceof DynaBeanPointer)) {
-            return false;
-        }
-
-        final DynaBeanPointer other = (DynaBeanPointer) object;
-        if (!(equalObjects(parent, other.parent) && equalObjects(name, other.name))) {
-            return false;
-        }
-
-        final int iThis = index == WHOLE_COLLECTION ? 0 : index;
-        final int iOther = other.index == WHOLE_COLLECTION ? 0 : other.index;
-        return iThis == iOther && dynaBean == other.dynaBean;
+    public boolean isCollection() {
+        return false;
     }
 
     @Override
-    public String asPath() {
-        return parent == null ? "/" : super.asPath();
-    }
-
-    /**
-     * Learn whether two objects are == || .equals().
-     * @param o1 first object
-     * @param o2 second object
-     * @return boolean
-     */
-    private static boolean equalObjects(final Object o1, final Object o2) {
-        return o1 == o2 || o1 != null && o1.equals(o2);
+    public boolean isLeaf() {
+        return false;
     }
 }

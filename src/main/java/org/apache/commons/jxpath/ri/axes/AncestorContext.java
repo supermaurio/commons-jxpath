@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import org.apache.commons.jxpath.ri.EvalContext;
@@ -24,22 +25,20 @@ import org.apache.commons.jxpath.ri.model.NodePointer;
  * EvalContext that walks the "ancestor::" and "ancestor-or-self::" axes.
  */
 public class AncestorContext extends EvalContext {
+
     private final NodeTest nodeTest;
-    private boolean setStarted = false;
+    private boolean setStarted;
     private NodePointer currentNodePointer;
     private final boolean includeSelf;
 
     /**
-     * Create a new AncestorContext.
+     * Constructs a new AncestorContext.
+     *
      * @param parentContext represents the previous step on the path
-     * @param  includeSelf differentiates between "ancestor::" and
-     *                     "ancestor-or-self::" axes
-     * @param nodeTest is the name of the element(s) we are looking for
+     * @param includeSelf   differentiates between "ancestor::" and "ancestor-or-self::" axes
+     * @param nodeTest      is the name of the element(s) we are looking for
      */
-    public AncestorContext(
-        final EvalContext parentContext,
-        final boolean includeSelf,
-        final NodeTest nodeTest) {
+    public AncestorContext(final EvalContext parentContext, final boolean includeSelf, final NodeTest nodeTest) {
         super(parentContext);
         this.includeSelf = includeSelf;
         this.nodeTest = nodeTest;
@@ -56,6 +55,28 @@ public class AncestorContext extends EvalContext {
     }
 
     @Override
+    public boolean nextNode() {
+        if (!setStarted) {
+            setStarted = true;
+            currentNodePointer = parentContext.getCurrentNodePointer();
+            if (includeSelf && currentNodePointer.testNode(nodeTest)) {
+                position++;
+                return true;
+            }
+        }
+        while (true) {
+            currentNodePointer = currentNodePointer.getImmediateParentPointer();
+            if (currentNodePointer == null) {
+                return false;
+            }
+            if (currentNodePointer.testNode(nodeTest)) {
+                position++;
+                return true;
+            }
+        }
+    }
+
+    @Override
     public void reset() {
         super.reset();
         setStarted = false;
@@ -66,37 +87,11 @@ public class AncestorContext extends EvalContext {
         if (position < getCurrentPosition()) {
             reset();
         }
-
         while (getCurrentPosition() < position) {
             if (!nextNode()) {
                 return false;
             }
         }
         return true;
-    }
-
-    @Override
-    public boolean nextNode() {
-        if (!setStarted) {
-            setStarted = true;
-            currentNodePointer = parentContext.getCurrentNodePointer();
-            if (includeSelf && currentNodePointer.testNode(nodeTest)) {
-                position++;
-                return true;
-            }
-        }
-
-        while (true) {
-            currentNodePointer = currentNodePointer.getImmediateParentPointer();
-
-            if (currentNodePointer == null) {
-                return false;
-            }
-
-            if (currentNodePointer.testNode(nodeTest)) {
-                position++;
-                return true;
-            }
-        }
     }
 }

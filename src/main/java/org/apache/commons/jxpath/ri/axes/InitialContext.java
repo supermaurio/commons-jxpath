@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
 import org.apache.commons.jxpath.Pointer;
@@ -21,36 +22,35 @@ import org.apache.commons.jxpath.ri.EvalContext;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
- * A single-set EvalContext that provides access to the current node of
- * the parent context and nothing else.  It does not pass the iteration
- * on to the parent context.
+ * A single-set EvalContext that provides access to the current node of the parent context and nothing else. It does not pass the iteration on to the parent
+ * context.
  */
 public class InitialContext extends EvalContext {
-    private boolean started = false;
+
+    private boolean started;
     private boolean collection;
     private final NodePointer nodePointer;
 
     /**
-     * Create a new InitialContext.
+     * Constructs a new InitialContext.
+     *
      * @param parentContext parent context
      */
     public InitialContext(final EvalContext parentContext) {
         super(parentContext);
-        nodePointer =
-            (NodePointer) parentContext.getCurrentNodePointer().clone();
+        nodePointer = (NodePointer) parentContext.getCurrentNodePointer().clone();
         if (nodePointer != null) {
-            collection =
-                nodePointer.getIndex() == NodePointer.WHOLE_COLLECTION;
+            collection = nodePointer.getIndex() == NodePointer.WHOLE_COLLECTION;
         }
     }
 
     @Override
-    public Pointer getSingleNodePointer() {
+    public NodePointer getCurrentNodePointer() {
         return nodePointer;
     }
 
     @Override
-    public NodePointer getCurrentNodePointer() {
+    public Pointer getSingleNodePointer() {
         return nodePointer;
     }
 
@@ -65,6 +65,15 @@ public class InitialContext extends EvalContext {
     }
 
     @Override
+    public boolean nextSet() {
+        if (started) {
+            return false;
+        }
+        started = true;
+        return true;
+    }
+
+    @Override
     public boolean setPosition(final int position) {
         this.position = position;
         if (collection) {
@@ -75,14 +84,5 @@ public class InitialContext extends EvalContext {
             return false;
         }
         return position == 1;
-    }
-
-    @Override
-    public boolean nextSet() {
-        if (started) {
-            return false;
-        }
-        started = true;
-        return true;
     }
 }

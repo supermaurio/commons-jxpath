@@ -14,20 +14,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
 import org.apache.commons.jxpath.Variables;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 /**
- * Test basic functionality of JXPath - infoset types,
- * operations.
+ * Test basic functionality of JXPath - infoset types, operations.
  */
-public class CoreOperationTest extends JXPathTestCase {
+public class CoreOperationTest extends AbstractJXPathTest {
+
     private JXPathContext context;
 
     @Override
+    @BeforeEach
     public void setUp() {
         if (context == null) {
             context = JXPathContext.newContext(null);
@@ -38,15 +42,29 @@ public class CoreOperationTest extends JXPathTestCase {
         }
     }
 
-    public void testInfoSetTypes() {
+    @Test
+    public void testEmptyNodeSetOperations() {
+        assertXPathValue(context, "/idonotexist = 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "/idonotexist != 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "/idonotexist < 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "/idonotexist > 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "/idonotexist >= 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "/idonotexist <= 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] = 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] != 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] < 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] > 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] >= 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array[position() < 1] <= 0", Boolean.FALSE, Boolean.class);
+    }
 
+    @Test
+    public void testInfoSetTypes() {
         // Numbers
         assertXPathValue(context, "1", Double.valueOf(1.0));
         assertXPathPointer(context, "1", "1");
         assertXPathValueIterator(context, "1", list(Double.valueOf(1.0)));
-
         assertXPathPointerIterator(context, "1", list("1"));
-
         assertXPathValue(context, "-1", Double.valueOf(-1.0));
         assertXPathValue(context, "2 + 2", Double.valueOf(4.0));
         assertXPathValue(context, "3 - 2", Double.valueOf(1.0));
@@ -54,10 +72,8 @@ public class CoreOperationTest extends JXPathTestCase {
         assertXPathValue(context, "3 * 2", Double.valueOf(3.0 * 2.0));
         assertXPathValue(context, "3 div 2", Double.valueOf(3.0 / 2.0));
         assertXPathValue(context, "5 mod 2", Double.valueOf(1.0));
-
         // This test produces a different result with Xalan?
         assertXPathValue(context, "5.9 mod 2.1", Double.valueOf(1.0));
-
         assertXPathValue(context, "5 mod -2", Double.valueOf(1.0));
         assertXPathValue(context, "-5 mod 2", Double.valueOf(-1.0));
         assertXPathValue(context, "-5 mod -2", Double.valueOf(-1.0));
@@ -75,46 +91,13 @@ public class CoreOperationTest extends JXPathTestCase {
         assertXPathValue(context, "1 > 2 = 2 > 3", Boolean.TRUE);
         assertXPathValue(context, "1 > 2 = 0", Boolean.TRUE);
         assertXPathValue(context, "1 = 2", Boolean.FALSE);
-
         assertXPathValue(context, "$integer", Double.valueOf(1), Double.class);
-
         assertXPathValue(context, "2 + 3", "5.0", String.class);
-
         assertXPathValue(context, "2 + 3", Boolean.TRUE, boolean.class);
-
         assertXPathValue(context, "'true'", Boolean.TRUE, Boolean.class);
     }
 
-    public void testNodeSetOperations() {
-        assertXPathValue(context, "$array > 0", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array >= 0", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array = 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array = 0.25", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array = 0.5", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array = 0.50000", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array = 0.75", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array < 1", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array <= 1", Boolean.TRUE, Boolean.class);
-        assertXPathValue(context, "$array = 1", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array > 1", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array < 0", Boolean.FALSE, Boolean.class);
-    }
-
-    public void testEmptyNodeSetOperations() {
-        assertXPathValue(context, "/idonotexist = 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "/idonotexist != 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "/idonotexist < 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "/idonotexist > 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "/idonotexist >= 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "/idonotexist <= 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] = 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] != 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] < 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] > 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] >= 0", Boolean.FALSE, Boolean.class);
-        assertXPathValue(context, "$array[position() < 1] <= 0", Boolean.FALSE, Boolean.class);
-    }
-
+    @Test
     public void testNan() {
         assertXPathValue(context, "$nan > $nan", Boolean.FALSE, Boolean.class);
         assertXPathValue(context, "$nan < $nan", Boolean.FALSE, Boolean.class);
@@ -137,5 +120,21 @@ public class CoreOperationTest extends JXPathTestCase {
         assertXPathValue(context, "$nan >= 1 and $nan <= 1", Boolean.FALSE, Boolean.class);
         assertXPathValue(context, "$nan = 1", Boolean.FALSE, Boolean.class);
         assertXPathValue(context, "$nan != 1", Boolean.FALSE, Boolean.class);
+    }
+
+    @Test
+    public void testNodeSetOperations() {
+        assertXPathValue(context, "$array > 0", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array >= 0", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array = 0", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array = 0.25", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array = 0.5", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array = 0.50000", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array = 0.75", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array < 1", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array <= 1", Boolean.TRUE, Boolean.class);
+        assertXPathValue(context, "$array = 1", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array > 1", Boolean.FALSE, Boolean.class);
+        assertXPathValue(context, "$array < 0", Boolean.FALSE, Boolean.class);
     }
 }

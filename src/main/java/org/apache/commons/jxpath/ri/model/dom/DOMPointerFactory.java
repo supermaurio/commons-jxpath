@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dom;
 
 import java.util.Locale;
@@ -28,27 +29,28 @@ import org.w3c.dom.Node;
  */
 public class DOMPointerFactory implements NodePointerFactory {
 
-    /** factory order */
+    /** Factory order */
     public static final int DOM_POINTER_FACTORY_ORDER = 100;
 
-    @Override
-    public int getOrder() {
-        return DOM_POINTER_FACTORY_ORDER;
+    /**
+     * Constructs a new instance.
+     */
+    public DOMPointerFactory() {
+        // empty
     }
 
     @Override
-    public NodePointer createNodePointer(
-        final QName name,
-        final Object bean,
-        final Locale locale) {
+    public NodePointer createNodePointer(final NodePointer parent, final QName qName, final Object bean) {
+        return bean instanceof Node ? new DOMNodePointer(parent, (Node) bean) : null;
+    }
+
+    @Override
+    public NodePointer createNodePointer(final QName qName, final Object bean, final Locale locale) {
         return bean instanceof Node ? new DOMNodePointer((Node) bean, locale) : null;
     }
 
     @Override
-    public NodePointer createNodePointer(
-        final NodePointer parent,
-        final QName name,
-        final Object bean) {
-        return bean instanceof Node ? new DOMNodePointer(parent, (Node) bean) : null;
+    public int getOrder() {
+        return DOM_POINTER_FACTORY_ORDER;
     }
 }

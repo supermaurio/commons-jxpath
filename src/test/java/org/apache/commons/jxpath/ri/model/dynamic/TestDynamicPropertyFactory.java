@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.dynamic;
 
 import java.util.HashMap;
@@ -32,30 +33,22 @@ import org.apache.commons.jxpath.TestBean;
 public class TestDynamicPropertyFactory extends AbstractFactory {
 
     /**
-     * Create a new instance and put it in the collection on the parent object.
-     * Return <b>false</b> if this factory cannot create the requested object.
+     * Create a new instance and put it in the collection on the parent object. Return <strong>false</strong> if this factory cannot create the requested
+     * object.
      */
     @Override
-    public boolean createObject(
-        final JXPathContext context,
-        final Pointer pointer,
-        final Object parent,
-        final String name,
-        final int index)
-    {
-        if (name.equals("map")) {
+    public boolean createObject(final JXPathContext context, final Pointer pointer, final Object parent, final String name, final int index) {
+        switch (name) {
+        case "map":
             ((TestBean) parent).setMap(new HashMap());
             return true;
-        }
-        else if (name.equals("TestKey1")) {
+        case "TestKey1":
             ((Map) parent).put(name, "");
             return true;
-        }
-        else if (name.equals("TestKey2")) {
+        case "TestKey2":
             ((Map) parent).put(name, new NestedTestBean("newName"));
             return true;
-        }
-        else if (name.equals("TestKey3")) {
+        case "TestKey3": {
             final Vector v = new Vector();
             for (int i = 0; i <= index; i++) {
                 v.add(null);
@@ -63,9 +56,11 @@ public class TestDynamicPropertyFactory extends AbstractFactory {
             ((Map) parent).put(name, v);
             return true;
         }
-        else if (name.equals("TestKey4")) {
-            ((Map) parent).put(name, new Object[] { new TestBean()});
+        case "TestKey4":
+            ((Map) parent).put(name, new Object[] { new TestBean() });
             return true;
+        default:
+            break;
         }
         return false;
     }

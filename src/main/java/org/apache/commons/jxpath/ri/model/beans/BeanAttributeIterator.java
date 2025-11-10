@@ -14,39 +14,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.model.beans;
 
 import org.apache.commons.jxpath.ri.QName;
 import org.apache.commons.jxpath.ri.model.NodePointer;
 
 /**
- * An iterator of attributes of a JavaBean. Returns bean properties as
- * well as the "xml:lang" attribute.
+ * An iterator of attributes of a JavaBean. Returns bean properties as well as the "xml:lang" attribute.
  */
 public class BeanAttributeIterator extends PropertyIterator {
+
     private final NodePointer parent;
-    private int position = 0;
+    private int position;
     private final boolean includeXmlLang;
 
     /**
-     * Create a new BeanAttributeIterator.
+     * Constructs a new BeanAttributeIterator.
+     *
      * @param parent parent pointer
-     * @param name name of this bean
+     * @param qName   name of this bean
      */
-    public BeanAttributeIterator(final PropertyOwnerPointer parent, final QName name) {
-        super(
-            parent,
-            name.getPrefix() == null
-                && (name.getName() == null || name.getName().equals("*"))
-                ? null
-                : name.toString(),
-            false,
-            null);
+    public BeanAttributeIterator(final PropertyOwnerPointer parent, final QName qName) {
+        super(parent, qName.getPrefix() == null && (qName.getName() == null || qName.getName().equals("*")) ? null : qName.toString(), false, null);
         this.parent = parent;
-        includeXmlLang =
-            name.getPrefix() != null && name.getPrefix().equals("xml")
-                && (name.getName().equals("lang")
-                || name.getName().equals("*"));
+        includeXmlLang = qName.getPrefix() != null && qName.getPrefix().equals("xml") && (qName.getName().equals("lang") || qName.getName().equals("*"));
     }
 
     @Override

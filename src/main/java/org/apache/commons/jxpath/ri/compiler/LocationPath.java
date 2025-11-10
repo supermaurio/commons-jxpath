@@ -14,38 +14,66 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.ri.EvalContext;
 import org.apache.commons.jxpath.ri.axes.InitialContext;
 
 /**
+ * A location path expression.
  */
 public class LocationPath extends Path {
 
     private final boolean absolute;
 
     /**
-     * Create a new LocationPath.
+     * Constructs a new LocationPath.
+     *
      * @param absolute whether this is an absolute path
-     * @param steps to evaluate
+     * @param steps    to evaluate
      */
     public LocationPath(final boolean absolute, final Step[] steps) {
         super(steps);
         this.absolute = absolute;
     }
 
-    /**
-     * Learn whether this LocationPath is absolute.
-     * @return boolean
-     */
-    public boolean isAbsolute() {
-        return absolute;
+    @Override
+    public Object compute(final EvalContext context) {
+        // Create a chain of contexts
+        EvalContext rootContext;
+        if (isAbsolute()) {
+            rootContext = context.getRootContext().getAbsoluteRootContext();
+        } else {
+            rootContext = new InitialContext(context);
+        }
+        return evalSteps(rootContext);
     }
 
     @Override
     public boolean computeContextDependent() {
         return !absolute || super.computeContextDependent();
+    }
+
+    @Override
+    public Object computeValue(final EvalContext context) {
+        // Create a chain of contexts
+        EvalContext rootContext;
+        if (isAbsolute()) {
+            rootContext = context.getRootContext().getAbsoluteRootContext();
+        } else {
+            rootContext = new InitialContext(context);
+        }
+        return getSingleNodePointerForSteps(rootContext);
+    }
+
+    /**
+     * Tests whether this LocationPath is absolute.
+     *
+     * @return boolean
+     */
+    public boolean isAbsolute() {
+        return absolute;
     }
 
     @Override
@@ -61,31 +89,5 @@ public class LocationPath extends Path {
             }
         }
         return buffer.toString();
-    }
-
-    @Override
-    public Object compute(final EvalContext context) {
-        // Create a chain of contexts
-        EvalContext rootContext;
-        if (isAbsolute()) {
-            rootContext = context.getRootContext().getAbsoluteRootContext();
-        }
-        else {
-            rootContext = new InitialContext(context);
-        }
-        return evalSteps(rootContext);
-    }
-
-    @Override
-    public Object computeValue(final EvalContext context) {
-        // Create a chain of contexts
-        EvalContext rootContext;
-        if (isAbsolute()) {
-            rootContext = context.getRootContext().getAbsoluteRootContext();
-        }
-        else {
-            rootContext = new InitialContext(context);
-        }
-        return getSingleNodePointerForSteps(rootContext);
     }
 }

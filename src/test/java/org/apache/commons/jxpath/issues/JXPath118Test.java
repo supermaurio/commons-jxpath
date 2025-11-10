@@ -14,80 +14,73 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.issues;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 import java.util.Iterator;
 
 import org.apache.commons.jxpath.JXPathContext;
 import org.apache.commons.jxpath.Pointer;
+import org.junit.jupiter.api.Test;
 
-import junit.framework.Assert;
-import junit.framework.TestCase;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 
 /**
  * Testcase proving JXPATH-118 issue with asPath() returning wrong names.
  */
-public class JXPath118Test extends TestCase
-{
-    @Override
+public class JXPath118Test {
+
+    @BeforeEach
     public void setUp() throws Exception {
-        super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
-
-    public void testJXPATH118IssueWithAsPath() throws Exception
-    {
-        final Object contextBean = new SomeChildClass();
-        final JXPathContext context = JXPathContext.newContext(contextBean);
-        final Iterator iteratePointers = context.iteratePointers("//*");
-        Assert.assertEquals("/bar", ((Pointer) iteratePointers.next()).asPath());
-        Assert.assertEquals("/baz", ((Pointer) iteratePointers.next()).asPath());
-        Assert.assertEquals("/foo", ((Pointer) iteratePointers.next()).asPath());
-    }
-
-    public static class SomeChildClass
-    {
+	
+    public static class SomeChildClass {
 
         private int foo = 1;
         private int bar = 2;
         private int baz = 3;
 
-        public int getFoo()
-        {
-            return foo;
-        }
-
-        public void setFoo(final int foo)
-        {
-            this.foo = foo;
-        }
-
-        public int getBar()
-        {
+        public int getBar() {
             return bar;
         }
 
-        public void setBar(final int bar)
-        {
-            this.bar = bar;
-        }
-
-        public int getBaz()
-        {
+        public int getBaz() {
             return baz;
         }
 
-        public void setBaz(final int baz)
-        {
+        public int getFoo() {
+            return foo;
+        }
+
+        public void setBar(final int bar) {
+            this.bar = bar;
+        }
+
+        public void setBaz(final int baz) {
             this.baz = baz;
         }
 
+        public void setFoo(final int foo) {
+            this.foo = foo;
+        }
     }
 
+    @Test
+    public void testJXPATH118IssueWithAsPath() throws Exception {
+        final Object contextBean = new SomeChildClass();
+        final JXPathContext context = JXPathContext.newContext(contextBean);
+        final Iterator<Pointer> iteratePointers = context.iteratePointers("//*");
+        assertEquals("/bar", iteratePointers.next().asPath());
+        assertEquals("/baz", iteratePointers.next().asPath());
+        assertEquals("/foo", iteratePointers.next().asPath());
+    }
 }

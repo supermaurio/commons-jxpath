@@ -14,9 +14,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.axes;
 
-import org.apache.commons.jxpath.JXPathTestCase;
+import org.apache.commons.jxpath.AbstractJXPathTest;
 import org.apache.commons.jxpath.TestBean;
 import org.apache.commons.jxpath.xml.DocumentContainer;
 import org.w3c.dom.Document;
@@ -25,8 +26,23 @@ import org.w3c.dom.Document;
  * Test bean for mixed model JUnit tests.
  */
 public class TestBeanWithNode extends TestBean {
+
+    public static TestBeanWithNode createTestBeanWithDOM() {
+        final DocumentContainer docCtr = new DocumentContainer(AbstractJXPathTest.class.getResource("Vendor.xml"));
+        final Document doc = (Document) docCtr.getValue();
+        final TestBeanWithNode tbwdom = new TestBeanWithNode();
+        tbwdom.setVendor(doc.getDocumentElement());
+        tbwdom.setObject(docCtr);
+        return tbwdom;
+    }
+
     private Object node;
     private Object object;
+
+    @Override
+    public Object getObject() {
+        return object;
+    }
 
     public Object getVendor() {
         return node;
@@ -36,28 +52,11 @@ public class TestBeanWithNode extends TestBean {
         return new Object[] { node };
     }
 
-    public void setVendor(final Object node) {
-        this.node = node;
-    }
-
-    @Override
-    public Object getObject() {
-        return object;
-    }
-
     public void setObject(final Object object) {
         this.object = object;
     }
 
-    public static TestBeanWithNode createTestBeanWithDOM() {
-        final DocumentContainer docCtr =
-            new DocumentContainer(
-                JXPathTestCase.class.getResource("Vendor.xml"));
-        final Document doc = (Document) docCtr.getValue();
-        final TestBeanWithNode tbwdom = new TestBeanWithNode();
-        tbwdom.setVendor(doc.getDocumentElement());
-        tbwdom.setObject(docCtr);
-        return tbwdom;
+    public void setVendor(final Object node) {
+        this.node = node;
     }
-
 }

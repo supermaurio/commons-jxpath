@@ -17,28 +17,34 @@
 
 package org.apache.commons.jxpath.ri.model;
 
-import org.apache.commons.jxpath.JXPathContext;
-import org.apache.commons.jxpath.JXPathTestCase;
-import org.apache.commons.jxpath.xml.DocumentContainer;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class JXPath154Test extends JXPathTestCase {
+import org.apache.commons.jxpath.AbstractJXPathTest;
+import org.apache.commons.jxpath.JXPathContext;
+import org.apache.commons.jxpath.xml.DocumentContainer;
+import org.junit.jupiter.api.Test;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+
+public class JXPath154Test extends AbstractJXPathTest {
 
     protected JXPathContext context;
 
     @Override
+    @BeforeEach
     public void setUp() throws Exception {
         super.setUp();
         System.setProperty("jxpath.class.allow", "*");
     }
 
-    @Override
+    @AfterEach
     public void tearDown() throws Exception {
         System.clearProperty("jxpath.class.allow");
-        super.tearDown();
     }
 
     protected DocumentContainer createDocumentContainer(final String model) {
-        return new DocumentContainer(JXPathTestCase.class.getResource("InnerEmptyNamespace.xml"), model);
+        return new DocumentContainer(AbstractJXPathTest.class.getResource("InnerEmptyNamespace.xml"), model);
     }
 
     protected void doTest(final String path, final String model, final String expectedValue) {
@@ -46,10 +52,12 @@ public class JXPath154Test extends JXPathTestCase {
         assertEquals(expectedValue, context.getPointer(path).asPath());
     }
 
+    @Test
     public void testInnerEmptyNamespaceDOM() {
         doTest("b:foo/test", DocumentContainer.MODEL_DOM, "/b:foo[1]/test[1]");
     }
 
+    @Test
     public void testInnerEmptyNamespaceJDOM() {
         doTest("b:foo/test", DocumentContainer.MODEL_JDOM, "/b:foo[1]/test[1]");
     }

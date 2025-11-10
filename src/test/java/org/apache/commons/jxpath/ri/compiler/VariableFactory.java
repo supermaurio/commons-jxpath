@@ -14,6 +14,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 package org.apache.commons.jxpath.ri.compiler;
 
 import org.apache.commons.jxpath.AbstractFactory;
@@ -29,24 +30,19 @@ public class VariableFactory extends AbstractFactory {
     /**
      */
     @Override
-    public boolean createObject(
-        final JXPathContext context,
-        final Pointer pointer,
-        final Object parent,
-        final String name,
-        final int index)
-    {
-        if (name.equals("testArray")) {
+    public boolean createObject(final JXPathContext context, final Pointer pointer, final Object parent, final String name, final int index) {
+        switch (name) {
+        case "testArray":
             ((TestBean[]) parent)[index] = new TestBean();
             return true;
-        }
-        else if (name.equals("stringArray")) {
+        case "stringArray":
             ((String[]) parent)[index] = "";
             return true;
-        }
-        else if (name.equals("array")) {
+        case "array":
             ((String[]) parent)[index] = "";
             return true;
+        default:
+            break;
         }
         return false;
     }
@@ -56,19 +52,18 @@ public class VariableFactory extends AbstractFactory {
      */
     @Override
     public boolean declareVariable(final JXPathContext context, final String name) {
-        if (name.equals("test")) {
+        switch (name) {
+        case "test":
             context.getVariables().declareVariable(name, new TestBean());
             return true;
-        }
-        else if (name.equals("testArray")) {
+        case "testArray":
             context.getVariables().declareVariable(name, new TestBean[0]);
             return true;
-        }
-        else if (name.equals("stringArray")) {
-            context.getVariables().declareVariable(
-                name,
-                new String[] { "Value1" });
+        case "stringArray":
+            context.getVariables().declareVariable(name, new String[] { "Value1" });
             return true;
+        default:
+            break;
         }
         context.getVariables().declareVariable(name, null);
         return true;
